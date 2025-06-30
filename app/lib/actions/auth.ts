@@ -1,12 +1,11 @@
 // app/lib/actions/auth.ts
 "use server";
-
-import { redirect } from "next/navigation";
 import { z } from "zod";
 import bcrypt from "bcrypt";
 import { sql } from "@/app/lib/db";
 import registerSchema from "@/app/lib/validation/registerSchema";
-import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { signIn } from "@/auth";
 
 // Server Action Result Type
 type ActionResult = {
@@ -111,16 +110,18 @@ async function validateBusinessRules(data: any): Promise<void> {
   }
 }
 
-// Server Action cho đăng ký
 export async function registerUserAction(
   prevState: ActionResult | undefined,
   formData: FormData
 ): Promise<ActionResult> {
+  let shouldRedirect = false;
+
   try {
     // Extract data từ FormData
     const rawData = {
       id: crypto.randomUUID(), // Generate ID
       email: formData.get("email") as string,
+      name: formData.get("name") as string,
       userName: formData.get("userName") as string,
       passWord: formData.get("passWord") as string,
       dateOfBirth: new Date(formData.get("dateOfBirth") as string),
@@ -136,6 +137,7 @@ export async function registerUserAction(
     const cleanedData = {
       id: validatedData.id,
       email: validatedData.email.trim().toLowerCase(),
+      name: validatedData.name,
       userName: validatedData.userName.trim(),
       passWord: validatedData.passWord,
       dateOfBirth: validatedData.dateOfBirth,
@@ -146,23 +148,25 @@ export async function registerUserAction(
 
     // Insert vào database
     const result = await sql`
-  INSERT INTO users (id, email, user_name, password, date_of_birth)
-  VALUES (${cleanedData.id}, ${cleanedData.email}, ${cleanedData.userName}, ${hashedPassword}, ${cleanedData.dateOfBirth})
-  RETURNING id, email, user_name, date_of_birth
-`;
+      INSERT INTO users (id, email,name, user_name, password, date_of_birth)
+      VALUES (${cleanedData.id}, ${cleanedData.email}, ${cleanedData.name}, ${cleanedData.userName}, ${hashedPassword}, ${cleanedData.dateOfBirth})
+      RETURNING id, email,name, user_name, date_of_birth
+    `;
+
     console.log("User registered successfully:", result[0]);
-
-    // Set success message in cookie
-    (
-      await // Set success message in cookie
-      cookies()
-    ).set("flash-message", "Registration successful", {
-      maxAge: 60, // 1 minute
-      httpOnly: false,
+    const loginResult = await signIn("credentials", {
+      email: formData.get("email") as string,
+      password: formData.get("passWord") as string,
+      redirect: false,
     });
-
-    // Redirect sau khi thành công
-    redirect("/login");
+    shouldRedirect = true;
+    if (loginResult?.error) {
+      return {
+        success: false,
+        message:
+          "Registration successful but login failed. Please login manually.",
+      };
+    }
   } catch (error) {
     // Zod validation errors
     if (error instanceof z.ZodError) {
@@ -209,11 +213,15 @@ export async function registerUserAction(
         };
       }
     }
-    console.log("oke");
 
     return {
       success: false,
       message: "An error occurred during registration. Please try again.",
     };
   }
+
+  if (shouldRedirect) {
+    redirect("/dashboard");
+  }
+  return {} as never;
 }
