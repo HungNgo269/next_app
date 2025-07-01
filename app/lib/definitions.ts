@@ -4,7 +4,7 @@ export type User = {
   name: string;
   email: string;
   password: string;
-  role: "admin" | "subscriber" | "customer" | "guest";
+  role: "admin" | "subUser" | "user";
   created_at: string;
   updated_at: string;
 };

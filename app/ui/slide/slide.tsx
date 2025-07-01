@@ -8,7 +8,6 @@ import "swiper/css/navigation";
 
 const Slide = () => {
   const images = Array.from({ length: 7 }).map((_, i) => `/hero-desktop.png`);
-  console.log("images", images);
   return (
     <div>
       <div style={{ width: "100%", height: "450px" }}>
