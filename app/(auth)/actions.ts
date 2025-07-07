@@ -1,4 +1,3 @@
-// app/lib/actions/auth.ts
 "use server";
 import { z } from "zod";
 import bcrypt from "bcrypt";

@@ -10,7 +10,7 @@ import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import { Button } from "@/app/ui/button";
 import { useActionState } from "react";
 import { useSearchParams } from "next/navigation";
-import { registerUserAction } from "@/app/lib/actions/auth";
+import { registerUserAction } from "@/app/(auth)/actions";
 
 export default function RegisterForm() {
   const searchParams = useSearchParams();

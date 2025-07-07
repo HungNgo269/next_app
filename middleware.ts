@@ -16,11 +16,11 @@ export async function middleware(req: NextRequest) {
   }
 
   const user = token as User;
-  if (user?.role === "admin" && pathname !== "/dashboard") {
+  if (user?.role === "admin" && !pathname.startsWith("/dashboard")) {
     return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 
-  if (user?.role === "user" && pathname !== "/home") {
+  if (user?.role === "user" && !pathname.startsWith("/home")) {
     return NextResponse.redirect(new URL("/home", req.url));
   }
   return NextResponse.next();
