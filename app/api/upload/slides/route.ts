@@ -4,7 +4,9 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const slides = await sql`SELECT * from slides ORDER BY display_order`;
+    const slides =
+      await sql`SELECT * from slides ORDER BY display_order LIMIT 7`;
+    console.log("slide", slides);
     return NextResponse.json(slides);
   } catch (error) {
     console.error("Database error:", error);
@@ -21,6 +23,7 @@ export async function POST(req: NextRequest) {
     if (contentType?.includes("multipart/form-data")) {
       // Nếu gửi lên theo formdata
       const formData = await req.formData();
+      const folderName = formData.get("folderName") as string;
       const file = formData.get("file") as File;
       if (!file) {
         return NextResponse.json(
@@ -36,7 +39,7 @@ export async function POST(req: NextRequest) {
         cloudinary.uploader
           .upload_stream(
             {
-              folder: "uploads",
+              folder: folderName,
               resource_type: "auto",
             },
             (error, result) => {
@@ -46,34 +49,35 @@ export async function POST(req: NextRequest) {
           )
           .end(buffer);
       });
-      console.log("result", result);
       return NextResponse.json({
         success: true,
         data: result,
       });
-    } else if (contentType?.includes("application/json")) {
-      //Nếu ảnh dạng JSON
-      const body = await req.json();
+    }
+    // else if (contentType?.includes("application/json")) {
+    //   //Nếu ảnh dạng JSON
+    //   const body = await req.json();
 
-      if (!body || !body.image) {
-        return NextResponse.json(
-          { success: false, error: "Image is required" },
-          { status: 400 }
-        );
-      }
+    //   if (!body || !body.image) {
+    //     return NextResponse.json(
+    //       { success: false, error: "Image is required" },
+    //       { status: 400 }
+    //     );
+    //   }
 
-      const { image } = body;
+    //   const { image } = body;
 
-      const result = await cloudinary.uploader.upload(image, {
-        folder: "uploads",
-        resource_type: "auto",
-      });
+    //   const result = await cloudinary.uploader.upload(image, {
+    //     folder: folderName as string,
+    //     resource_type: "auto",
+    //   });
 
-      return NextResponse.json({
-        success: true,
-        data: result,
-      });
-    } else {
+    //   return NextResponse.json({
+    //     success: true,
+    //     data: result,
+    //   });
+    // }
+    else {
       return NextResponse.json(
         { success: false, error: "Unsupported content type" },
         { status: 400 }

@@ -12,7 +12,7 @@ const Slide = () => {
 
   useEffect(() => {
     const getData = async () => {
-      const result = await fetch("api/slides");
+      const result = await fetch("api/upload/slides");
       const data: ISlide[] = await result.json();
       setImages(data.map((item) => item.image_url));
       console.log(images);
