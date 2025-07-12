@@ -1,6 +1,7 @@
 import cloudinary from "@/app/lib/cloudinary";
 import { sql } from "@/app/lib/db";
 import { NextRequest, NextResponse } from "next/server";
+import { UploadApiResponse } from "cloudinary";
 
 export async function GET() {
   try {
@@ -19,23 +20,27 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
-    const contentType = req.headers.get("content-type");
-    if (contentType?.includes("multipart/form-data")) {
-      // Nếu gửi lên theo formdata
-      const formData = await req.formData();
-      const folderName = formData.get("folderName") as string;
-      const file = formData.get("file") as File;
-      if (!file) {
-        return NextResponse.json(
-          { success: false, error: "No file uploaded" },
-          { status: 400 }
-        );
-      }
+    const formData = await req.formData();
+    const folderName = formData.get("folderName") as string;
+    const title = formData.get("title") as string;
+    const desc = formData.get("desc") as string;
+    const link = formData.get("link") as string;
+    const order = formData.get("order") as string;
 
-      // File object -> ArrayBuffer -> Buffer
-      const bytes = await file.arrayBuffer();
-      const buffer = Buffer.from(bytes);
-      const result = await new Promise((resolve, reject) => {
+    const id = crypto.randomUUID();
+
+    const file = formData.get("file") as File;
+    if (!file) {
+      return NextResponse.json(
+        { success: false, error: "No file uploaded" },
+        { status: 400 }
+      );
+    }
+
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+    const cloudinaryResult = await new Promise<UploadApiResponse>(
+      (resolve, reject) => {
         cloudinary.uploader
           .upload_stream(
             {
@@ -44,56 +49,33 @@ export async function POST(req: NextRequest) {
             },
             (error, result) => {
               if (error) reject(error);
-              else resolve(result);
+              else resolve(result!); // Non-null assertion vì đã check error
             }
           )
           .end(buffer);
-      });
+      }
+    );
+
+    try {
+      const dbResult = await sql`
+        INSERT INTO slides (id,title, description, image_url, public_id,redirect_url,display_order)
+        VALUES (${id},${title}, ${desc}, ${cloudinaryResult.secure_url}, ${cloudinaryResult.public_id},${link},${order})
+        RETURNING *
+      `;
+
       return NextResponse.json({
         success: true,
-        data: result,
+        data: {
+          slide: dbResult[0],
+          cloudinary: cloudinaryResult,
+        },
       });
-    }
-    // else if (contentType?.includes("application/json")) {
-    //   //Nếu ảnh dạng JSON
-    //   const body = await req.json();
-
-    //   if (!body || !body.image) {
-    //     return NextResponse.json(
-    //       { success: false, error: "Image is required" },
-    //       { status: 400 }
-    //     );
-    //   }
-
-    //   const { image } = body;
-
-    //   const result = await cloudinary.uploader.upload(image, {
-    //     folder: folderName as string,
-    //     resource_type: "auto",
-    //   });
-
-    //   return NextResponse.json({
-    //     success: true,
-    //     data: result,
-    //   });
-    // }
-    else {
-      return NextResponse.json(
-        { success: false, error: "Unsupported content type" },
-        { status: 400 }
-      );
+    } catch (dbError) {
+      await cloudinary.uploader.destroy(cloudinaryResult.public_id);
+      throw dbError;
     }
   } catch (error) {
     console.error("Upload error:", error);
-
-    // Handle specific error types
-    if (error instanceof SyntaxError) {
-      return NextResponse.json(
-        { success: false, error: "Invalid request format" },
-        { status: 400 }
-      );
-    }
-
     return NextResponse.json(
       { success: false, error: "Upload failed" },
       { status: 500 }

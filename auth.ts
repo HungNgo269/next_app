@@ -22,7 +22,12 @@ async function getUser(email: string): Promise<User | undefined> {
 export const { auth, signIn, signOut } = NextAuth({
   ...authConfig,
   session: {
-    strategy: "jwt",
+    strategy: "jwt", //accesstoken
+    // maxAge: 15 * 60,
+  },
+  //rf token
+  jwt: {
+    // maxAge: 7 * 24 * 60 * 60,
   },
   providers: [
     Credentials({

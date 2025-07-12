@@ -67,7 +67,6 @@ function validateAge(dateOfBirth: Date): boolean {
   );
 }
 
-// Kiểm tra username content
 function validateUserNameContent(userName: string): boolean {
   const forbiddenWords = [
     "admin",
@@ -80,7 +79,6 @@ function validateUserNameContent(userName: string): boolean {
   return !forbiddenWords.some((word) => lowerUserName.includes(word));
 }
 
-// Business validation
 async function validateBusinessRules(data: any): Promise<void> {
   const errors: string[] = [];
 
@@ -116,9 +114,8 @@ export async function registerUserAction(
   let shouldRedirect = false;
 
   try {
-    // Extract data từ FormData
     const rawData = {
-      id: crypto.randomUUID(), // Generate ID
+      id: crypto.randomUUID(),
       email: formData.get("email") as string,
       name: formData.get("name") as string,
       userName: formData.get("userName") as string,
@@ -126,13 +123,10 @@ export async function registerUserAction(
       dateOfBirth: new Date(formData.get("dateOfBirth") as string),
     };
 
-    // Zod validation
     const validatedData = registerSchema.parse(rawData);
 
-    // Business logic validation
     await validateBusinessRules(validatedData);
 
-    // Clean data
     const cleanedData = {
       id: validatedData.id,
       email: validatedData.email.trim().toLowerCase(),
@@ -142,10 +136,8 @@ export async function registerUserAction(
       dateOfBirth: validatedData.dateOfBirth,
     };
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(cleanedData.passWord, 10);
 
-    // Insert vào database
     const result = await sql`
       INSERT INTO users (id, email,name, user_name, password, date_of_birth)
       VALUES (${cleanedData.id}, ${cleanedData.email}, ${cleanedData.name}, ${cleanedData.userName}, ${hashedPassword}, ${cleanedData.dateOfBirth})

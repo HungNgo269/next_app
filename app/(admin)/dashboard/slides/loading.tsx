@@ -1,5 +1,5 @@
-import DashboardSkeleton from "@/app/ui/skeletons";
+import SlideSkeleton from "@/app/ui/slides/slideSkeleton";
 
 export default function Loading() {
-  return <DashboardSkeleton />;
+  return <SlideSkeleton />;
 }
