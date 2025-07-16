@@ -18,3 +18,6 @@ export interface IProductCard {
   image_urls: string[];
   sold: number;
 }
+export interface IProductImage {
+  image_urls: string[];
+}

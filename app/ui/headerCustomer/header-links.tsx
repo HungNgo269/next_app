@@ -53,8 +53,7 @@ export default function HeaderLinks() {
             <Link
               href={link.href}
               className={clsx(
-                "relative flex h-11 grow items-center justify-center gap-2 rounded-md bg-transparent  " +
-                  " text-base/5 font-medium hover:text-blue-600 md:flex-none md:justify-start whitespace-nowrap",
+                "relative flex py-2.5 grow items-center justify-center gap-2 rounded-md bg-transparent   text-base/5 font-medium hover:text-blue-600 md:flex-none md:justify-start whitespace-nowrap",
                 {
                   "bg-sky-100 text-blue-600": pathname === link.href,
                 }

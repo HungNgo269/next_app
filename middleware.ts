@@ -20,8 +20,8 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 
-  if (user?.role === "user" && !pathname.startsWith("/home")) {
-    return NextResponse.redirect(new URL("/home", req.url));
+  if (user?.role === "user" && !pathname.startsWith("/")) {
+    return NextResponse.redirect(new URL("/", req.url));
   }
   return NextResponse.next();
 }

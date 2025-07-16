@@ -374,7 +374,7 @@ export default function Carousel() {
         </div>
       </div>
 
-      {/* Progress bar */}
+      {/* Progress bar 
       <div className="absolute bottom-0 left-0 right-0 h-1 bg-gray-200">
         <div
           className="h-full bg-blue-600 transition-all duration-300 ease-linear"
@@ -383,6 +383,7 @@ export default function Carousel() {
           }}
         />
       </div>
+      */}
     </div>
   );
 }
