@@ -10,7 +10,7 @@ export default async function BookContainer() {
     await sql`SELECT * FROM products order by  created_at DESC LIMIT 5`;
   console.log("Books", Books);
   return (
-    <div className="flex flex-col justify-center items-center w-full">
+    <div className="flex flex-col justify-center items-center  mt-10  mx-auto w-5/6">
       <span className="font-bold text-2xl w-full text-start">BestSeller</span>
 
       <div className="grid grid-cols-5 gap-12">

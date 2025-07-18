@@ -178,7 +178,7 @@ export default function Carousel() {
   }, [nextSlide, prevSlide]);
 
   return (
-    <div className="relative w-full max-w-6xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
+    <div className="relative w-full max-w-6xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden mt-10">
       {/* Main carousel container */}
       <div className="relative h-[400px] md:h-[500px] overflow-hidden">
         {/* Slides */}
@@ -367,14 +367,9 @@ export default function Carousel() {
             aria-label={`Go to slide ${index + 1}`}
           />
         ))}
-
-        {/* Slide counter */}
-        <div className="ml-4 text-sm text-gray-600 font-medium">
-          {currentSlide + 1} / {slides.length}
-        </div>
       </div>
 
-      {/* Progress bar 
+      {/* Progress bar
       <div className="absolute bottom-0 left-0 right-0 h-1 bg-gray-200">
         <div
           className="h-full bg-blue-600 transition-all duration-300 ease-linear"

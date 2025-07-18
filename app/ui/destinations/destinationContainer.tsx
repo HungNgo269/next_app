@@ -9,7 +9,7 @@ export default async function DestinationContainer() {
   `;
 
   return (
-    <div className="mt-10">
+    <div className="mt-10  mx-auto w-5/6">
       <span className="font-bold text-2xl">Browse by categories</span>
       <div className="grid grid-cols-3 md:grid-cols-7 gap-4 mt-20 mb-4">
         {categories.map((category: CategoryCard) => (

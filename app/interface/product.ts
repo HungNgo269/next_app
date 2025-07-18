@@ -10,6 +10,7 @@ export interface Product {
   is_active: boolean;
   created_at: string;
   updated_at: string;
+  author?: string;
 }
 export interface IProductCard {
   id: string;
@@ -20,4 +21,6 @@ export interface IProductCard {
 }
 export interface IProductImage {
   image_urls: string[];
+  description?: string;
+  name?: string;
 }

@@ -2,7 +2,7 @@ export interface IChapter {
   id: string;
   product_id: string;
   title: string;
-  chapter_number: 1;
+  chapter_number: number;
   content: string;
   audio_url?: string;
   durations: number;

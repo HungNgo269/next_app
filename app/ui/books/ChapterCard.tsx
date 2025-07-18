@@ -4,44 +4,45 @@ import { sql } from "@/app/lib/db";
 import Image from "next/image";
 
 type PageProps = {
-  params: {
-    ChapterId: string;
-    BookId: string;
-  };
+  ChapterId: string;
 };
-export default async function ChapterCard({ params }: PageProps) {
-  const ChapterId = params.ChapterId;
-  const BookId = params.BookId;
-  console.log("params", params);
-  //   const Chapters: IChapter[] = await sql`
-  //   SELECT id,product_id, title, chapter_number, is_free
-  //   FROM chapters
-  //   WHERE id = ${ChapterId}
-  // `;
-  //   const Chapter = Chapters[0];
-
-  //   const Books: IProductImage[] = await sql`
-  //   SELECT image_urls
-  //   FROM products
-  //   WHERE id = ${BookId}
-  // `;
-  //   const image = Books[0].image_urls[0];
+export default async function ChapterCard({ ChapterId }: PageProps) {
+  const id = ChapterId;
+  const Chapters: IChapter[] = await sql`
+    SELECT id,product_id, title, chapter_number, is_free
+    FROM chapters
+    WHERE id = ${id}
+  `;
+  const chapter = Chapters[0];
+  const Books: IProductImage[] = await sql`
+    SELECT image_urls,description,name
+    FROM products
+    WHERE id = ${chapter.product_id}
+  `;
+  const book = Books[0];
 
   return (
-    <></>
-    // <div className="flex flex-col  w-[220px] h-[445px] p-1 mt-10">
-    //   <div className="relative w-[200px] h-[300px]">
-    //     <Image
-    //       src={Chapter?.image_urls[0]}
-    //       alt={Chapter.name}
-    //       fill
-    //       className="object-cover rounded"
-    //     />
-    //   </div>
+    <div className="flex flex-row h-[190px]">
+      <div className="relative min-w-[130px] h-[190px]">
+        <Image
+          src={book.image_urls[0]}
+          alt={"book image"}
+          fill
+          className="object-cover rounded"
+        />
+      </div>
 
-    //   <div className="flex flex-col h-fit w-full mt-2.5">
-    //     <span className="line-clamp-2  font-bold w-full">{Chapter.name}</span>
-    //   </div>
-    // </div>
+      <div className="flex flex-col h-fit w-fit mt-1 pl-6">
+        <span className="line-clamp-1  font-bold w-full">{book.name}</span>
+        <div className="line-clamp-2">
+          <span className=" font-medium ">
+            Chương {chapter.chapter_number}:
+          </span>
+          &nbsp;
+          <span className=" font-medium">{chapter.title}</span>
+        </div>
+        <span className="line-clamp-3 w-full mt-2">{book.description}</span>
+      </div>
+    </div>
   );
 }
