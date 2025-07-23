@@ -1,5 +1,5 @@
-import { IChapter } from "@/app/interface/chapter";
-import { IProductCard, IProductImage } from "@/app/interface/product";
+import { Chapter } from "@/app/interface/chapter";
+import { ProductCard, ProductImage } from "@/app/interface/product";
 import { sql } from "@/app/lib/db";
 import Image from "next/image";
 
@@ -8,13 +8,13 @@ type PageProps = {
 };
 export default async function ChapterCard({ ChapterId }: PageProps) {
   const id = ChapterId;
-  const Chapters: IChapter[] = await sql`
+  const Chapters: Chapter[] = await sql`
     SELECT id,product_id, title, chapter_number, is_free
     FROM chapters
     WHERE id = ${id}
   `;
   const chapter = Chapters[0];
-  const Books: IProductImage[] = await sql`
+  const Books: ProductImage[] = await sql`
     SELECT image_urls,description,name
     FROM products
     WHERE id = ${chapter.product_id}

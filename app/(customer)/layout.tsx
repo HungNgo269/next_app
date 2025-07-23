@@ -1,5 +1,4 @@
 import { Suspense } from "react";
-import Header from "@/app/ui/headerCustomer/headerv2";
 import HeaderCustomer from "../ui/headerCustomer/header";
 export default function RootLayout({
   children,

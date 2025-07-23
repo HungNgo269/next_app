@@ -12,14 +12,14 @@ export interface Product {
   updated_at: string;
   author?: string;
 }
-export interface IProductCard {
+export interface ProductCard {
   id: string;
   name: string;
   price: number;
   image_urls: string[];
   sold: number;
 }
-export interface IProductImage {
+export interface ProductImage {
   image_urls: string[];
   description?: string;
   name?: string;

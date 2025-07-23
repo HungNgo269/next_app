@@ -6,14 +6,14 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { useEffect, useState } from "react";
-import { ISlide } from "@/app/interface/slide";
+import { Slide } from "@/app/interface/slide";
 const Slide = () => {
   const [images, setImages] = useState<string[]>([]);
 
   useEffect(() => {
     const getData = async () => {
       const result = await fetch("api/upload/slides");
-      const data: ISlide[] = await result.json();
+      const data: Slide[] = await result.json();
       setImages(data.map((item) => item.image_url));
       console.log(images);
     };

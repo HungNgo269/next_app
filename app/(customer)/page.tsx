@@ -1,9 +1,9 @@
 import { Suspense } from "react";
 import Carousel from "@/app/ui/slides/slidev2";
 import DestinationContainer from "@/app/ui/destinations/destinationContainer";
-import NewChapterList from "@/app/ui/books/NewChapterList";
-import MostFollowBook from "@/app/ui/graph/MostFollowBook";
-import BookContainer from "../ui/books/BookContainer";
+import NewChapterList from "@/app/ui/books/newChapterList";
+import MostFollowBook from "@/app/ui/graph/mostFollowBook";
+import BookContainer from "../ui/books/bookContainer";
 
 export default function HomePage() {
   return (

@@ -1,4 +1,4 @@
-import { auth } from "./auth"; // import từ file bạn đã export NextAuth
+import { auth } from "./auth";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { User } from "./app/lib/definitions";
@@ -8,21 +8,29 @@ export async function middleware(req: NextRequest) {
   const token = await getToken({ req: req, secret: process.env.AUTH_SECRET });
   const { pathname } = req.nextUrl;
 
-  if (!token) {
-    if (pathname !== "/login") {
+  if (pathname.startsWith("/dashboard")) {
+    if (!token) {
       return NextResponse.redirect(new URL("/login", req.url));
     }
-    return NextResponse.next();
+
+    const user = token as User;
+    if (user?.role !== "admin") {
+      return NextResponse.redirect(new URL("/", req.url));
+    }
   }
 
-  const user = token as User;
-  if (user?.role === "admin" && !pathname.startsWith("/dashboard")) {
-    return NextResponse.redirect(new URL("/dashboard", req.url));
+  if (pathname.startsWith("/user/")) {
+    if (!token) {
+      return NextResponse.redirect(new URL("/login", req.url));
+    }
   }
 
-  if (user?.role === "user" && !pathname.startsWith("/")) {
-    return NextResponse.redirect(new URL("/", req.url));
+  if (pathname === "/login" && token) {
+    const user = token as User;
+    const redirectUrl = user?.role === "admin" ? "/dashboard" : "/";
+    return NextResponse.redirect(new URL(redirectUrl, req.url));
   }
+
   return NextResponse.next();
 }
 

@@ -1,5 +1,5 @@
-export interface ISlide {
-  id: number;
+export interface Slide {
+  id: string;
   title?: string;
   image_url: string;
   redirect_url: string;
@@ -8,15 +8,24 @@ export interface ISlide {
   description: string;
 }
 
-export interface ISlideResponse {
+export interface SlideResponse {
   success: boolean;
-  images?: ISlide[];
-  slide?: ISlide;
+  images?: Slide[];
+  slide?: Slide;
   error?: string;
   message?: string;
 }
 
-export interface ICreateSlideRequest {
+export interface SlideTable {
+  id: string;
+  image_url: string;
+  title: string;
+  display_order: number;
+  is_active: boolean;
+  description: string;
+}
+
+export interface CreateSlideRequest {
   url: string;
   alt?: string;
   title?: string;

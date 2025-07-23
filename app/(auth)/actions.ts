@@ -6,20 +6,11 @@ import registerSchema from "@/app/lib/validation/registerSchema";
 import { redirect } from "next/navigation";
 import { signIn } from "@/auth";
 
-// Server Action Result Type
 type ActionResult = {
   success: boolean;
   message?: string;
   errors?: Record<string, string[]>;
 };
-
-// Business Logic Error
-class BusinessLogicError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "BusinessLogicError";
-  }
-}
 
 // Kiểm tra email đã tồn tại
 async function checkEmailExists(email: string): Promise<boolean> {
@@ -103,7 +94,7 @@ async function validateBusinessRules(data: any): Promise<void> {
   }
 
   if (errors.length > 0) {
-    throw new BusinessLogicError(errors.join(", "));
+    errors.push("Unknow Error");
   }
 }
 
@@ -150,6 +141,7 @@ export async function registerUserAction(
       password: formData.get("passWord") as string,
       redirect: false,
     });
+    console.log("login", loginResult);
     shouldRedirect = true;
     if (loginResult?.error) {
       return {
@@ -177,19 +169,6 @@ export async function registerUserAction(
         errors: fieldErrors,
       };
     }
-
-    // Business logic errors
-    if (error instanceof BusinessLogicError) {
-      return {
-        success: false,
-        message: error.message,
-      };
-    }
-
-    // Database errors
-    console.error("Registration error:", error);
-
-    // Handle unique constraint violations
     if (error instanceof Error && error.message.includes("duplicate key")) {
       if (error.message.includes("email")) {
         return {

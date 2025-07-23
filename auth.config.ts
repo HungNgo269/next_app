@@ -1,5 +1,4 @@
 import type { NextAuthConfig } from "next-auth";
-import { User } from "@/app/lib/definitions";
 import { getToken, type JWT } from "next-auth/jwt";
 
 export const authConfig = {
@@ -23,6 +22,13 @@ export const authConfig = {
         token.updatedAt = user1.updated_at;
       }
       return token;
+    },
+    async session({ session, token }) {
+      session.user.id = token.id;
+      session.user.name = token.name;
+      session.user.email = token.email;
+      session.user.role = token.role;
+      return session;
     },
   },
 } satisfies NextAuthConfig;

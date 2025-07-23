@@ -1,24 +1,27 @@
 import Image from "next/image";
 import SlideStatus from "./status";
-import { formatDateToLocal, formatCurrency } from "@/app/lib/utils";
-import { sql } from "@/app/lib/db";
-import { ISlide } from "@/app/interface/slide";
+import { Slide, SlideTable } from "@/app/interface/slide";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import EditButton from "./editButton";
+import DeleteButton from "./deleteButton";
+import { fetchSlidesByPage } from "@/app/(admin)/dashboard/slides/data";
 
-export default async function SlideTable() {
-  const response = await fetch("http://localhost:3000/api/upload/slides", {
-    cache: "no-store",
-  });
-  const data = await response.json();
+export default async function SlideTable({
+  query,
+  currentPage,
+}: {
+  query: string;
+  currentPage: number;
+}) {
+  const slides: SlideTable[] = await fetchSlidesByPage(query, currentPage);
 
-  const slides = data;
   console.log("ád", slides);
   return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
           <div className="md:hidden">
-            {slides?.map((slide: ISlide) => (
+            {slides?.map((slide: SlideTable) => (
               <div
                 key={slide.id}
                 className="mb-2 w-full rounded-md bg-white p-4"
@@ -58,13 +61,13 @@ export default async function SlideTable() {
                   Email
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Amount
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Date
+                  Order
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Status
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Date
                 </th>
                 <th scope="col" className="relative py-3 pl-6 pr-3">
                   <span className="sr-only">Edit</span>
@@ -72,7 +75,7 @@ export default async function SlideTable() {
               </tr>
             </thead>
             <tbody className="bg-white">
-              {slides?.map((slide: ISlide) => (
+              {slides?.map((slide: SlideTable) => (
                 <tr
                   key={slide.id}
                   className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
@@ -93,13 +96,16 @@ export default async function SlideTable() {
                     {slide.description}
                   </td>
 
+                  <td className="whitespace-nowrap px-3 py-3 text-center">
+                    {slide.display_order}
+                  </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     <SlideStatus status={slide.is_active}></SlideStatus>
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
-                      <PencilIcon className="w-5" />
-                      <TrashIcon className="w-5" />
+                      <EditButton></EditButton>
+                      <DeleteButton slideId={slide.id}></DeleteButton>
                     </div>
                   </td>
                 </tr>

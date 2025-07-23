@@ -6,7 +6,9 @@ import { PencilIcon } from "@heroicons/react/24/outline";
 export default function EditButton() {
   const [showEditModal, setShowEditModal] = useState(false);
 
-  const handleEditClick = () => {
+  const handleEditClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     setShowEditModal(true);
   };
 
@@ -14,20 +16,18 @@ export default function EditButton() {
     setShowEditModal(false);
   };
 
-  const handleEditSuccess = (imageUrl: string) => {
-    console.log("Edit successful:", imageUrl);
-    setShowEditModal(false);
-  };
   return (
-    <div className="cursor-pointer" onClick={handleEditClick}>
-      <PencilIcon className="w-5" />
+    <>
+      <button
+        onClick={handleEditClick}
+        type="button"
+        className="cursor-pointer p-1 hover:bg-gray-100 rounded transition-colors"
+        aria-label="Edit item"
+      >
+        <PencilIcon className="w-5 h-5" />
+      </button>
 
-      {showEditModal && (
-        <EditModal
-          onClose={handleCloseModal}
-          onEditSuccess={handleEditSuccess}
-        />
-      )}
-    </div>
+      {showEditModal && <EditModal onClose={handleCloseModal} />}
+    </>
   );
 }

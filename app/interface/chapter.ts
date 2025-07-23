@@ -1,4 +1,4 @@
-export interface IChapter {
+export interface Chapter {
   id: string;
   product_id: string;
   title: string;

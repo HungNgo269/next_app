@@ -1,4 +1,4 @@
-import { IProductCard } from "@/app/interface/product";
+import { ProductCard } from "@/app/interface/product";
 import { sql } from "@/app/lib/db";
 import Image from "next/image";
 
@@ -7,7 +7,7 @@ interface ProductCardID {
 }
 
 export default async function ProductCard({ productId }: ProductCardID) {
-  const products: IProductCard[] = await sql`
+  const products: ProductCard[] = await sql`
   SELECT id, name, price, image_urls, sold
   FROM products
   WHERE id = ${productId}

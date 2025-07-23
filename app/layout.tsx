@@ -1,7 +1,7 @@
 import "@/app/ui/global.css";
 import { inter } from "@/app/ui/fonts";
 import { Metadata } from "next";
-import { Toaster } from "react-hot-toast";
+import ClientProviders from "@/components/clientProvider";
 
 export const metadata: Metadata = {
   title: {
@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   description: "The official Next.js Learn Dashboard built with App Router.",
   metadataBase: new URL("https://next-learn-dashboard.vercel.sh"),
 };
+
 export default function RootLayout({
   children,
 }: {
@@ -19,8 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} antialiased font-normal`}>
-        <Toaster position="top-right" />
-        {children}
+        <ClientProviders>{children}</ClientProviders>
       </body>
     </html>
   );

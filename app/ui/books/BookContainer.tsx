@@ -1,5 +1,5 @@
 import { sql } from "@/app/lib/db";
-import BookCard from "./BookCard";
+import BookCard from "./bookCard";
 import { Product } from "@/app/interface/product";
 
 export default async function BookContainer() {

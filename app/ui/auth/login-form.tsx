@@ -8,19 +8,29 @@ import {
 } from "@heroicons/react/24/outline";
 import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import { Button } from "@/app/ui/button";
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { authenticate } from "@/app/lib/actions";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function LoginForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
+  const router = useRouter();
+
   const [errorMessage, formAction, isPending] = useActionState(
     authenticate,
     undefined
   );
-
+  useEffect(() => {
+    if (errorMessage === null) {
+      router.push("/dashboard");
+    } else if (errorMessage) {
+      toast.error(errorMessage);
+    }
+  }, [errorMessage, router]);
   return (
     <form action={formAction} className="space-y-3">
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
