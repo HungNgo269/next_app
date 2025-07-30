@@ -3,21 +3,23 @@
 import { Toaster } from "react-hot-toast";
 import { SessionProvider } from "next-auth/react";
 import { useHydrateAuth } from "@/app/store/useHydrateAuth";
+import { Session } from "next-auth";
 
 function HydrateWrapper() {
   useHydrateAuth();
   return null;
 }
 
-export default function ClientProviders({
+export default function ClientProvider({
   children,
+  session,
 }: {
   children: React.ReactNode;
+  session: Session | null;
 }) {
   return (
-    <SessionProvider>
+    <SessionProvider session={session}>
       <HydrateWrapper />
-      <Toaster position="top-right" />
       {children}
     </SessionProvider>
   );

@@ -13,7 +13,7 @@ export default function EditModal({ onClose }: EditModalProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedTitle, setSelectedTitle] = useState("");
   const [selectedDesc, setSelectedDesc] = useState("");
-  const [selectedOrder, setSelectedOder] = useState("");
+  const [selectedOrder, setSelectedOrder] = useState("");
   const [selectedRedirectLink, setSelectedRedirectLink] = useState("");
   const [Editing, setEditing] = useState(false);
   const [EditedImageUrl, setEditedImageUrl] = useState<string>("");
@@ -34,6 +34,9 @@ export default function EditModal({ onClose }: EditModalProps) {
   }, []);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+
     const file = e.target.files?.[0];
     if (file) {
       setSelectedFile(file);
@@ -43,7 +46,6 @@ export default function EditModal({ onClose }: EditModalProps) {
 
       reader.onload = (e) => {
         setPreviewUrl(e.target?.result as string);
-        fileReaderRef.current = null;
       };
 
       reader.onerror = () => {
@@ -52,6 +54,16 @@ export default function EditModal({ onClose }: EditModalProps) {
       };
 
       reader.readAsDataURL(file);
+    }
+  };
+
+  const handleLabelClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // Trigger file input click programmatically
+    const fileInput = document.getElementById("fileInput") as HTMLInputElement;
+    if (fileInput) {
+      fileInput.click();
     }
   };
 
@@ -142,11 +154,12 @@ export default function EditModal({ onClose }: EditModalProps) {
             </label>
             <input
               min={1}
+              max={100}
               type="number"
               id="orderInput"
               value={selectedOrder}
               placeholder="Display order"
-              onChange={(e) => setSelectedOder(e.target.value)}
+              onChange={(e) => setSelectedOrder(e.target.value)}
               className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
@@ -195,17 +208,13 @@ export default function EditModal({ onClose }: EditModalProps) {
             className="hidden"
             id="fileInput"
           />
-          <label
-            htmlFor="fileInput"
+          <button
+            type="button"
+            onClick={handleLabelClick}
             className="cursor-pointer inline-block bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors"
           >
             Choose Image
-          </label>
-          {selectedFile && (
-            <p className="mt-2 text-sm text-gray-600">
-              Selected: {selectedFile.name}
-            </p>
-          )}
+          </button>
         </div>
 
         {/* Preview Image */}

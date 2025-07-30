@@ -1,5 +1,5 @@
 import { Chapter } from "@/app/interface/chapter";
-import { ProductCard, ProductImage } from "@/app/interface/product";
+import { BookCard, BookImage } from "@/app/interface/book";
 import { sql } from "@/app/lib/db";
 import Image from "next/image";
 
@@ -14,15 +14,15 @@ export default async function ChapterPage({ params }: PageProps) {
   const BookId = params.bookId;
   console.log("params", params);
   //   const Chapters: Chapter[] = await sql`
-  //   SELECT id,product_id, title, chapter_number, is_free
+  //   SELECT id,Book_id, title, chapter_number, is_free
   //   FROM chapters
   //   WHERE id = ${ChapterId}
   // `;
   //   const Chapter = Chapters[0];
 
-  //   const Books: ProductImage[] = await sql`
+  //   const Books: BookImage[] = await sql`
   //   SELECT image_urls
-  //   FROM products
+  //   FROM Books
   //   WHERE id = ${BookId}
   // `;
   //   const image = Books[0].image_urls[0];

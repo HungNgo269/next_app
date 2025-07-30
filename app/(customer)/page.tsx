@@ -3,18 +3,18 @@ import Carousel from "@/app/ui/slides/slidev2";
 import DestinationContainer from "@/app/ui/destinations/destinationContainer";
 import NewChapterList from "@/app/ui/books/newChapterList";
 import MostFollowBook from "@/app/ui/graph/mostFollowBook";
-import BookContainer from "../ui/books/bookContainer";
+import BookContainer from "../ui/books/bestSeller";
 
 export default function HomePage() {
   return (
-    <>
+    <div className="relative  width-[1190px]">
       <Suspense>
         <Carousel />
       </Suspense>
 
-      <Suspense>
+      {/* <Suspense>
         <DestinationContainer />
-      </Suspense>
+      </Suspense> */}
 
       <Suspense>
         <BookContainer />
@@ -32,6 +32,6 @@ export default function HomePage() {
           </Suspense>
         </div>
       </div>
-    </>
+    </div>
   );
 }

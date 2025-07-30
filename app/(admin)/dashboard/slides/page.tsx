@@ -25,10 +25,12 @@ export default async function Page(props: {
 
   return (
     <div className="max-w-6xl mx-auto p-8">
-      <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-        <Search placeholder="Search invoices..." />
+      <div className="mt-3 flex items-center justify-between gap-2 md:mt-6">
+        <Search placeholder="Search slides..." />
       </div>
-      <UserActions></UserActions>
+      <div className="mt-4">
+        <UserActions></UserActions>
+      </div>
       <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
         <SlideTable query={query} currentPage={currentPage} />
       </Suspense>

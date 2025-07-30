@@ -4,7 +4,7 @@ export async function fetchSlidesByPage(query: string, currentPage: number) {
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
   try {
     const data = await sql`
-      SELECT id,title,display_order,is_active,description,image_url
+      SELECT id,title,display_order,is_active,description,image_url,created_at,updated_at
 
       FROM slides
       WHERE
@@ -15,7 +15,7 @@ export async function fetchSlidesByPage(query: string, currentPage: number) {
     display_order::text ILIKE ${`%${query}%`} OR
     is_active::text ILIKE ${`%${query}%`} OR
     description ILIKE ${`%${query}%`}
-         order by created_at desc
+         order by display_order asc
       limit ${ITEMS_PER_PAGE} OFFSET ${offset}
         `;
     return data;

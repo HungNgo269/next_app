@@ -1,4 +1,4 @@
-export interface Product {
+export interface Book {
   id: string;
   name: string;
   description?: string;
@@ -11,15 +11,15 @@ export interface Product {
   created_at: string;
   updated_at: string;
   author?: string;
+  views?: number;
 }
-export interface ProductCard {
+export interface BookCard {
   id: string;
   name: string;
-  price: number;
+  author: string;
   image_urls: string[];
-  sold: number;
 }
-export interface ProductImage {
+export interface BookImage {
   image_urls: string[];
   description?: string;
   name?: string;

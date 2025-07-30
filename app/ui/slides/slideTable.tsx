@@ -1,10 +1,11 @@
 import Image from "next/image";
 import SlideStatus from "./status";
-import { Slide, SlideTable } from "@/app/interface/slide";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import EditButton from "./editButton";
 import DeleteButton from "./deleteButton";
 import { fetchSlidesByPage } from "@/app/(admin)/dashboard/slides/data";
+import { formatEnDateTime } from "@/lib/formatDate";
+import { SlideTable } from "@/app/interface/slide";
 
 export default async function SlideTable({
   query,
@@ -14,10 +15,8 @@ export default async function SlideTable({
   currentPage: number;
 }) {
   const slides: SlideTable[] = await fetchSlidesByPage(query, currentPage);
-
-  console.log("ád", slides);
   return (
-    <div className="mt-6 flow-root">
+    <div className="mt-4 flow-root">
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
           <div className="md:hidden">
@@ -55,13 +54,13 @@ export default async function SlideTable({
             <thead className="rounded-lg text-left text-sm font-normal">
               <tr>
                 <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
-                  Customer
+                  Slide
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Email
+                  Description
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Order
+                  Display order
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Status
@@ -101,6 +100,9 @@ export default async function SlideTable({
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     <SlideStatus status={slide.is_active}></SlideStatus>
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3 text-center">
+                    {formatEnDateTime(slide?.created_at)}
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">

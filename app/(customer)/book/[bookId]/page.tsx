@@ -13,15 +13,15 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Image from "next/image";
 import { sql } from "@/app/lib/db";
-import { Product } from "@/app/interface/product";
+import { Book } from "@/app/interface/book";
 
 interface BookPageID {
   BookId: string;
 }
 
 export default async function BookCard({ BookId }: BookPageID) {
-  const data: Product[] = await sql`SELECT * from products`;
-  const book: Product = data[0];
+  const data: Book[] = await sql`SELECT * from Books`;
+  const book: Book = data[0];
   console.log("book", book);
 
   return (
@@ -38,7 +38,7 @@ export default async function BookCard({ BookId }: BookPageID) {
 
         {/* Overlay content */}
         <div className="absolute inset-0 bg-black bg-opacity-40">
-          <div className="max-w-7xl mx-auto px-4 h-full flex items-end pb-6">
+          <div className=" mx-auto px-4 h-full flex items-end pb-6">
             <div className="flex items-end gap-6 w-full">
               {/* Book cover */}
               <div className="relative w-[200px] h-fit flex-shrink-0 mt-12 rounded-md">
@@ -73,7 +73,7 @@ export default async function BookCard({ BookId }: BookPageID) {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 pb-8 mt-10">
+      <div className=" mx-auto px-4 pb-8 mt-10">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Left Sidebar */}
           <div className="lg:col-span-1">

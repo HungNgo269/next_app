@@ -63,8 +63,10 @@ export default async function MostFollowBook() {
   ];
   return (
     <div>
-      <h2 className="font-bold text-lg mb-4 text-center">Top Rankings</h2>
-      <div className="space-y-3">
+      <div>
+        <span className="font-bold text-lg text-start">Top Rankings</span>
+      </div>
+      <div className="space-y-3 mt-6">
         {rankings.map((item) => (
           <div key={item.rank} className="flex items-center gap-3">
             <div
@@ -74,15 +76,7 @@ export default async function MostFollowBook() {
             >
               {item.rank}
             </div>
-            <div className="flex-shrink-0">
-              {/* <img
-                src="jawed.png"
-                alt={item.title}
-                width={40}
-                height={40}
-                className="rounded object-cover"
-              /> */}
-            </div>
+            <div className="flex-shrink-0"></div>
             <div className="flex-1 min-w-0">
               <h4 className="text-sm font-medium text-blue-600 hover:text-blue-800 cursor-pointer truncate">
                 {item.title}

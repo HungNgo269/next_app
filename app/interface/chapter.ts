@@ -1,6 +1,6 @@
 export interface Chapter {
   id: string;
-  product_id: string;
+  book_id: string;
   title: string;
   chapter_number: number;
   content: string;

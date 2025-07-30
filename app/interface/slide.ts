@@ -6,6 +6,8 @@ export interface Slide {
   display_order: number;
   is_active: boolean;
   description: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface SlideResponse {
@@ -14,6 +16,8 @@ export interface SlideResponse {
   slide?: Slide;
   error?: string;
   message?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface SlideTable {
@@ -23,6 +27,8 @@ export interface SlideTable {
   display_order: number;
   is_active: boolean;
   description: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface CreateSlideRequest {

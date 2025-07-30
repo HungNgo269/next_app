@@ -24,13 +24,13 @@ export default function LoginForm() {
     authenticate,
     undefined
   );
-  useEffect(() => {
-    if (errorMessage === null) {
-      router.push("/dashboard");
-    } else if (errorMessage) {
-      toast.error(errorMessage);
-    }
-  }, [errorMessage, router]);
+  // useEffect(() => {
+  // if (errorMessage === undefined && !isPending) {
+  //      router.push("/dashboard");
+  //   } else if (errorMessage) {
+  //     toast.error(errorMessage);
+  //   }
+  // }, [errorMessage, router]);
   return (
     <form action={formAction} className="space-y-3">
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
