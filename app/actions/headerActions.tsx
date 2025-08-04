@@ -1,11 +1,11 @@
 "use client";
 
 import { PowerIcon } from "@heroicons/react/24/outline";
-import { useAuthStore } from "@/app/store/useAuthStore";
+import { AuthUser, useAuthStore } from "@/app/store/useAuthStore";
 import { useRouter } from "next/navigation";
 
 export default function AuthActionsClient() {
-  const user: User | null = useAuthStore((state) => state.user);
+  const user: AuthUser | null = useAuthStore((state) => state.user);
   const logout = useAuthStore((state) => state.logout);
   const router = useRouter();
 

@@ -1,0 +1,6 @@
+chỉ sử dụng api route khi 
+1.upload file 
+2.sử dụng công nghệ của bên thứ 3(stripe, cloudinary,..)
+3.sử dụng api của các bên khác()
+4.auth
+5.realtime-features (websocket)

@@ -1,13 +1,37 @@
 export interface Chapter {
   id: string;
-  book_id: string;
   title: string;
-  chapter_number: number;
   content: string;
-  audio_url?: string;
-  durations: number;
-  is_free: boolean;
-  is_active: boolean;
-  created_at: string;
-  updated_at: string;
+  bookId: string;
+  chapterNumber: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ChapterStats {
+  totalViews: number;
+  uniqueViews: number;
+  todayViews: number;
+}
+
+export interface ChapterWithStats extends Chapter {
+  stats: ChapterStats;
+}
+
+export interface ViewResult {
+  success: boolean;
+  totalViews?: number;
+  dailyViews?: number;
+  error?: string;
+}
+
+export interface ViewHistoryItem {
+  date: string;
+  views: number;
+}
+
+export interface TopChapter {
+  rank: number;
+  chapterId: string;
+  views: number;
 }

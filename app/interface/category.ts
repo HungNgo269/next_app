@@ -4,6 +4,7 @@ export interface Category {
   url?: string;
   createdAt?: Date;
   updatedAt?: Date;
+  title?: string;
 }
 export interface CategoryCard {
   id: string;

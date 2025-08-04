@@ -133,8 +133,8 @@ export default function Carousel() {
   }, [nextSlide, prevSlide]);
 
   return (
-    <div className="relative max-w-6xl mx-auto bg-white rounded-[8px] shadow-lg overflow-hidden mt-10 ">
-      <div className="relative h-[350px] md:h-[400px] overflow-hidden">
+    <div className=" relative max-w-4xl mx-auto bg-white rounded-[8px] shadow-lg overflow-hidden mt-10  ">
+      <div className="relative h-[350px] md:h-[400px] overflow-hidden ">
         <div
           className="flex transition-transform duration-300 ease-in-out h-full"
           style={{ transform: `translateX(-${currentSlide * 100}%)` }}
@@ -216,8 +216,6 @@ export default function Carousel() {
           </span>
         </Button>
       </div>
-
-      {/* Bullet navigation */}
       <div className="flex justify-center items-center space-x-2 py-4 bg-transparent   absolute z-10 bottom-0 left-0 right-0">
         {slides.map((_, index) => (
           <button

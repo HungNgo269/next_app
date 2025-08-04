@@ -4,7 +4,6 @@ import Search from "@/app/ui/search";
 import { InvoicesTableSkeleton } from "@/app/ui/skeletons";
 import { Metadata } from "next";
 import { Suspense } from "react";
-import { sql } from "@/app/lib/db";
 import Pagination from "@/app/ui/invoices/pagination";
 import { fetchSlidePages } from "./data";
 

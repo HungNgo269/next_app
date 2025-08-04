@@ -1,11 +1,12 @@
 import { Chapter } from "@/app/interface/chapter";
-import { BookCard, BookImage } from "@/app/interface/book";
+import { BookImage } from "@/app/interface/book";
 import { sql } from "@/app/lib/db";
-import Image from "next/image";
+import ImageCard from "../image/imageCard";
 
-type PageProps = {
+interface PageProps {
   ChapterId: string;
-};
+}
+
 export default async function ChapterCard({ ChapterId }: PageProps) {
   const id = ChapterId;
   const Chapters: Chapter[] = await sql`
@@ -23,12 +24,11 @@ export default async function ChapterCard({ ChapterId }: PageProps) {
 
   return (
     <div className="flex flex-row h-[190px]">
-      <div className="relative min-w-[130px] h-[190px]">
-        <Image
-          src={book.image_urls[0]}
-          alt={"book image"}
-          fill
-          className="object-cover   rounded-[8px] "
+      <div className="relative min-w-[130px] h-[190px] group overflow-hidden rounded-[8px]">
+        <ImageCard
+          bookImage={book.image_urls[0]}
+          bookName={book.name}
+          key={book.id}
         />
       </div>
 

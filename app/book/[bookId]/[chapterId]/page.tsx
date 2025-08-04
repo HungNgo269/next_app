@@ -1,18 +1,22 @@
-import { Chapter } from "@/app/interface/chapter";
-import { BookCard, BookImage } from "@/app/interface/book";
-import { sql } from "@/app/lib/db";
-import Image from "next/image";
-
 type PageProps = {
   params: {
     chapterId: string;
     bookId: string;
+    slug: string;
   };
 };
 export default async function ChapterPage({ params }: PageProps) {
   const ChapterId = params.chapterId;
   const BookId = params.bookId;
   console.log("params", params);
+  const increateView = await fetch(
+    `http://localhost:3000/api/chapters/${ChapterId}/view`
+  );
+  const currentView = await fetch(
+    `http://localhost:3000/api/chapters/${ChapterId}/stats`
+  );
+  const currentViewData = await currentView.json();
+  console.log("c", currentViewData);
   //   const Chapters: Chapter[] = await sql`
   //   SELECT id,Book_id, title, chapter_number, is_free
   //   FROM chapters

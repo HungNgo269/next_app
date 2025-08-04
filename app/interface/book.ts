@@ -20,7 +20,8 @@ export interface BookCard {
   image_urls: string[];
 }
 export interface BookImage {
+  id: string;
+  name: string;
   image_urls: string[];
   description?: string;
-  name?: string;
 }

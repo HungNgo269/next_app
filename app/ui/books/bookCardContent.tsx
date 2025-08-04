@@ -1,12 +1,13 @@
 import { Book } from "@/app/interface/book";
 import Link from "next/link";
-import Image from "next/image";
+import ImageCard from "../image/imageCard";
 
 interface BookCardContentProps {
   book: Book;
 }
 
 export default function BookCardContent({ book }: BookCardContentProps) {
+  console.log("first", book);
   if (!book) {
     return <div>book not found</div>;
   }
@@ -15,12 +16,11 @@ export default function BookCardContent({ book }: BookCardContentProps) {
     <div className="flex flex-col w-full h-[355px] p-1 ">
       {/* pro  */}
       <Link href={`/book/${book.id}`}>
-        <div className="relative w-[230px] h-[300px] group overflow-hidden rounded-[8px]">
-          <Image
-            src={book.image_urls?.[0] || "/default-cover.png"}
-            alt={book.name}
-            fill
-            className="object-cover transition-transform duration-300 ease-in-out group-hover:scale-105 cursor-pointer"
+        <div className="relative w-[230px] h-[300px]  overflow-hidden rounded-[8px] group">
+          <ImageCard
+            bookImage={book.image_urls[0]}
+            bookName={book.name}
+            key={book.id}
           />
         </div>
       </Link>

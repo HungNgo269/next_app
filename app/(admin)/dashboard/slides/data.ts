@@ -1,4 +1,5 @@
 import { sql } from "@/app/lib/db";
+import { revalidatePath } from "next/cache";
 const ITEMS_PER_PAGE = 6;
 export async function fetchSlidesByPage(query: string, currentPage: number) {
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -58,6 +59,16 @@ export async function fetchSlidePages(query: string) {
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch Slide page.");
+  }
+}
+export async function deleteSlide(slideId: string) {
+  try {
+    await sql`DELETE FROM slides WHERE id = ${slideId}`;
+    revalidatePath("/slides");
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting slide:", error);
+    return { success: false, error: "Failed to delete slide" };
   }
 }
 
