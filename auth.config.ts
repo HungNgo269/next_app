@@ -1,24 +1,34 @@
-import type { NextAuthConfig } from 'next-auth';
+import type { NextAuthConfig } from "next-auth";
+import { getToken, type JWT } from "next-auth/jwt";
 
 export const authConfig = {
   pages: {
-    signIn: '/login',
+    signIn: "/login",
   },
   providers: [
     // added later in auth.ts since it requires bcrypt which is only compatible with Node.js
     // while this file is also used in non-Node.js environments
   ],
   callbacks: {
-    authorized({ auth, request: { nextUrl } }) {
-      const isLoggedIn = !!auth?.user;
-      const isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
-      if (isOnDashboard) {
-        if (isLoggedIn) return true;
-        return false; // Redirect unauthenticated users to login page
-      } else if (isLoggedIn) {
-        return Response.redirect(new URL('/dashboard', nextUrl));
+    // JWT callback - runs whenever JWT is created, updated, or accessed
+    async jwt({ token, user }) {
+      if (user) {
+        const user1 = user as User;
+        token.id = user1.id;
+        token.email = user1.email;
+        token.name = user1.name;
+        token.role = user1.role;
+        token.createdAt = user1.created_at;
+        token.updatedAt = user1.updated_at;
       }
-      return true;
+      return token;
+    },
+    async session({ session, token }) {
+      session.user.id = token.id;
+      session.user.name = token.name;
+      session.user.email = token.email;
+      session.user.role = token.role;
+      return session;
     },
   },
 } satisfies NextAuthConfig;
