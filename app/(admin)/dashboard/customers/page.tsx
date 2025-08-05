@@ -17,7 +17,6 @@ export default async function Page(props: {
 }) {
   const searchParams = await props.searchParams;
   const query = searchParams?.query || "";
-  console.log("query", query);
   const customers: FormattedCustomersTable[] =
     await sql`select id,name,email,image_url,total_invoices,total_paid,created_at from users ORDER by total_paid desc `;
   return (

@@ -7,7 +7,6 @@ interface BookCardContentProps {
 }
 
 export default function BookCardContent({ book }: BookCardContentProps) {
-  console.log("first", book);
   if (!book) {
     return <div>book not found</div>;
   }

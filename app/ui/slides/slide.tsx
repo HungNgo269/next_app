@@ -15,7 +15,6 @@ const Slide = () => {
       const result = await fetch("api/upload/slides");
       const data: Slide[] = await result.json();
       setImages(data.map((item) => item.image_url));
-      console.log(images);
     };
     try {
       getData();

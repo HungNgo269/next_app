@@ -28,7 +28,6 @@ export default function BookCategoryContainer({
 
     try {
       const response = await fetchMostViewedBookByCategoryActions(categoryId);
-      console.log(response);
       if (!response) throw new Error("Failed to fetch category");
       setBooks(response);
     } catch (err: unknown) {

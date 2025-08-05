@@ -135,13 +135,11 @@ export async function registerUserAction(
       RETURNING id, email,name, user_name, date_of_birth
     `;
 
-    console.log("User registered successfully:", result[0]);
     const loginResult = await signIn("credentials", {
       email: formData.get("email") as string,
       password: formData.get("passWord") as string,
       redirect: false,
     });
-    console.log("login", loginResult);
     shouldRedirect = true;
     if (loginResult?.error) {
       return {

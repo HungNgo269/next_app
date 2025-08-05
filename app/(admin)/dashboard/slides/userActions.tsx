@@ -14,7 +14,6 @@ export default function UserActions() {
   };
 
   const handleUploadSuccess = (imageUrl: string) => {
-    console.log("Upload successful:", imageUrl);
     setShowUploadModal(false);
   };
   return (

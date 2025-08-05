@@ -43,7 +43,6 @@ export default function UploadModal({
 
   useEffect(() => {
     if (state?.success && state.imageUrl) {
-      console.log("state", state);
       toast.success(state.message);
       onUploadSuccess(state.imageUrl);
       timeoutRef.current = setTimeout(() => {

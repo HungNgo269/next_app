@@ -6,8 +6,6 @@ import { useEffect } from "react";
 export function useHydrateAuth() {
   const { data: session, status } = useSession();
   const { setUser, setLoading } = useAuthStore();
-  console.log(session?.user);
-  console.log(status);
   useEffect(() => {
     setLoading(status === "loading");
     if (status === "authenticated") {

@@ -14,7 +14,6 @@ export default function EditButton() {
   };
 
   const handleEditSuccess = (imageUrl: string) => {
-    console.log("Edit successful:", imageUrl);
     setShowEditModal(false);
   };
   return (

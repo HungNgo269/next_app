@@ -13,7 +13,6 @@ export default function AuthActionsClient() {
     logout();
     router.push("/");
   };
-  console.log("first", user);
   return (
     <>
       {user ? (

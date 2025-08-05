@@ -7,7 +7,6 @@ export async function GET() {
   try {
     const slides =
       await sql`SELECT * from slides ORDER BY display_order LIMIT 7`;
-    console.log("slide", slides);
     return NextResponse.json(slides);
   } catch (error) {
     console.error("Database error:", error);

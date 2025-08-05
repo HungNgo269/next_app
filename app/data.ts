@@ -27,7 +27,6 @@ export async function fetchMostViewedBookByCategory(query: string) {
       ORDER BY b.views DESC
       LIMIT 10
     `;
-    console.log("res", res);
     return res;
   } catch (error) {
     console.error("Database Error:", error);

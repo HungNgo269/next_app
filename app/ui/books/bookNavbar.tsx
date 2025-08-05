@@ -24,10 +24,7 @@ export default function BooksWithNavigation({
 
   const handleCategoryClick = (index: number) => {
     setActiveCategory(index);
-    console.log(activeCategory);
-    console.log("first,", filteredBooks);
   };
-  console.log("cẳe", filteredBooks);
   return (
     <>
       <div className="flex flex-row mr-auto mt-3 gap-2 text-gray-700 text-sm">

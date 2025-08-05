@@ -22,7 +22,6 @@ interface BookPageID {
 export default async function BookCard({ BookId }: BookPageID) {
   const data: Book[] = await sql`SELECT * from Books`;
   const book: Book = data[0];
-  console.log("book", book);
 
   return (
     <div className="min-h-screen bg-gray-50">

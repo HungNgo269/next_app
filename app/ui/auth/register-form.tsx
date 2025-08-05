@@ -14,7 +14,7 @@ import { registerUserAction } from "@/app/(auth)/actions";
 
 export default function RegisterForm() {
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
+  const callbackUrl = searchparams.get("callbackUrl") || "/dashboard";
   const [state, formAction, errorMessage, isPending] = useActionState(
     registerUserAction,
     undefined

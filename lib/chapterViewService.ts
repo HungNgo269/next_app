@@ -23,45 +23,48 @@ export default class ChapterViewService {
   ): Promise<ViewResult> {
     try {
       const pipeline = redis.pipeline();
-
       // Keys
       const viewKey = `chapter:${chapterId}:views`;
       const today = new Date().toISOString().split("T")[0];
       const dailyViewKey = `chapter:${chapterId}:views:${today}`;
       const uniqueViewKey = `chapter:${chapterId}:unique_views`;
-
-      pipeline.incr(viewKey); //+1
-
-      pipeline.incr(dailyViewKey);
-      pipeline.expire(dailyViewKey, this.DAILY_TTL);
-
-      pipeline.zincrby("chapters:ranking:views", 1, chapterId); //tên sorted set -> tăng bao nhiêu -> tên phần tử được tăng
-
       // Track unique view - ưu tiên userId, fallback sang IP
       let isNewUniqueView = false;
-
+      console.log("userId", userId);
       if (userId) {
         const viewerKey = `user:${userId}:viewed:${chapterId}`;
         const hasViewed = await redis.exists(viewerKey);
         if (!hasViewed) {
           pipeline.sadd(uniqueViewKey, userId);
 
-          pipeline.setex(viewerKey, this.USER_VIEW_TTL, "1");
+          pipeline.setex(viewerKey, this.USER_VIEW_TTL, 1);
 
           isNewUniqueView = true;
-        }
-      } else {
-        const viewerKey = `ip:${this.hashIP(ipAddress!)}:viewed:${chapterId}`;
-        const hasViewed = await redis.exists(viewerKey);
-        if (!hasViewed) {
-          pipeline.sadd(uniqueViewKey, userId);
 
+          pipeline.incr(viewKey); //+1
+
+          pipeline.incr(dailyViewKey);
+          pipeline.expire(dailyViewKey, this.DAILY_TTL);
+
+          pipeline.zincrby("chapters:ranking:views", 1, chapterId); //tên sorted set -> tăng bao nhiêu -> tên phần tử được tăng
+        }
+      } else if (ipAddress && ipAddress !== "unknown") {
+        const hashedIP = this.hashIP(ipAddress);
+        const viewerKey = `ip:${hashedIP}:viewed:${chapterId}`;
+        const hasViewed = await redis.exists(viewerKey);
+
+        if (!hasViewed) {
+          pipeline.sadd(uniqueViewKey, hashedIP);
           pipeline.setex(viewerKey, this.GUEST_VIEW_TTL, "1");
+          pipeline.incr(viewKey); //+1
+          pipeline.incr(dailyViewKey);
+          pipeline.expire(dailyViewKey, this.DAILY_TTL);
+          pipeline.zincrby("chapters:ranking:views", 1, chapterId); //tên sorted set -> tăng bao nhiêu -> tên phần tử được tăng
 
           isNewUniqueView = true;
         }
       }
-      // Thực thi pipeline
+      console.log("úe", userId);
       const results = await pipeline.exec();
       return {
         success: true,

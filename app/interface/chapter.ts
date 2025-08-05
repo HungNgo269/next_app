@@ -23,6 +23,7 @@ export interface ViewResult {
   totalViews?: number;
   dailyViews?: number;
   error?: string;
+  message?: string;
 }
 
 export interface ViewHistoryItem {
