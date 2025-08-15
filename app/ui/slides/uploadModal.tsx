@@ -362,7 +362,7 @@ export default function UploadModal({
                 </h3>
                 <div className="relative w-full h-64 bg-gray-100 rounded-xl overflow-hidden">
                   <Image
-                    src={previewUrl || "/placeholder.svg"}
+                    src={previewUrl || }
                     alt="Preview"
                     fill
                     className="object-contain"

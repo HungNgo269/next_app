@@ -28,7 +28,8 @@ const slides: CarouselSlide[] = [
     id: 1,
     items: {
       id: 1,
-      image: "/placeholder.svg?height=400&width=800",
+      image:
+        "https://res.cloudinary.com/dm3j1fqob/image/upload/v1751940644/slides/itcybgip34j0yunz4kpv.jpg",
       title: "Summer Sale - Up to 70% Off",
       description: "Discover amazing deals on electronics, fashion, and more",
       link: "/summer-sale",
@@ -42,7 +43,8 @@ const slides: CarouselSlide[] = [
     backgroundColor: "bg-gradient-to-br from-blue-50 to-purple-50",
     items: {
       id: 1,
-      image: "/placeholder.svg?height=200&width=300",
+      image:
+        "https://res.cloudinary.com/dm3j1fqob/image/upload/v1751940644/slides/itcybgip34j0yunz4kpv.jpg",
       title: "Electronics",
       description: "Latest gadgets & tech",
       link: "/electronics",
@@ -54,7 +56,8 @@ const slides: CarouselSlide[] = [
     backgroundColor: "bg-gradient-to-r from-green-50 to-blue-50",
     items: {
       id: 1,
-      image: "/placeholder.svg?height=400&width=400",
+      image:
+        "https://res.cloudinary.com/dm3j1fqob/image/upload/v1751940644/slides/itcybgip34j0yunz4kpv.jpg",
       title: "New iPhone 15",
       description: "Starting at $799",
       link: "/iphone-15",
@@ -65,7 +68,8 @@ const slides: CarouselSlide[] = [
     id: 4,
     items: {
       id: 1,
-      image: "/placeholder.svg?height=400&width=800",
+      image:
+        "https://res.cloudinary.com/dm3j1fqob/image/upload/v1751940644/slides/itcybgip34j0yunz4kpv.jpg",
       title: "Black Friday Deals",
       description: "Biggest sale of the year - Don't miss out!",
       link: "/black-friday",
@@ -82,7 +86,7 @@ export default function Carousel() {
   const nextSlide = useCallback(() => {
     if (isTransitioning) return;
     setIsTransitioning(true);
-    setCurrentSlide((prev) => (prev + 1) % slides.length);
+    setCurrentSlide((prev) => (prev + 1) % slides.length); //nếu đã ở slide cuối thì quay lại slide đầu (dư 1)
     setTimeout(() => setIsTransitioning(false), 300);
   }, [isTransitioning]);
 
@@ -115,29 +119,12 @@ export default function Carousel() {
     return () => clearInterval(interval);
   }, [isPlaying, nextSlide]);
 
-  // Keyboard navigation
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "ArrowLeft") {
-        prevSlide();
-      } else if (event.key === "ArrowRight") {
-        nextSlide();
-      } else if (event.key === " ") {
-        event.preventDefault();
-        togglePlayPause();
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [nextSlide, prevSlide]);
-
   return (
     <div className=" relative max-w-4xl mx-auto bg-white rounded-[8px] shadow-lg overflow-hidden mt-10  ">
       <div className="relative h-[350px] md:h-[400px] overflow-hidden ">
         <div
           className="flex transition-transform duration-300 ease-in-out h-full"
-          style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+          style={{ transform: `translateX(-${currentSlide * 100}%)` }} //translateX(100)=>sang phải 1 slide
         >
           {slides.map((slide) => (
             <div key={slide.id} className="w-full flex-shrink-0 relative">
@@ -147,7 +134,7 @@ export default function Carousel() {
               >
                 <div className="relative w-full h-full">
                   <Image
-                    src={slide.items.image || "/placeholder.svg"}
+                    src={slide.items.image}
                     alt={slide.items.alt}
                     fill
                     className="object-cover transition-transform duration-300 group-hover:scale-105"

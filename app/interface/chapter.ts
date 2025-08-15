@@ -2,8 +2,8 @@ export interface Chapter {
   id: string;
   title: string;
   content: string;
-  bookId: string;
-  chapterNumber: number;
+  book_id: string;
+  chapter_number: number;
   createdAt: string;
   updatedAt: string;
 }

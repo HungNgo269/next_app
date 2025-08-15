@@ -5,7 +5,7 @@ import { InvoicesTableSkeleton } from "@/app/ui/skeletons";
 import { Metadata } from "next";
 import { Suspense } from "react";
 import Pagination from "@/app/ui/invoices/pagination";
-import { fetchSlidePages } from "./data";
+import { fetchSlidePages } from "@/app/data/admin/slideData";
 
 export const metadata: Metadata = {
   title: "Slides",

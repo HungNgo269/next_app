@@ -8,7 +8,7 @@ interface CategorySelectorProps {
   onCategoryChange: (categoryId: string) => void;
 }
 
-const CategorySelector = memo(function CategorySelector({
+function CategorySelector({
   categories,
   selectedCategory,
   onCategoryChange,
@@ -31,6 +31,6 @@ const CategorySelector = memo(function CategorySelector({
       ))}
     </div>
   );
-});
+}
 
-export default CategorySelector;
+export default memo(CategorySelector);

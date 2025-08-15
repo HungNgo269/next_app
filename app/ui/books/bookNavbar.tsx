@@ -2,7 +2,7 @@
 import { Book } from "@/app/interface/book";
 import { Category } from "@/app/interface/category";
 import { useState, useMemo } from "react";
-import BookOrderedList from "./bookOrderedList";
+import BookCarousel from "./bookCarousel";
 
 interface BooksWithNavigationProps {
   books: Book[];
@@ -41,7 +41,7 @@ export default function BooksWithNavigation({
         ))}
       </div>
 
-      <BookOrderedList books={books} />
+      <BookCarousel books={books} variant="sm" />
     </>
   );
 }

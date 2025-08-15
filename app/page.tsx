@@ -1,12 +1,15 @@
 import { Suspense } from "react";
 import Carousel from "@/app/ui/slides/slidev2";
 import NewChapterList from "@/app/ui/books/newChapterList";
-import MostFollowBook from "@/app/ui/ranking/mostFollowBook";
 import BestSeller from "@/app/ui/books/bestSellerContainer";
 import Header from "./ui/headerCustomer/headerMain";
 import Footer from "./ui/footer/footerMain";
 import Banner from "./ui/banner/bannerMain";
-import RecentlyDiscoveredSection from "./ui/books/newBook";
+import NewBookList from "./ui/books/newBookList";
+import MostPopularBookRecently from "./ui/ranking/mostPopularBookRecently";
+import MostPopularBook from "@/app/ui/ranking/mostPopularBook";
+import AppFeature from "./ui/section/feature";
+import BookRecommend from "./ui/books/bookRecommend";
 
 export default function HomePage() {
   return (
@@ -25,18 +28,31 @@ export default function HomePage() {
           <BestSeller />
         </Suspense>
         <div className="flex  justify-between mt-10">
-          <div className="w-[840px]  ">
+          <div className="w-[850px]   flex flex-col gap-5">
+            <Suspense>
+              <NewBookList />
+            </Suspense>
+
             <Suspense>
               <NewChapterList />
             </Suspense>
+            <Suspense>
+              <BookRecommend></BookRecommend>
+            </Suspense>
           </div>
-          <div className="w-[300px]  ">
-            <Suspense>{/* <MostFollowBook /> */}</Suspense>
+          <div className="w-[300px]  flex flex-col gap-5">
+            <Suspense>
+              <MostPopularBook />
+            </Suspense>
+            <Suspense>
+              <MostPopularBookRecently />
+            </Suspense>
+            <Suspense>
+              <Banner width={300} />
+            </Suspense>
           </div>
         </div>
-        <div className="flex justify-center mt-10">
-          <Banner></Banner>
-        </div>
+        <AppFeature></AppFeature>
       </div>
       <div className=" mx-auto mt-10 w-[1190px]">
         <Suspense>

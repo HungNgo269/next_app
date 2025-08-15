@@ -1,5 +1,4 @@
 import { sql } from "@/app/lib/db";
-// phân trang...
 export async function fetchBookByCategory() {
   try {
     let res =
@@ -12,18 +11,18 @@ export async function fetchBookByCategory() {
   }
 }
 
-export async function fetchMostViewedBookByCategory(query: string) {
+export async function fetchMostViewedBookByCategory(id: string) {
   try {
     const res = await sql`
       SELECT 
         b.id,
         b.name,
-        b.author,
+        b.author, 
         b.image_urls
       FROM books b
       JOIN books_categories bc ON b.id = bc.book_id
       JOIN categories c ON bc.category_id = c.id
-      WHERE c.id = ${query}
+      WHERE c.id = ${id}
       ORDER BY b.views DESC
       LIMIT 10
     `;
@@ -44,9 +43,23 @@ export async function fetchCategories() {
   }
 }
 
-export async function fetchCategory(query: string) {
+export async function fetchCategory(id: string) {
   try {
-    let res = await sql`Select * from categories where categories.id=${query}`;
+    let res = await sql`Select * from categories where categories.id=${id}`;
+    return res;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch Category.");
+  }
+}
+export async function fetchCategoryOfBook(id: string) {
+  try {
+    let res = await sql`
+      SELECT c.id as category_id, c.name, c.url 
+      FROM categories c 
+      JOIN books_categories bc ON c.id = bc.category_id 
+      WHERE bc.book_id = ${id}
+    `;
     return res;
   } catch (error) {
     console.error("Database Error:", error);

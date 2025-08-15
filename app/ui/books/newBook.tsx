@@ -31,7 +31,8 @@ const booksData: Record<string, Book[]> = {
       rating: 4.5,
       description:
         "A darkly comic fantasy about a photographer who wakes up dead and has seven moons to solve his own murder.",
-      coverImage: "/placeholder.svg?height=300&width=200&text=Seven+Moons",
+      coverImage:
+        "https://res.cloudinary.com/dm3j1fqob/image/upload/v1751940644/slides/itcybgip34j0yunz4kpv.jpg",
       category: "featured",
       categoryLabel: "LITERARY FICTION",
       reviewedBy: "Sarah Mitchell",
@@ -43,7 +44,8 @@ const booksData: Record<string, Book[]> = {
       rating: 4.8,
       description:
         "A novel about friendship, art, and identity, told through the lens of video game design and the creative process.",
-      coverImage: "/placeholder.svg?height=300&width=200&text=Tomorrow",
+      coverImage:
+        "https://res.cloudinary.com/dm3j1fqob/image/upload/v1751940644/slides/itcybgip34j0yunz4kpv.jpg",
       category: "featured",
       categoryLabel: "CONTEMPORARY FICTION",
       reviewedBy: "Michael Chen",
@@ -55,7 +57,8 @@ const booksData: Record<string, Book[]> = {
       rating: 4.3,
       description:
         "Six young magicians compete for a place in an exclusive society, but only five will be chosen.",
-      coverImage: "/placeholder.svg?height=300&width=200&text=Atlas+Six",
+      coverImage:
+        "https://res.cloudinary.com/dm3j1fqob/image/upload/v1751940644/slides/itcybgip34j0yunz4kpv.jpg",
       category: "featured",
       categoryLabel: "DARK ACADEMIA",
       reviewedBy: "Emma Rodriguez",
@@ -67,7 +70,8 @@ const booksData: Record<string, Book[]> = {
       rating: 4.6,
       description:
         "A story told from the perspective of an artificial friend, exploring love, sacrifice, and what it means to be human.",
-      coverImage: "/placeholder.svg?height=300&width=200&text=Klara+Sun",
+      coverImage:
+        "https://res.cloudinary.com/dm3j1fqob/image/upload/v1751940644/slides/itcybgip34j0yunz4kpv.jpg",
       category: "featured",
       categoryLabel: "SCIENCE FICTION",
       reviewedBy: "David Park",
@@ -79,7 +83,8 @@ const booksData: Record<string, Book[]> = {
       rating: 4.4,
       description:
         "A dark fairy tale retelling set in a world where three witches hold the fate of a kingdom in their hands.",
-      coverImage: "/placeholder.svg?height=300&width=200&text=Midnight+Girls",
+      coverImage:
+        "https://res.cloudinary.com/dm3j1fqob/image/upload/v1751940644/slides/itcybgip34j0yunz4kpv.jpg",
       category: "featured",
       categoryLabel: "FAIRY TALE RETELLING",
       reviewedBy: "Lisa Thompson",
@@ -91,7 +96,8 @@ const booksData: Record<string, Book[]> = {
       rating: 4.7,
       description:
         "A woman cursed to be forgotten by everyone she meets lives for centuries until she meets someone who remembers her.",
-      coverImage: "/placeholder.svg?height=300&width=200&text=Addie+LaRue",
+      coverImage:
+        "https://res.cloudinary.com/dm3j1fqob/image/upload/v1751940644/slides/itcybgip34j0yunz4kpv.jpg",
       category: "featured",
       categoryLabel: "HISTORICAL FANTASY",
       reviewedBy: "James Wilson",
@@ -105,7 +111,8 @@ const booksData: Record<string, Book[]> = {
       rating: 4.9,
       description:
         "An epic fantasy featuring dragons, magic, and a world on the brink of war between ancient forces.",
-      coverImage: "/placeholder.svg?height=300&width=200&text=Priory+Orange",
+      coverImage:
+        "https://res.cloudinary.com/dm3j1fqob/image/upload/v1751940644/slides/itcybgip34j0yunz4kpv.jpg",
       category: "fantasy",
       categoryLabel: "EPIC FANTASY",
       reviewedBy: "Rachel Green",
@@ -117,7 +124,8 @@ const booksData: Record<string, Book[]> = {
       rating: 4.6,
       description:
         "A grimdark military fantasy inspired by 20th-century China, following a war orphan's journey to power.",
-      coverImage: "/placeholder.svg?height=300&width=200&text=Poppy+War",
+      coverImage:
+        "https://res.cloudinary.com/dm3j1fqob/image/upload/v1751940644/slides/itcybgip34j0yunz4kpv.jpg",
       category: "fantasy",
       categoryLabel: "MILITARY FANTASY",
       reviewedBy: "Alex Turner",
@@ -130,7 +138,7 @@ const booksData: Record<string, Book[]> = {
       description:
         "A portal fantasy about a young woman who discovers doors to other worlds through the pages of a mysterious book.",
       coverImage:
-        "/placeholder.svg?height=300&width=200&text=Ten+Thousand+Doors",
+        "https://res.cloudinary.com/dm3j1fqob/image/upload/v1751940644/slides/itcybgip34j0yunz4kpv.jpg",
       category: "fantasy",
       categoryLabel: "PORTAL FANTASY",
       reviewedBy: "Sophie Davis",
@@ -142,7 +150,8 @@ const booksData: Record<string, Book[]> = {
       rating: 4.7,
       description:
         "A court intrigue fantasy about a half-goblin prince who unexpectedly becomes emperor and must navigate palace politics.",
-      coverImage: "/placeholder.svg?height=300&width=200&text=Goblin+Emperor",
+      coverImage:
+        "https://res.cloudinary.com/dm3j1fqob/image/upload/v1751940644/slides/itcybgip34j0yunz4kpv.jpg",
       category: "fantasy",
       categoryLabel: "COURT FANTASY",
       reviewedBy: "Mark Johnson",
@@ -154,7 +163,8 @@ const booksData: Record<string, Book[]> = {
       rating: 4.8,
       description:
         "A lyrical fantasy rooted in Russian folklore, where old magic clashes with new religion in medieval Russia.",
-      coverImage: "/placeholder.svg?height=300&width=200&text=Bear+Nightingale",
+      coverImage:
+        "https://res.cloudinary.com/dm3j1fqob/image/upload/v1751940644/slides/itcybgip34j0yunz4kpv.jpg",
       category: "fantasy",
       categoryLabel: "FOLKLORE FANTASY",
       reviewedBy: "Anna Petrov",
@@ -166,7 +176,8 @@ const booksData: Record<string, Book[]> = {
       rating: 4.4,
       description:
         "A gritty fantasy that subverts traditional fantasy tropes with morally complex characters and dark humor.",
-      coverImage: "/placeholder.svg?height=300&width=200&text=Blade+Itself",
+      coverImage:
+        "https://res.cloudinary.com/dm3j1fqob/image/upload/v1751940644/slides/itcybgip34j0yunz4kpv.jpg",
       category: "fantasy",
       categoryLabel: "GRIMDARK FANTASY",
       reviewedBy: "Tom Anderson",
@@ -180,7 +191,8 @@ const booksData: Record<string, Book[]> = {
       rating: 4.6,
       description:
         "Two rival writers challenge each other to write outside their comfort zones during a summer at the beach.",
-      coverImage: "/placeholder.svg?height=300&width=200&text=Beach+Read",
+      coverImage:
+        "https://res.cloudinary.com/dm3j1fqob/image/upload/v1751940644/slides/itcybgip34j0yunz4kpv.jpg",
       category: "romance",
       categoryLabel: "CONTEMPORARY ROMANCE",
       reviewedBy: "Jessica Brown",
@@ -192,7 +204,8 @@ const booksData: Record<string, Book[]> = {
       rating: 4.5,
       description:
         "Office enemies become lovers in this enemies-to-lovers romance filled with tension and witty banter.",
-      coverImage: "/placeholder.svg?height=300&width=200&text=Hating+Game",
+      coverImage:
+        "https://res.cloudinary.com/dm3j1fqob/image/upload/v1751940644/slides/itcybgip34j0yunz4kpv.jpg",
       category: "romance",
       categoryLabel: "ENEMIES TO LOVERS",
       reviewedBy: "Megan White",
@@ -204,7 +217,8 @@ const booksData: Record<string, Book[]> = {
       rating: 4.8,
       description:
         "The First Son of the United States falls in love with the Prince of Wales in this LGBTQ+ romance.",
-      coverImage: "/placeholder.svg?height=300&width=200&text=Red+White+Blue",
+      coverImage:
+        "https://res.cloudinary.com/dm3j1fqob/image/upload/v1751940644/slides/itcybgip34j0yunz4kpv.jpg",
       category: "romance",
       categoryLabel: "LGBTQ+ ROMANCE",
       reviewedBy: "Chris Martinez",
@@ -216,7 +230,8 @@ const booksData: Record<string, Book[]> = {
       rating: 4.3,
       description:
         "A fake dating romance between academic rivals who must pretend to be in love for a wedding in Spain.",
-      coverImage: "/placeholder.svg?height=300&width=200&text=Spanish+Love",
+      coverImage:
+        "https://res.cloudinary.com/dm3j1fqob/image/upload/v1751940644/slides/itcybgip34j0yunz4kpv.jpg",
       category: "romance",
       categoryLabel: "FAKE DATING",
       reviewedBy: "Isabella Garcia",
@@ -228,7 +243,8 @@ const booksData: Record<string, Book[]> = {
       rating: 4.7,
       description:
         "Best friends take one last vacation together to save their friendship, but feelings complicate everything.",
-      coverImage: "/placeholder.svg?height=300&width=200&text=People+Vacation",
+      coverImage:
+        "https://res.cloudinary.com/dm3j1fqob/image/upload/v1751940644/slides/itcybgip34j0yunz4kpv.jpg",
       category: "romance",
       categoryLabel: "FRIENDS TO LOVERS",
       reviewedBy: "Amanda Taylor",
@@ -240,7 +256,8 @@ const booksData: Record<string, Book[]> = {
       rating: 4.4,
       description:
         "An econometrician hires a male escort to help her learn about intimacy and relationships.",
-      coverImage: "/placeholder.svg?height=300&width=200&text=Kiss+Quotient",
+      coverImage:
+        "https://res.cloudinary.com/dm3j1fqob/image/upload/v1751940644/slides/itcybgip34j0yunz4kpv.jpg",
       category: "romance",
       categoryLabel: "CONTEMPORARY ROMANCE",
       reviewedBy: "Nicole Kim",
@@ -323,7 +340,7 @@ export default async function RecentlyDiscoveredSection() {
               <div className="flex-shrink-0">
                 <div className="w-24 h-32 relative rounded-lg overflow-hidden shadow-md">
                   <Image
-                    src={book.coverImage || "/placeholder.svg"}
+                    src={book.coverImage}
                     alt={book.title}
                     fill
                     className="object-cover"

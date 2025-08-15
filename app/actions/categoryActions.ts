@@ -1,8 +1,7 @@
 // app/actions/books.ts
 "use server";
 
-import { fetchCategory } from "@/app/data";
-import { revalidatePath } from "next/cache";
+import { fetchCategory, fetchCategoryOfBook } from "@/app/data/categoryData";
 
 export async function fetchCategoryAction(categoryId: string) {
   try {
@@ -13,27 +12,11 @@ export async function fetchCategoryAction(categoryId: string) {
   }
 }
 
-export async function createBookAction(formData: FormData) {
+export async function fetchCategoryOfBookAction(bookId: string) {
   try {
-    const title = formData.get("title") as string;
-    const categoryId = formData.get("categoryId") as string;
-
-    // Call your create function here
-    // await createBook({ title, categoryId });
-
-    revalidatePath("/books"); // Revalidate cache
-    return { success: true };
+    return await fetchCategoryOfBook(bookId);
   } catch (error) {
-    throw new Error("Failed to create book");
-  }
-}
-
-export async function deleteBookAction(bookId: string) {
-  try {
-    // await deleteBook(bookId);
-    revalidatePath("/books");
-    return { success: true };
-  } catch (error) {
-    throw new Error("Failed to delete book");
+    console.error("Server Action Error:", error);
+    throw new Error("Failed to fetch category ");
   }
 }

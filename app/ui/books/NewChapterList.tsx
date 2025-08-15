@@ -3,6 +3,7 @@ import BookCard from "./bookCard";
 import { Book } from "@/app/interface/book";
 import ChapterCard from "./chapterCard";
 import { Chapter } from "@/app/interface/chapter";
+import ViewMoreBookButton from "./viewMoreBookButton";
 
 export default async function NewChapterList() {
   const Chapters: Chapter[] = await sql`
@@ -13,8 +14,12 @@ export default async function NewChapterList() {
 `;
   return (
     <div className="flex flex-col justify-center items-center ">
-      <span className="font-bold text-2xl w-full text-start">New Chapter</span>
-
+      <div className="flex flex-row items-center justify-between w-full gap-2">
+        <span className="font-bold text-2xl text-start flex-1 min-w-0 truncate">
+          New Chapter
+        </span>
+        <ViewMoreBookButton url="/"></ViewMoreBookButton>
+      </div>
       <div className="grid grid-cols-2 gap-4 mt-6">
         {Chapters.map((Chapter: Chapter) => (
           <ChapterCard key={Chapter.id} ChapterId={Chapter.id} />

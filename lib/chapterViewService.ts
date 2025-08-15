@@ -60,11 +60,9 @@ export default class ChapterViewService {
           pipeline.incr(dailyViewKey);
           pipeline.expire(dailyViewKey, this.DAILY_TTL);
           pipeline.zincrby("chapters:ranking:views", 1, chapterId); //tên sorted set -> tăng bao nhiêu -> tên phần tử được tăng
-
           isNewUniqueView = true;
         }
       }
-      console.log("úe", userId);
       const results = await pipeline.exec();
       return {
         success: true,

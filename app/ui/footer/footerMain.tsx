@@ -1,171 +1,138 @@
 // components/Footer.jsx
 import Image from "next/image";
 import Link from "next/link";
-import { Facebook, Twitter } from "lucide-react";
+import { BookOpen, Facebook, Twitter, Disc } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="bg-white border-t">
-      <div className="container mx-auto px-6 py-8">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
+    <footer className="bg-background border-t py-12">
+      <div className="container mx-auto px-4">
+        <div className="grid md:grid-cols-4 gap-8">
           <div>
-            <h3 className="font-semibold text-gray-900 mb-4">Buy</h3>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link href="#" className="text-blue-600 hover:underline">
-                  Registration
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-blue-600 hover:underline">
-                  Seasonal Sales and events
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-blue-600 hover:underline">
-                  Subcription
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-4">Sell</h3>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link href="#" className="text-blue-600 hover:underline">
-                  Start publicing
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-blue-600 hover:underline">
-                  Affiliates
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-4">Stay connected</h3>
-            <div className="flex space-x-3">
-              <Link href="#" className="text-blue-600 hover:text-blue-800">
-                <Facebook size={20} />
-                <span className="sr-only">Facebook</span>
+            <div className="flex items-center space-x-2 mb-4">
+              <BookOpen className="h-6 w-6 text-primary" />
+              <span className="text-xl font-bold">NextBook</span>
+            </div>
+            <p className="text-muted-foreground mb-4">
+              Your gateway to unlimited reading adventures.
+            </p>
+            <div className="flex items-center gap-4">
+              <Link
+                href="https://facebook.com"
+                aria-label="Facebook"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-primary transition-colors"
+              >
+                <Facebook className="h-5 w-5" />
               </Link>
-              <Link href="#" className="text-blue-600 hover:text-blue-800">
-                <Twitter size={20} />
-                <span className="sr-only">X (Twitter)</span>
+              <Link
+                href="https://twitter.com"
+                aria-label="Twitter"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-primary transition-colors"
+              >
+                <Twitter className="h-5 w-5" />
+              </Link>
+              <Link
+                href="https://discord.com"
+                aria-label="Discord"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-primary transition-colors"
+              >
+                <Image
+                  src={"/discord.png"}
+                  alt="discord"
+                  width={20}
+                  height={20}
+                ></Image>
               </Link>
             </div>
           </div>
 
           <div>
-            <h3 className="font-semibold text-gray-900 mb-4">About NextBook</h3>
-            <ul className="space-y-2 text-sm">
+            <h4 className="font-semibold mb-4">Library</h4>
+            <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
-                <Link href="#" className="text-blue-600 hover:underline">
-                  Company info
+                <Link href="#" className="hover:text-foreground">
+                  Browse Books
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-blue-600 hover:underline">
-                  News
+                <Link href="#" className="hover:text-foreground">
+                  New Releases
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-blue-600 hover:underline">
-                  Advertise with us
+                <Link href="#" className="hover:text-foreground">
+                  Bestsellers
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-blue-600 hover:underline">
-                  Policies
+                <Link href="#" className="hover:text-foreground">
+                  Free Books
                 </Link>
               </li>
             </ul>
           </div>
 
           <div>
-            <h3 className="font-semibold text-gray-900 mb-4">Help & Contact</h3>
-            <ul className="space-y-2 text-sm">
+            <h4 className="font-semibold mb-4">Community</h4>
+            <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
-                <Link href="#" className="text-blue-600 hover:underline">
-                  Seller Center
+                <Link href="#" className="hover:text-foreground">
+                  Book Clubs
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-blue-600 hover:underline">
+                <Link href="#" className="hover:text-foreground">
+                  Reviews
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="hover:text-foreground">
+                  Author Events
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="hover:text-foreground">
+                  Reading Challenges
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="font-semibold mb-4">Support</h4>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              <li>
+                <Link href="#" className="hover:text-foreground">
+                  Help Center
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="hover:text-foreground">
                   Contact Us
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-blue-600 hover:underline">
-                  Returns
+                <Link href="#" className="hover:text-foreground">
+                  Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-blue-600 hover:underline">
-                  Money Back Guarantee
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-4">Community</h3>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link href="#" className="text-blue-600 hover:underline">
-                  Announcements
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-blue-600 hover:underline">
-                  eBay Community
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-blue-600 hover:underline">
-                  eBay for Business Podcast
+                <Link href="#" className="hover:text-foreground">
+                  Terms of Service
                 </Link>
               </li>
             </ul>
           </div>
         </div>
 
-        <div className="mt-8 pt-8 border-t border-gray-200">
-          <div className="text-xs text-gray-600 space-y-2">
-            <p>
-              Copyright © 2025 NextBook Inc. All Rights Reserved.{" "}
-              <Link href="#" className="text-blue-600 hover:underline">
-                Accessibility
-              </Link>
-              ,{" "}
-              <Link href="#" className="text-blue-600 hover:underline">
-                User Agreement
-              </Link>
-              ,{" "}
-              <Link href="#" className="text-blue-600 hover:underline">
-                Privacy
-              </Link>
-              , ,{" "}
-              <Link href="#" className="text-blue-600 hover:underline">
-                Payments Terms of Use
-              </Link>
-              ,{" "}
-              <Link href="#" className="text-blue-600 hover:underline">
-                Cookies
-              </Link>
-              ,{" "}
-              <Link href="#" className="text-blue-600 hover:underline">
-                Your Privacy Choices
-              </Link>{" "}
-              and{" "}
-              <Link href="#" className="text-blue-600 hover:underline">
-                AdChoice
-              </Link>
-            </p>
-          </div>
+        <div className="border-t mt-8 pt-8 text-center text-sm text-muted-foreground">
+          <p>&copy; 2025 NextBook. All rights reserved.</p>
         </div>
       </div>
     </footer>

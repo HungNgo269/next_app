@@ -3,7 +3,7 @@ import { useState } from "react";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import ConfirmModal from "../modal/confirmModal";
 import toast from "react-hot-toast";
-import { deleteSlide } from "@/app/(admin)/dashboard/slides/data";
+import { deleteSlide } from "@/app/data/admin/slideData";
 interface DeleteButtonProps {
   slideId: string;
 }

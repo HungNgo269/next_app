@@ -2,19 +2,14 @@
 import { memo } from "react";
 import BookCard from "./bookCard";
 import { Book } from "@/app/interface/book";
+import BookCarousel from "./bookCarousel";
 
 interface BestSellerListProps {
   books: Book[];
   loading: boolean;
   error: string;
-  selectedCategoryName?: string;
 }
-const bestSellerList = memo(function bestSellerList({
-  books,
-  loading,
-  error,
-  selectedCategoryName,
-}: BestSellerListProps) {
+function BestSellerList({ books, loading, error }: BestSellerListProps) {
   if (loading) {
     return (
       <div className="">
@@ -47,19 +42,15 @@ const bestSellerList = memo(function bestSellerList({
   }
 
   return (
-    <div className="">
+    <div className="flex">
       {books.length === 0 ? (
         <div className="text-center text-gray-500 py-8">
           <p>Không có sách nào trong danh mục này</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-5  gap-1">
-          {books.map((book: Book) => (
-            <BookCard key={book.id} book={book} />
-          ))}
-        </div>
+        <BookCarousel books={books} variant="lg"></BookCarousel>
       )}
     </div>
   );
-});
-export default bestSellerList;
+}
+export default memo(BestSellerList);

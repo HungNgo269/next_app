@@ -1,17 +1,17 @@
 import Image from "next/image";
-
-export default function Banner() {
+interface BannerProps {
+  width: number;
+}
+export default function Banner({ width }: BannerProps) {
   return (
-    <section className=" w-full rounded-[20px] mb-10">
-      <div className="w-full h-[400px] relative">
-        <Image
-          src="/testwideimg.jpg"
-          alt="Banner"
-          fill
-          style={{ borderRadius: "8px" }}
-          className="rounded-[8px]"
-        />
-      </div>
+    <section className="mb-10">
+      <Image
+        src="/testwideimg.jpg"
+        alt="Banner"
+        width={width}
+        height={0}
+        className="h-auto rounded-[8px]"
+      />
     </section>
   );
 }

@@ -56,7 +56,7 @@ const Slide = () => {
             <SwiperSlide key={index}>
               <div className="relative w-full h-full">
                 <img
-                  src={src || "/placeholder.svg"}
+                  src={src}
                   alt={`Slide ${index}`}
                   style={{ width: "100%", height: "100%", objectFit: "cover" }}
                   loading="lazy"

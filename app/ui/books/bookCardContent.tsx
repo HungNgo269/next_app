@@ -4,15 +4,25 @@ import ImageCard from "../image/imageCard";
 
 interface BookCardContentProps {
   book: Book;
+  width?: string;
+  height?: string;
 }
 
-export default function BookCardContent({ book }: BookCardContentProps) {
+export default function BookCardContent({
+  book,
+  width,
+  height,
+}: BookCardContentProps) {
   if (!book) {
     return <div>book not found</div>;
   }
-
+  //TODO => errror page
   return (
-    <div className="flex flex-col w-full h-[355px] p-1 ">
+    <div
+      className={`flex flex-col w-full p-1  ${
+        height ? height : "  h-[355px]"
+      } `}
+    >
       {/* pro  */}
       <Link href={`/book/${book.id}`}>
         <div className="relative w-[230px] h-[300px]  overflow-hidden rounded-[8px] group">
