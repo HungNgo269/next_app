@@ -13,6 +13,145 @@ type PageProps = {
   }>;
 };
 
+const book1Chapters = [
+  {
+    id: "1",
+    title: "Chương 01 - Ma Pháp Thiếu Nữ Hệ Vật Lý!",
+    date: "2025-07-30 09:00:00",
+  },
+  {
+    id: "2",
+    title: "Chương 02 - Kỳ Kết Khế Ước, Trở Thành Ma Pháp Thiếu Nữ Đi!",
+    date: "2025-07-30 09:00:00",
+  },
+  {
+    id: "3",
+    title: "Chương 03 - TS Ma Pháp Thiếu Nữ Ngữa Tay, Khao Khát Đánh Nhau!",
+    date: "2025-07-30 09:00:00",
+  },
+  {
+    id: "4",
+    title: "Chương 04 - Ma Pháp Thiếu Nữ Hệ Vật Lý, Lộ Diện Nữa Mặt!",
+    date: "2025-07-30 09:00:00",
+  },
+  {
+    id: "5",
+    title: "Chương 05 - Ma Pháp Thiếu Nữ Hệ Vật Lý, Chạm Trần Cần Bộ!",
+    date: "2025-07-30 09:00:00",
+  },
+  {
+    id: "6",
+    title: "Chương 06 - Ma Pháp Thiếu Nữ Và Cuộc Chiến Đầu Tiên!",
+    date: "2025-07-31 09:00:00",
+  },
+  {
+    id: "7",
+    title: "Chương 07 - Sức Mạnh Thật Sự Của Hệ Vật Lý!",
+    date: "2025-07-31 09:00:00",
+  },
+  {
+    id: "8",
+    title: "Chương 08 - Đối Thủ Mới Xuất Hiện!",
+    date: "2025-08-01 09:00:00",
+  },
+  {
+    id: "9",
+    title: "Chương 09 - Ma Pháp Thiếu Nữ Trong Nguy Hiểm!",
+    date: "2025-08-01 09:00:00",
+  },
+  {
+    id: "10",
+    title: "Chương 10 - Bí Mật Được Tiết Lộ!",
+    date: "2025-08-02 09:00:00",
+  },
+];
+const book2Chapters = [
+  {
+    id: "1",
+    title: "Chương 01 - TS Thiếu nữ và thanh mai trúc mã sẽ không có romcom",
+    date: "2025-08-08 09:00:00",
+    isNew: true,
+  },
+  {
+    id: "2",
+    title: "Chương 02 - Thì giữa kỳ!",
+    date: "2025-08-09 09:00:00",
+    isNew: true,
+  },
+  {
+    id: "3",
+    title: "Chương 03 - Hai người sống chung?",
+    date: "2025-08-09 09:00:00",
+    isNew: true,
+  },
+  {
+    id: "4",
+    title: "Chương 04 - Tìm đáp thình thịch",
+    date: "2025-08-09 09:00:00",
+    isNew: true,
+  },
+  {
+    id: "5",
+    title: "Chương 05 - Người? Cá? Nhân ngư?",
+    date: "2025-08-09 09:00:00",
+    isNew: true,
+  },
+  {
+    id: "6",
+    title: "Chương 06 - Hải sản cấp tốc",
+    date: "2025-08-14 09:00:00",
+    isNew: true,
+  },
+  {
+    id: "7",
+    title: "Chương 07 - Người tình kẻ tài",
+    date: "2025-08-14 09:00:00",
+    isNew: true,
+  },
+  {
+    id: "8",
+    title: "Chương 08 - Ước hẹn",
+    date: "2025-08-14 09:00:00",
+    isNew: true,
+  },
+  {
+    id: "9",
+    title: "Chương 09 - Công viên",
+    date: "2025-08-14 09:00:00",
+    isNew: true,
+  },
+  {
+    id: "10",
+    title: "Chương 10 - Cuộc hẹn đầu tiên",
+    date: "2025-08-15 09:00:00",
+    isNew: true,
+  },
+  {
+    id: "11",
+    title: "Chương 11 - Tình cảm phức tạp",
+    date: "2025-08-15 09:00:00",
+    isNew: true,
+  },
+  {
+    id: "12",
+    title: "Chương 12 - Hiểu lầm và giải thích",
+    date: "2025-08-16 09:00:00",
+    isNew: true,
+  },
+  {
+    id: "13",
+    title: "Chương 13 - Quyết định quan trọng",
+    date: "2025-08-16 09:00:00",
+    isNew: true,
+  },
+  {
+    id: "14",
+    title: "Chương 14 - Tương lai bất định",
+    date: "2025-08-17 09:00:00",
+    isNew: true,
+  },
+];
+
 export default async function BookPage({ params }: PageProps) {
   const { bookId } = await params;
   const [bookData, bookCategories] = await Promise.all([
@@ -141,7 +280,12 @@ export default async function BookPage({ params }: PageProps) {
                       }}
                     />
                     <div className="h-full flex flex-col items-start">
-                      <ChapterContainer></ChapterContainer>
+                      <ChapterContainer
+                        title="Quyển 1: Ma Pháp Thiếu Nữ Hệ Vật Lý? (Hoàn Thành)"
+                        coverImage="/placeholder.svg?height=160&width=120"
+                        chapters={book1Chapters}
+                        totalChapters={62}
+                      ></ChapterContainer>
                     </div>
                   </div>
                 </CardContent>

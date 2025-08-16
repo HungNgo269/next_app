@@ -3,13 +3,15 @@ import { useState } from "react";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import ConfirmModal from "../modal/confirmModal";
 import toast from "react-hot-toast";
-import { deleteSlide } from "@/app/data/admin/slideData";
+import { DeleteSlideActions } from "@/app/actions/slideActions";
+import { usePathname } from "next/navigation";
 interface DeleteButtonProps {
   slideId: string;
 }
 export default function DeleteButton({ slideId }: DeleteButtonProps) {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const currentPath = usePathname();
 
   const handleShowModal = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -24,7 +26,7 @@ export default function DeleteButton({ slideId }: DeleteButtonProps) {
   const handleDeleteClick = async () => {
     try {
       setIsDeleting(true);
-      const result = await deleteSlide(slideId);
+      const result = await DeleteSlideActions(slideId, currentPath);
 
       if (result.success) {
         setShowConfirmModal(false);

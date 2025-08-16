@@ -6,10 +6,10 @@ import Header from "./ui/headerCustomer/headerMain";
 import Footer from "./ui/footer/footerMain";
 import Banner from "./ui/banner/bannerMain";
 import NewBookList from "./ui/books/newBookList";
-import MostPopularBookRecently from "./ui/ranking/mostPopularBookRecently";
 import MostPopularBook from "@/app/ui/ranking/mostPopularBook";
 import AppFeature from "./ui/section/feature";
 import BookRecommend from "./ui/books/bookRecommend";
+import MostPopularSeries from "./ui/ranking/mostPopularSeries";
 
 export default function HomePage() {
   return (
@@ -45,7 +45,7 @@ export default function HomePage() {
               <MostPopularBook />
             </Suspense>
             <Suspense>
-              <MostPopularBookRecently />
+              <MostPopularSeries />
             </Suspense>
             <Suspense>
               <Banner width={300} />

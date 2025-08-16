@@ -2,8 +2,8 @@ export interface Category {
   id: string;
   name: string;
   url?: string;
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt?: string;
+  updatedAt?: string;
   title?: string;
 }
 export interface CategoryCard {

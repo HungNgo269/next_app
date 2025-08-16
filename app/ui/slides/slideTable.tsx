@@ -3,9 +3,9 @@ import SlideStatus from "./status";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import EditButton from "./editButton";
 import DeleteButton from "./deleteButton";
-import { fetchSlidesByPage } from "@/app/data/admin/slideData";
-import { formatEnDateTime } from "@/lib/formatDate";
 import { SlideTable } from "@/app/interface/slide";
+import { fetchSlidesByPageActions } from "@/app/actions/slideActions";
+import { formatEnDateTime } from "@/lib/utils/formatDate";
 
 export default async function SlideTable({
   query,
@@ -14,7 +14,10 @@ export default async function SlideTable({
   query: string;
   currentPage: number;
 }) {
-  const slides: SlideTable[] = await fetchSlidesByPage(query, currentPage);
+  const slides: SlideTable[] = await fetchSlidesByPageActions(
+    query,
+    currentPage
+  );
   return (
     <div className="mt-4 flow-root">
       <div className="inline-block min-w-full align-middle">

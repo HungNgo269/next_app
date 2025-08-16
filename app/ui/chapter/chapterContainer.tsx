@@ -30,7 +30,7 @@ export function ChapterContainer({
     ? chapters
     : chapters.slice(0, initialVisibleChapters);
   const hasMoreChapters = chapters.length > initialVisibleChapters;
-
+  console.log(visibleChapters);
   return (
     <div className="border border-gray-200 rounded-lg p-4 bg-white shadow-sm">
       <div className="mb-4">
@@ -59,11 +59,11 @@ export function ChapterContainer({
                   className="flex items-center justify-between group"
                 >
                   <div className="flex items-center gap-2 min-w-0 flex-1">
-                    {isNewChapter(chapter.createdAt, 7) && (
+                    {/* {isNewChapter(chapter.createdAt, 7) && (
                       <span className="text-red-500 text-sm font-medium flex-shrink-0">
                         Mới
                       </span>
-                    )}
+                    )} */}
                     <a
                       href="#"
                       className="text-blue-600 hover:text-blue-800 hover:underline text-sm truncate"

@@ -1,5 +1,4 @@
 import { sql } from "@/app/lib/db";
-import { revalidatePath } from "next/cache";
 const ITEMS_PER_PAGE = 6;
 export async function fetchSlidesByPage(query: string, currentPage: number) {
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -9,7 +8,7 @@ export async function fetchSlidesByPage(query: string, currentPage: number) {
 
       FROM slides
       WHERE
-    id ILIKE ${`%${query}%`} OR
+    id::text ILIKE ${`%${query}%`} OR
     title ILIKE ${`%${query}%`} OR
     image_url ILIKE ${`%${query}%`} OR
 
@@ -64,7 +63,6 @@ export async function fetchSlidePages(query: string) {
 export async function deleteSlide(slideId: string) {
   try {
     await sql`DELETE FROM slides WHERE id = ${slideId}`;
-    revalidatePath("/slides");
     return { success: true };
   } catch (error) {
     console.error("Error deleting slide:", error);

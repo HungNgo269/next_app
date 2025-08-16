@@ -1,0 +1,29 @@
+"use server";
+import { deleteSlide, fetchSlidesByPage } from "../data/admin/slideData";
+import { revalidatePath } from "next/cache";
+
+export async function fetchSlidesByPageActions(
+  query: string,
+  currentPage: number
+) {
+  try {
+    return await fetchSlidesByPage(query, currentPage);
+  } catch (error) {
+    console.error("Server Action Error:", error);
+    throw new Error("Failed to fetch category books");
+  }
+}
+
+export async function DeleteSlideActions(slideId: string, currentPath: string) {
+  try {
+    const result = await deleteSlide(slideId);
+    if (result.success === true) {
+      revalidatePath(currentPath);
+      return { success: true };
+    }
+    return result;
+  } catch (error) {
+    console.error("Server Action Error:", error);
+    throw new Error("Failed to fetch category books");
+  }
+}

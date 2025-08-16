@@ -5,6 +5,7 @@ import {
   HomeIcon,
   DocumentDuplicateIcon,
   PlayCircleIcon,
+  BookOpenIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -15,13 +16,14 @@ import clsx from "clsx";
 const links = [
   { name: "Home", href: "/dashboard", icon: HomeIcon },
   { name: "Slides", href: "/dashboard/slides", icon: PlayCircleIcon },
+  { name: "Chapter", href: "/dashboard/chapters", icon: BookOpenIcon },
 
-  {
-    name: "Invoices",
-    href: "/dashboard/invoices",
-    icon: DocumentDuplicateIcon,
-  },
-  { name: "Customers", href: "/dashboard/customers", icon: UserGroupIcon },
+  // {
+  //   name: "Invoices",
+  //   href: "/dashboard/invoices",
+  //   icon: DocumentDuplicateIcon,
+  // },
+  // { name: "Customers", href: "/dashboard/customers", icon: UserGroupIcon },
 ];
 
 export default function NavLinks() {

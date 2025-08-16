@@ -2,14 +2,14 @@ import { fetchMostFollowBookByWeekAction } from "@/app/actions/rankingActions";
 import { BookCard } from "@/app/interface/book";
 import ImageCard from "../image/imageCard";
 
-export default async function MostPopularBookRecently() {
+export default async function MostPopularSeries() {
   const books: BookCard[] = await fetchMostFollowBookByWeekAction();
   console.log("first", books);
   return (
     <div>
       <div>
         <span className="font-bold text-lg text-start">
-          Most views book in{" "}
+          Most views series in{" "}
         </span>
       </div>
 
