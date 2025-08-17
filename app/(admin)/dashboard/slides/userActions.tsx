@@ -1,5 +1,5 @@
 "use client";
-import UploadModal from "@/app/ui/slides/uploadModal";
+import UploadModal from "@/app/ui/admin/slides/uploadModal";
 import { useState } from "react";
 
 export default function UserActions() {

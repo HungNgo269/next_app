@@ -1,11 +1,12 @@
+import SlideTable from "@/app/ui/slides/slideTable";
 import UserActions from "./userActions";
 import Search from "@/app/ui/search";
 import { InvoicesTableSkeleton } from "@/app/ui/skeletons";
 import { Metadata } from "next";
 import { Suspense } from "react";
+import Pagination from "@/app/ui/invoices/pagination";
 import { fetchSlidePages } from "@/app/data/admin/slideData";
-import Pagination from "@/app/ui/admin/invoices/pagination";
-import SlideTable from "@/app/ui/admin/slides/slideTable";
+
 export const metadata: Metadata = {
   title: "Slides",
 };

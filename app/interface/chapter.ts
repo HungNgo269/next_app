@@ -36,3 +36,10 @@ export interface TopChapter {
   chapterId: string;
   views: number;
 }
+
+export interface ChapterUploadProps {
+  book_id: number;
+  title: string;
+  chapter_number: number;
+  content: string;
+}

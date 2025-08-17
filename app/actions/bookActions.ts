@@ -1,6 +1,6 @@
 "use server";
 
-import { fetchBookById, fetchBookImageForChapter } from "../data/bookData";
+import { fetchBookById, fetchBookImage } from "../data/bookData";
 import { fetchMostViewedBookByCategory } from "../data/categoryData";
 
 export async function fetchBookByIdActions(id: string) {
@@ -21,9 +21,9 @@ export async function fetchMostViewedBookByCategoryActions(categoryId: string) {
   }
 }
 
-export async function fetchBookImageForChapterAction(bookId: string) {
+export async function fetchBookImageAction(bookId: string) {
   try {
-    return await fetchBookImageForChapter(bookId);
+    return await fetchBookImage(bookId);
   } catch (error) {
     console.error("Server Action Error:", error);
     throw new Error("Failed to fetch category books");

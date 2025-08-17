@@ -1,15 +1,17 @@
 import { Suspense } from "react";
-import Carousel from "@/app/ui/slides/slidev2";
-import NewChapterList from "@/app/ui/books/newChapterList";
-import BestSeller from "@/app/ui/books/bestSellerContainer";
-import Header from "./ui/headerCustomer/headerMain";
-import Footer from "./ui/footer/footerMain";
-import Banner from "./ui/banner/bannerMain";
-import NewBookList from "./ui/books/newBookList";
-import MostPopularBook from "@/app/ui/ranking/mostPopularBook";
-import AppFeature from "./ui/section/feature";
-import BookRecommend from "./ui/books/bookRecommend";
-import MostPopularSeries from "./ui/ranking/mostPopularSeries";
+
+import { BookOpen, Download, Users } from "lucide-react";
+import Carousel from "./ui/admin/slides/slidev2";
+import Image from "next/image";
+import Header from "./ui/user/headerCustomer/headerMain";
+import BestSellerContainer from "./ui/user/books/bestSellerContainer";
+import NewBookList from "./ui/user/books/newBookList";
+import NewChapterList from "./ui/user/books/newChapterList";
+import BookRecommend from "./ui/user/books/bookRecommend";
+import MostPopularBook from "./ui/user/ranking/mostPopularBook";
+import MostPopularSeries from "./ui/user/ranking/mostPopularSeries";
+import FooterComponent from "./ui/user/footer/footerComponent";
+import SectionComponent from "./ui/user/section/section";
 
 export default function HomePage() {
   return (
@@ -25,7 +27,7 @@ export default function HomePage() {
         </Suspense>
 
         <Suspense>
-          <BestSeller />
+          <BestSellerContainer />
         </Suspense>
         <div className="flex  justify-between mt-10">
           <div className="w-[850px]   flex flex-col gap-5">
@@ -47,16 +49,26 @@ export default function HomePage() {
             <Suspense>
               <MostPopularSeries />
             </Suspense>
-            <Suspense>
-              <Banner width={300} />
-            </Suspense>
+            {/* <Suspense>
+              <section className="mb-10">
+                <Image
+                  src="/testwideimg.jpg"
+                  alt="Banner"
+                  width={300}
+                  height={0}
+                  className="h-auto rounded-[8px]"
+                />
+              </section>
+            </Suspense> */}
           </div>
         </div>
-        <AppFeature></AppFeature>
+        <Suspense>
+          <SectionComponent></SectionComponent>
+        </Suspense>
       </div>
       <div className=" mx-auto mt-10 w-[1190px]">
         <Suspense>
-          <Footer></Footer>
+          <FooterComponent></FooterComponent>
         </Suspense>
       </div>
     </>

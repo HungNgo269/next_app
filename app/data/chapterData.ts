@@ -6,7 +6,7 @@ export async function fetchChapterDataCard(id: string) {
     SELECT id,book_id, title, chapter_number
     FROM chapters
     WHERE id = ${id}`;
-    return res;
+    return res[0];
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch Categories.");

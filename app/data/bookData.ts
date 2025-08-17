@@ -43,14 +43,14 @@ export async function fetchMostViewedBookByCategory(query: string) {
     throw new Error("Failed to fetch Categories.");
   }
 }
-export async function fetchBookImageForChapter(bookId: string) {
+export async function fetchBookImage(bookId: string) {
   try {
     const res = await sql`
     SELECT id,image_urls,description,name
     FROM Books
     WHERE id = ${bookId}
   `;
-    return res;
+    return res[0];
   } catch (error) {
     console.error("Server Action Error:", error);
     throw new Error("Failed to fetch book image for chapter");
