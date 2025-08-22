@@ -1,6 +1,6 @@
 import { Chapter } from "@/app/interface/chapter";
 import { ProductCard, ProductImage } from "@/app/interface/book";
-import { sql } from "@/app/lib/db";
+import { sql } from "@/lib/db";
 import Image from "next/image";
 
 type PageProps = {

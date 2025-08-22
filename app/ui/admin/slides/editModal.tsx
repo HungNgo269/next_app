@@ -1,87 +1,91 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import Image from "next/image";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import BaseModal from "@/app/ui/admin/modal/baseAdminModal";
+import ImageUploadField from "../form/formImageUploadField";
+import FormField from "../form/formField";
+import { Loader2, Edit, Upload } from "lucide-react";
+import { fetchSlideByIdActions } from "@/app/actions/slideActions";
+import { Slide } from "@/app/interface/slide";
 
 interface EditModalProps {
+  id: string;
   onClose: () => void;
+  onEditSuccess?: (data: any) => void;
 }
 
-export default function EditModal({ onClose }: EditModalProps) {
+export default async function EditModal({
+  id,
+  onClose,
+  onEditSuccess,
+}: EditModalProps) {
+  // Form state
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string>("");
   const [selectedTitle, setSelectedTitle] = useState("");
   const [selectedDesc, setSelectedDesc] = useState("");
   const [selectedOrder, setSelectedOrder] = useState("");
   const [selectedRedirectLink, setSelectedRedirectLink] = useState("");
-  const [Editing, setEditing] = useState(false);
-  const [EditedImageUrl, setEditedImageUrl] = useState<string>("");
-  const [previewUrl, setPreviewUrl] = useState<string>("");
 
-  const fileReaderRef = useRef<FileReader | null>(null);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  // UI state
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedImageUrl, setEditedImageUrl] = useState<string>("");
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
+  const [currentSlideData, setCurrentSlideData] = useState<Slide>();
   useEffect(() => {
-    return () => {
-      if (fileReaderRef.current) {
-        fileReaderRef.current.abort();
-      }
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
+    const getData = async () => {
+      const currentSlide: Slide = await fetchSlideByIdActions(id);
+      setCurrentSlideData(currentSlide);
     };
+    getData();
   }, []);
+  // Validation TODO => zod
+  const validateForm = (): boolean => {
+    const errors: Record<string, string> = {};
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    const file = e.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-
-      const reader = new FileReader();
-      fileReaderRef.current = reader;
-
-      reader.onload = (e) => {
-        setPreviewUrl(e.target?.result as string);
-      };
-
-      reader.onerror = () => {
-        toast.error("Failed to read file");
-        fileReaderRef.current = null;
-      };
-
-      reader.readAsDataURL(file);
+    if (!selectedTitle.trim()) {
+      errors.title = "Title is required";
     }
-  };
 
-  const handleLabelClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    // Trigger file input click programmatically
-    const fileInput = document.getElementById("fileInput") as HTMLInputElement;
-    if (fileInput) {
-      fileInput.click();
+    if (!selectedDesc.trim()) {
+      errors.desc = "Description is required";
     }
+
+    if (!selectedOrder.trim()) {
+      errors.order = "Order is required";
+    } else if (parseInt(selectedOrder) < 1 || parseInt(selectedOrder) > 100) {
+      errors.order = "Order must be between 1 and 100";
+    }
+
+    if (!selectedRedirectLink.trim()) {
+      errors.redirectLink = "Page link is required";
+    }
+
+    if (!selectedFile) {
+      errors.file = "Please select an image file";
+    }
+
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
   };
 
   const handleEdit = async () => {
-    if (!selectedFile) {
-      toast.error("Please select a file first");
+    if (!validateForm()) {
+      toast.error("Please fix the form errors before submitting");
       return;
     }
 
-    setEditing(true);
+    setIsEditing(true);
     try {
       const formData = new FormData();
-      formData.append("file", selectedFile);
+      formData.append("file", selectedFile!);
       formData.append("folderName", "slides");
-      formData.append("title", selectedTitle);
-      formData.append("desc", selectedDesc);
-      formData.append("link", selectedRedirectLink);
-      formData.append("order", selectedOrder);
+      formData.append("title", selectedTitle.trim());
+      formData.append("desc", selectedDesc.trim());
+      formData.append("link", selectedRedirectLink.trim());
+      formData.append("order", selectedOrder.trim());
 
       const response = await fetch("/api/Edit/slides", {
         method: "POST",
@@ -94,175 +98,171 @@ export default function EditModal({ onClose }: EditModalProps) {
 
       const result = await response.json();
       if (result) {
-        toast.success("Edited File Successful");
+        toast.success("Image edited successfully!");
+        setEditedImageUrl(result.imageUrl || "success");
 
-        timeoutRef.current = setTimeout(() => {
-          onClose();
-          timeoutRef.current = null;
-        }, 1500);
+        if (onEditSuccess) {
+          onEditSuccess(result);
+        }
       }
     } catch (error) {
       console.error("Edit error:", error);
       toast.error("Edit failed. Please try again.");
     } finally {
-      setEditing(false);
+      setIsEditing(false);
     }
   };
 
   const resetEdit = () => {
-    if (fileReaderRef.current) {
-      fileReaderRef.current.abort();
-      fileReaderRef.current = null;
-    }
-
     setSelectedFile(null);
     setPreviewUrl("");
+    setSelectedTitle("");
+    setSelectedDesc("");
+    setSelectedOrder("");
+    setSelectedRedirectLink("");
     setEditedImageUrl("");
+    setFormErrors({});
   };
 
+  const isFormValid =
+    selectedFile &&
+    selectedTitle.trim() &&
+    selectedDesc.trim() &&
+    selectedOrder.trim() &&
+    selectedRedirectLink.trim() &&
+    !isEditing;
+
   return (
-    <BaseModal
-      onClose={onClose}
-      title="Edit Image to Cloudinary"
-      maxWidth="max-w-2xl"
-    >
+    <BaseModal onClose={onClose} title="Edit Slide" maxWidth="max-w-3xl">
       <div className="space-y-6">
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-col">
-            <label
-              htmlFor="titleInput"
-              className="mb-1 text-sm font-medium text-gray-700"
-            >
-              Title
-            </label>
-            <input
-              type="text"
-              id="titleInput"
-              value={selectedTitle}
-              placeholder="Enter title"
-              onChange={(e) => setSelectedTitle(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          <div className="flex flex-col">
-            <label
-              htmlFor="orderInput"
-              className="mb-1 text-sm font-medium text-gray-700"
-            >
-              Order
-            </label>
-            <input
-              min={1}
-              max={100}
-              type="number"
-              id="orderInput"
-              value={selectedOrder}
-              placeholder="Display order"
-              onChange={(e) => setSelectedOrder(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          <div className="flex flex-col">
-            <label
-              htmlFor="descInput"
-              className="mb-1 text-sm font-medium text-gray-700"
-            >
-              Description
-            </label>
-            <textarea
-              id="descInput"
-              value={selectedDesc}
-              placeholder="Enter description..."
-              rows={4}
-              onChange={(e) => setSelectedDesc(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-md resize-y focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          <div className="flex flex-col">
-            <label
-              htmlFor="redirectLinkInput"
-              className="mb-1 text-sm font-medium text-gray-700"
-            >
-              Page link
-            </label>
-            <input
-              type="text"
-              id="redirectLinkInput"
-              value={selectedRedirectLink}
-              placeholder="ex: /SherlockHolmes/abcBooks/..."
-              onChange={(e) => setSelectedRedirectLink(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-        </div>
-
-        {/* File Input */}
-        <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleFileSelect}
-            className="hidden"
-            id="fileInput"
+        {/* Form Fields Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <FormField
+            label="Title"
+            id="title"
+            value={selectedTitle}
+            onChange={setSelectedTitle}
+            placeholder={selectedTitle}
+            required
+            disabled={isEditing}
+            error={formErrors.title}
           />
-          <button
-            type="button"
-            onClick={handleLabelClick}
-            className="cursor-pointer inline-block bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors"
-          >
-            Choose Image
-          </button>
+
+          <FormField
+            label="Display Order"
+            id="order"
+            type="number"
+            value={selectedOrder}
+            onChange={setSelectedOrder}
+            placeholder="1"
+            required
+            disabled={isEditing}
+            error={formErrors.order}
+            min={1}
+            max={100}
+          />
         </div>
 
-        {/* Preview Image */}
-        {previewUrl && (
-          <div className="border rounded-lg p-4">
-            <h3 className="text-lg font-semibold mb-2">Preview:</h3>
-            <div className="relative w-full h-64">
-              <Image
-                src={previewUrl}
-                alt="Preview"
-                fill
-                className="object-contain"
-              />
-            </div>
-          </div>
-        )}
+        <FormField
+          label="Description"
+          id="desc"
+          type="textarea"
+          value={selectedDesc}
+          onChange={setSelectedDesc}
+          placeholder="Describe your slide content..."
+          required
+          disabled={isEditing}
+          error={formErrors.desc}
+          rows={4}
+        />
+
+        <FormField
+          label="Page Link"
+          id="redirectLink"
+          value={selectedRedirectLink}
+          onChange={setSelectedRedirectLink}
+          placeholder="/SherlockHolmes/abcBooks/..."
+          required
+          disabled={isEditing}
+          error={formErrors.redirectLink}
+        />
+
+        {/* Image Upload Field */}
+        <ImageUploadField
+          selectedFile={selectedFile}
+          onFileSelect={setSelectedFile}
+          previewUrl={previewUrl}
+          onPreviewUrlChange={setPreviewUrl}
+          disabled={isEditing}
+          required
+          error={formErrors.file}
+        />
 
         {/* Action Buttons */}
-        <div className="flex justify-center gap-4">
-          {selectedFile && !EditedImageUrl && (
+        <div className="flex flex-col sm:flex-row justify-center gap-3 pt-4">
+          {!editedImageUrl && (
             <button
               onClick={handleEdit}
-              disabled={Editing}
+              disabled={!isFormValid}
               type="button"
-              className="bg-green-500 text-white px-8 py-3 rounded-lg hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className={`px-8 py-3 font-semibold transition-all flex items-center justify-center gap-2 rounded-lg ${
+                isFormValid
+                  ? "bg-gradient-to-r from-green-600 to-green-700 text-white hover:from-green-700 hover:to-green-800 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                  : "bg-gray-200 text-gray-400 cursor-not-allowed"
+              }`}
             >
-              {Editing ? "Editing..." : "Edit image"}
+              {isEditing ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Editing...
+                </>
+              ) : (
+                <>
+                  <Edit className="w-4 h-4" />
+                  Edit Slide
+                </>
+              )}
             </button>
           )}
 
-          {EditedImageUrl && (
+          {editedImageUrl && (
             <button
               onClick={resetEdit}
               type="button"
-              className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600 transition-colors"
+              className="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center gap-2 rounded-lg"
+              disabled={isEditing}
             >
-              Edit Another Image
+              <Upload className="w-4 h-4" />
+              Edit Another
             </button>
           )}
 
           <button
             onClick={onClose}
             type="button"
-            className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors border border-gray-300 rounded-lg"
+            className="px-6 py-3 text-gray-600 hover:text-gray-800 transition-colors border-2 border-gray-200 hover:border-gray-300 font-medium disabled:opacity-50 rounded-lg"
+            disabled={isEditing}
           >
             Cancel
           </button>
         </div>
+
+        {/* Form Status Messages */}
+        {!isFormValid && !isEditing && Object.keys(formErrors).length === 0 && (
+          <div className="text-center p-4 bg-amber-50 border border-amber-200 rounded-lg">
+            <p className="text-sm text-amber-700">
+              Please fill all required fields and select an image to enable edit
+            </p>
+          </div>
+        )}
+
+        {Object.keys(formErrors).length > 0 && !isEditing && (
+          <div className="text-center p-4 bg-red-50 border border-red-200 rounded-lg">
+            <p className="text-sm text-red-700">
+              Please fix the errors above before submitting
+            </p>
+          </div>
+        )}
       </div>
     </BaseModal>
   );

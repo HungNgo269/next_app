@@ -1,4 +1,4 @@
-import { sql } from "@/app/lib/db";
+import { sql } from "@/lib/db";
 
 export async function fetchBookById(id: string) {
   try {
@@ -78,5 +78,27 @@ export async function fetchBookRecommended() {
   } catch (error) {
     console.error("Server Action Error:", error);
     throw new Error("Failed to fetch book image for chapter");
+  }
+}
+const ITEMS_PER_PAGE = 6;
+export async function fetchBooksByPage(query: string, currentPage: number) {
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+  try {
+    const data = await sql`
+      SELECT id,name,status,image_urls,is_active,created_at,updated_at
+      FROM books
+      WHERE
+    id::text ILIKE ${`%${query}%`} OR
+    name ILIKE ${`%${query}%`} OR
+    status::text ILIKE ${`%${query}%`} OR
+    image_urls::text ILIKE ${`%${query}%`} OR
+    is_active::text ILIKE ${`%${query}%`} 
+         order by id asc
+      limit ${ITEMS_PER_PAGE} OFFSET ${offset}
+        `;
+    return data;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch Slides.");
   }
 }

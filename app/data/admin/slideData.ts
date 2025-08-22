@@ -1,4 +1,4 @@
-import { sql } from "@/app/lib/db";
+import { sql } from "@/lib/db";
 const ITEMS_PER_PAGE = 6;
 export async function fetchSlidesByPage(query: string, currentPage: number) {
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -19,6 +19,18 @@ export async function fetchSlidesByPage(query: string, currentPage: number) {
       limit ${ITEMS_PER_PAGE} OFFSET ${offset}
         `;
     return data;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch Slides.");
+  }
+}
+
+export async function fetchSlideById(query: string) {
+  try {
+    const data = await sql`
+      SELECT *
+      FROM slides where ${query}= id `;
+    return data[0];
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch Slides.");

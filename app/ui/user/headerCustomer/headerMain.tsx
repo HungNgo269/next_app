@@ -20,6 +20,7 @@ import {
   BookOpen,
 } from "lucide-react";
 import SearchComponent from "../../share/search/searchComponent";
+import ModeToggle from "../../share/theme/themeButton";
 
 export default function Header() {
   return (
@@ -54,6 +55,9 @@ export default function Header() {
                   <ChevronDown className="h-3 w-3" />
                 </Button>
               </DropdownMenuTrigger>
+              <div className="rounded-md">
+                <ModeToggle></ModeToggle>
+              </div>
               <DropdownMenuContent align="end" className="w-48">
                 <DropdownMenuItem>View watchlist</DropdownMenuItem>
                 <DropdownMenuItem>Recently viewed</DropdownMenuItem>

@@ -1,5 +1,9 @@
 "use server";
-import { deleteSlide, fetchSlidesByPage } from "../data/admin/slideData";
+import {
+  deleteSlide,
+  fetchSlideById,
+  fetchSlidesByPage,
+} from "../data/admin/slideData";
 import { revalidatePath } from "next/cache";
 
 export async function fetchSlidesByPageActions(
@@ -8,6 +12,15 @@ export async function fetchSlidesByPageActions(
 ) {
   try {
     return await fetchSlidesByPage(query, currentPage);
+  } catch (error) {
+    console.error("Server Action Error:", error);
+    throw new Error("Failed to fetch category books");
+  }
+}
+
+export async function fetchSlideByIdActions(query: string) {
+  try {
+    return await fetchSlideById(query);
   } catch (error) {
     console.error("Server Action Error:", error);
     throw new Error("Failed to fetch category books");

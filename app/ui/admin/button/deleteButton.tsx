@@ -1,17 +1,24 @@
 "use client";
 import { useState } from "react";
-import { TrashIcon } from "@heroicons/react/24/outline";
+import { TrashIcon } from "@heroicons/react/24/outline"; // Có thể làm prop nếu muốn thay icon
 import ConfirmModal from "../modal/confirmModal";
 import toast from "react-hot-toast";
-import { DeleteSlideActions } from "@/app/actions/slideActions";
-import { usePathname } from "next/navigation";
-interface DeleteButtonProps {
-  slideId: string;
+
+interface GenericDeleteButtonProps {
+  id: string; // Giữ id nếu cần, nhưng onDelete có thể không dùng nếu closure
+  onDelete: () => Promise<{ success: boolean; error?: string }>; // Action truyền vào
+  confirmMessage?: string; // Text cho modal, default: "Are you sure you want to delete this item?"
+  successMessage?: string; // Text cho toast success, default: "Delete success"
 }
-export default function DeleteButton({ slideId }: DeleteButtonProps) {
+
+export default function GenericDeleteButton({
+  id, // Không bắt buộc dùng trong component, tùy onDelete
+  onDelete,
+  confirmMessage = "Are you sure you want to delete this item?",
+  successMessage = "Delete success",
+}: GenericDeleteButtonProps) {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const currentPath = usePathname();
 
   const handleShowModal = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -26,21 +33,23 @@ export default function DeleteButton({ slideId }: DeleteButtonProps) {
   const handleDeleteClick = async () => {
     try {
       setIsDeleting(true);
-      const result = await DeleteSlideActions(slideId, currentPath);
+      const result = await onDelete();
 
       if (result.success) {
         setShowConfirmModal(false);
-        toast.success("Delete slide success");
+        toast.success(successMessage);
       } else {
         console.error("Delete failed:", result.error);
+        toast.error(result.error || "Delete failed");
       }
     } catch (error) {
-      toast.error("Can not delete this slide");
+      toast.error("Can not delete this item");
       console.error("Error:", error);
     } finally {
       setIsDeleting(false);
     }
   };
+
   return (
     <>
       <button
@@ -54,7 +63,7 @@ export default function DeleteButton({ slideId }: DeleteButtonProps) {
       </button>
       {showConfirmModal && (
         <ConfirmModal
-          message="Are you sure you want to delete this slide?"
+          message={confirmMessage}
           onConfirm={handleDeleteClick}
           onClose={handleCloseModal}
         />

@@ -2,6 +2,10 @@
 
 import ChapterViewService from "@/lib/chapterViewService";
 import { headers } from "next/headers";
+import fetchChapter from "./data";
+import { cookies } from "next/headers";
+import { revalidatePath } from "next/cache";
+import { defaultSettings, ReaderSettings } from "@/lib/readerSetting";
 
 export async function incrementChapterView(chapterId: string, userId?: string) {
   try {
@@ -71,4 +75,39 @@ export async function getChapterStats(chapterId: string) {
       todayViews: 0,
     };
   }
+}
+export async function fetchChapterActions(chapterId: string) {
+  try {
+    return await fetchChapter(chapterId);
+  } catch (error) {
+    console.error("Server Action Error:", error);
+    throw new Error("Failed to fetch category books");
+  }
+}
+
+export async function updateReaderSettings(settings: Partial<ReaderSettings>) {
+  const cookieStore = await cookies();
+
+  // Get current settings
+  const currentSettingsString = cookieStore.get("reader-settings")?.value;
+  const currentSettings = currentSettingsString
+    ? JSON.parse(currentSettingsString)
+    : defaultSettings;
+
+  const newSettings = { ...currentSettings, ...settings };
+  console.log("newSettings", newSettings);
+  cookieStore.set("reader-settings", JSON.stringify(newSettings), {
+    httpOnly: false, // thông tin cùi chắc là ko cần bảo mật
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+  });
+
+  // Optional: Sync to database for logged users
+  // const session = await auth();
+  // if (session?.user?.id) {
+  //   await saveUserSettingsToDb(session.user.id, newSettings);
+  // }
+
+  revalidatePath("/");
 }

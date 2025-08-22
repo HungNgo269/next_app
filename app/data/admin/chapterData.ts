@@ -1,5 +1,5 @@
 import { ChapterUploadProps } from "@/app/interface/chapter";
-import { sql } from "@/app/lib/db";
+import { sql } from "@/lib/db";
 
 export async function uploadChapterContent({
   book_id,

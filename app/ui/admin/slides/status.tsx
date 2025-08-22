@@ -1,29 +1,29 @@
-import { CheckIcon, ClockIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 
-export default function SlideStatus({ status }: { status: boolean }) {
+export enum Status {
+  completed = "completed",
+  on_going = "on_going",
+  hiatus = "hiatus",
+  cancelled = "cancelled",
+}
+
+export default function StatusLabel({ status }: { status: Status }) {
   return (
     <span
       className={clsx(
-        "inline-flex items-center rounded-full px-2 py-1 text-xs",
+        "inline-flex items-center rounded-full px-2 py-1 text-xs font-medium",
         {
-          "bg-gray-100 text-gray-500": status === false,
-          "bg-green-500 text-white": status === true,
+          "bg-green-100 text-green-800": status === Status.completed,
+          "bg-blue-100 text-blue-800": status === Status.on_going,
+          "bg-yellow-100 text-yellow-800": status === Status.hiatus,
+          "bg-red-100 text-red-800": status === Status.cancelled,
         }
       )}
     >
-      {status === false ? (
-        <>
-          Not Active
-          <ClockIcon className="ml-1 w-4 text-gray-500" />
-        </>
-      ) : null}
-      {status === true ? (
-        <>
-          Active
-          <CheckIcon className="ml-1 w-4 text-white" />
-        </>
-      ) : null}
+      {status === Status.completed && "Completed"}
+      {status === Status.on_going && "On Going"}
+      {status === Status.hiatus && "Hiatus"}
+      {status === Status.cancelled && "Cancelled"}
     </span>
   );
 }

@@ -1,7 +1,7 @@
 import { auth } from "./auth";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { User } from "./app/lib/definitions";
+import { User } from "./lib/definitions";
 import { getToken } from "next-auth/jwt";
 
 export async function middleware(req: NextRequest) {

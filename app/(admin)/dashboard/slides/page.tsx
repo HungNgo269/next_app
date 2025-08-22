@@ -4,8 +4,8 @@ import { InvoicesTableSkeleton } from "@/app/ui/skeletons";
 import { Metadata } from "next";
 import { Suspense } from "react";
 import { fetchSlidePages } from "@/app/data/admin/slideData";
-import Pagination from "@/app/ui/admin/invoices/pagination";
 import SlideTable from "@/app/ui/admin/slides/slideTable";
+import Pagination from "@/app/ui/share/pagination/pagination";
 export const metadata: Metadata = {
   title: "Slides",
 };

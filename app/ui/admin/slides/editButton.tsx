@@ -3,7 +3,11 @@ import { useState } from "react";
 import EditModal from "./editModal";
 import { PencilIcon } from "@heroicons/react/24/outline";
 
-export default function EditButton() {
+interface SlideButtonProps {
+  id: string;
+}
+
+export default async function EditButton({ id }: SlideButtonProps) {
   const [showEditModal, setShowEditModal] = useState(false);
 
   const handleEditClick = (e: React.MouseEvent) => {
@@ -27,7 +31,7 @@ export default function EditButton() {
         <PencilIcon className="w-5 h-5" />
       </button>
 
-      {showEditModal && <EditModal onClose={handleCloseModal} />}
+      {showEditModal && <EditModal onClose={handleCloseModal} id={id} />}
     </>
   );
 }

@@ -6,6 +6,8 @@ import { fetchBookByIdActions } from "@/app/actions/bookActions";
 import { fetchCategoryOfBookAction } from "@/app/actions/categoryActions";
 import Link from "next/link";
 import { ChapterContainer } from "@/app/ui/chapter/chapterContainer";
+import { fetchChapterOfBookAction } from "@/app/actions/chapterActions";
+import { Book } from "@/app/interface/book";
 
 type PageProps = {
   params: Promise<{
@@ -154,11 +156,12 @@ const book2Chapters = [
 
 export default async function BookPage({ params }: PageProps) {
   const { bookId } = await params;
-  const [bookData, bookCategories] = await Promise.all([
+  const [bookData, bookCategories, chapters] = await Promise.all([
     fetchBookByIdActions(bookId),
     fetchCategoryOfBookAction(bookId),
+    fetchChapterOfBookAction(bookId),
   ]);
-  const book = bookData[0];
+  const book: Book = bookData[0];
   console.log("bc", bookCategories);
 
   return (
@@ -266,28 +269,12 @@ export default async function BookPage({ params }: PageProps) {
             <div className="space-y-4">
               <Card>
                 <CardContent className="p-4">
-                  <div className="flex flex-row items-center justify-start space-x-3 mb-3 gap-4">
-                    <Image
-                      src="/testbookcover.png"
-                      alt="book cover"
-                      width={0}
-                      height={0}
-                      sizes="125px"
-                      style={{
-                        width: "125px",
-                        height: "auto",
-                        borderRadius: "10px",
-                      }}
-                    />
-                    <div className="h-full flex flex-col items-start">
-                      <ChapterContainer
-                        title="Quyển 1: Ma Pháp Thiếu Nữ Hệ Vật Lý? (Hoàn Thành)"
-                        coverImage="/placeholder.svg?height=160&width=120"
-                        chapters={book1Chapters}
-                        totalChapters={62}
-                      ></ChapterContainer>
-                    </div>
-                  </div>
+                  <ChapterContainer
+                    title={book.name}
+                    coverImage="/placeholder.svg?height=160&width=120"
+                    chapters={chapters}
+                    totalChapters={62}
+                  ></ChapterContainer>
                 </CardContent>
               </Card>
             </div>

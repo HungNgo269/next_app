@@ -1,12 +1,12 @@
 import Image from "next/image";
-import SlideStatus from "./status";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import EditButton from "./editButton";
-import DeleteButton from "./deleteButton";
-import { SlideTable } from "@/app/interface/slide";
 import { fetchSlidesByPageActions } from "@/app/actions/slideActions";
 import { formatEnDateTime } from "@/lib/utils/formatDate";
-
+import SlideDeleteButton from "./slideDeleteButton";
+import Active from "./active";
+import { Suspense } from "react";
+import { SlideTableProps } from "@/app/interface/slide";
 export default async function SlideTable({
   query,
   currentPage,
@@ -14,7 +14,7 @@ export default async function SlideTable({
   query: string;
   currentPage: number;
 }) {
-  const slides: SlideTable[] = await fetchSlidesByPageActions(
+  const slides: SlideTableProps[] = await fetchSlidesByPageActions(
     query,
     currentPage
   );
@@ -23,7 +23,7 @@ export default async function SlideTable({
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
           <div className="md:hidden">
-            {slides?.map((slide: SlideTable) => (
+            {slides?.map((slide: SlideTableProps) => (
               <div
                 key={slide.id}
                 className="mb-2 w-full rounded-md bg-white p-4"
@@ -42,7 +42,7 @@ export default async function SlideTable({
                     </div>
                     <p className="text-sm text-gray-500">{slide.description}</p>
                   </div>
-                  <SlideStatus status={slide.is_active}></SlideStatus>
+                  <Active status={slide.is_active}></Active>
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
                   <div className="flex justify-end gap-2">
@@ -62,13 +62,13 @@ export default async function SlideTable({
                 <th scope="col" className="px-3 py-5 font-medium">
                   Description
                 </th>
-                <th scope="col" className="px-3 py-5 font-medium">
+                <th scope="col" className="px-3 py-5 font-medium text-nowrap">
                   Display order
                 </th>
-                <th scope="col" className="px-3 py-5 font-medium">
+                <th scope="col" className="px-3 py-5 font-medium ">
                   Status
                 </th>
-                <th scope="col" className="px-3 py-5 font-medium">
+                <th scope="col" className="px-3 py-5 font-medium text-center">
                   Date
                 </th>
                 <th scope="col" className="relative py-3 pl-6 pr-3">
@@ -77,7 +77,7 @@ export default async function SlideTable({
               </tr>
             </thead>
             <tbody className="bg-white">
-              {slides?.map((slide: SlideTable) => (
+              {slides?.map((slide: SlideTableProps) => (
                 <tr
                   key={slide.id}
                   className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
@@ -102,15 +102,15 @@ export default async function SlideTable({
                     {slide.display_order}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    <SlideStatus status={slide.is_active}></SlideStatus>
+                    <Active status={slide.is_active}></Active>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3 text-center">
                     {formatEnDateTime(slide?.created_at)}
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
-                      <EditButton></EditButton>
-                      <DeleteButton slideId={slide.id}></DeleteButton>
+                      <EditButton id={slide.id}></EditButton>
+                      <SlideDeleteButton id={slide.id}></SlideDeleteButton>
                     </div>
                   </td>
                 </tr>

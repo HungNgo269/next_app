@@ -1,4 +1,4 @@
-import { sql } from "@/app/lib/db";
+import { sql } from "@/lib/db";
 export async function FetchMostFollowBookByWeek() {
   try {
     let res = await sql`Select id, image_urls, name, author

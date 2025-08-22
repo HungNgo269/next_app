@@ -1,4 +1,6 @@
 import BaseModal from "./baseAdminModal";
+import { AlertTriangle } from "lucide-react";
+
 interface ConfirmModalProps {
   onClose: () => void;
   onConfirm: () => void;
@@ -11,22 +13,33 @@ export default function ConfirmModal({
   onClose,
 }: ConfirmModalProps) {
   return (
-    <BaseModal onClose={onClose} maxWidth="max-w-sm">
-      <div className="space-y-4">
-        <p>{message}</p>
+    <BaseModal onClose={onClose} maxWidth="max-w-md">
+      <div className="space-y-6">
+        <div className="flex items-center justify-center w-16 h-16 mx-auto bg-red-100 border border-red-200">
+          <AlertTriangle className="w-8 h-8 text-red-600" />
+        </div>
 
-        <div className="flex gap-2 justify-end">
+        <div className="text-center space-y-3">
+          <h3 className="text-lg font-semibold text-gray-900">
+            Confirm Delete
+          </h3>
+          <p className="text-gray-600 leading-relaxed">{message}</p>
+        </div>
+
+        <div className="flex gap-3 justify-end pt-2">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-gray-600 border rounded"
+            className="px-6 py-2 text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 transition-colors font-medium"
+            type="button"
           >
             Cancel
           </button>
           <button
             onClick={onConfirm}
-            className="bg-red-500 text-white px-4 py-2 rounded"
+            className="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white transition-colors font-medium"
+            type="button"
           >
-            Confirm
+            Confirm Delete
           </button>
         </div>
       </div>

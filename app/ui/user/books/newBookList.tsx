@@ -1,4 +1,4 @@
-import { sql } from "@/app/lib/db";
+import { sql } from "@/lib/db";
 import BookCard from "./bookCard";
 import { Book } from "@/app/interface/book";
 import BookCarousel from "./bookCarousel";

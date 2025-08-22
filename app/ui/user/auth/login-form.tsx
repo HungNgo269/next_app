@@ -8,7 +8,7 @@ import {
 import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import { Button } from "@/app/ui/button";
 import { useActionState, useState } from "react";
-import { authenticate } from "@/app/lib/actions";
+import { authenticate } from "@/app/(auth)/login/actions";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import PasswordField from "./passwordField";
