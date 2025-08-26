@@ -15,11 +15,6 @@ export default function SugggestionList({
 }: SuggestionsListProps) {
   return (
     <div className="border-b border-gray-100">
-      <div className="px-5 py-2 bg-gray-50">
-        <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">
-          Gợi ý tìm kiếm
-        </span>
-      </div>
       {suggestions.map((s, index) => (
         <SuggestionItem
           key={index}

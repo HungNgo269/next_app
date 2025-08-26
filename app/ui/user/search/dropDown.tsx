@@ -11,20 +11,11 @@ interface DropdownProps {
   trending: string[];
   onSelect: (v: string) => void;
   onRemoveHistoryItem: (v: string) => void;
-  onClearHistory: () => void;
 }
 
 const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
   (
-    {
-      query,
-      suggestions,
-      history,
-      trending,
-      onSelect,
-      onRemoveHistoryItem,
-      onClearHistory,
-    },
+    { query, suggestions, history, trending, onSelect, onRemoveHistoryItem },
     ref
   ) => {
     const showSuggestions = !!query && suggestions.length > 0;
@@ -56,7 +47,6 @@ const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
             items={history}
             onSelect={onSelect}
             onRemove={onRemoveHistoryItem}
-            onClearAll={onClearHistory}
           />
         )}
 

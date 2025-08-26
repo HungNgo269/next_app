@@ -12,20 +12,20 @@ import MostPopularBook from "./ui/user/ranking/mostPopularBook";
 import MostPopularSeries from "./ui/user/ranking/mostPopularSeries";
 import FooterComponent from "./ui/user/footer/footerComponent";
 import SectionComponent from "./ui/user/section/section";
+import { ScrollHeader } from "./ui/user/headerCustomer/scrollHeader";
 
 export default function HomePage() {
   return (
     <>
-      <header className="ml-auto mr-auto w-[1190px]">
+      <header className="ml-auto mr-auto  ">
         <Suspense>
-          <Header></Header>
+          <ScrollHeader children={<Header></Header>}></ScrollHeader>
         </Suspense>
       </header>
+      <Suspense>
+        <Carousel />
+      </Suspense>
       <div className=" mx-auto mt-10 w-[1190px]">
-        <Suspense>
-          <Carousel />
-        </Suspense>
-
         <Suspense>
           <BestSellerContainer />
         </Suspense>

@@ -4,8 +4,16 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 type Variant = "lg" | "sm";
 
 const MAP = {
-  lg: { width: "1238px", height: "300px" },
-  sm: { width: "840px", height: "300px" },
+  lg: {
+    width: "1238px",
+    height: "300px",
+    className: "h-[300px] w-[1238px]",
+  },
+  sm: {
+    width: "840px",
+    height: "207px",
+    className: "h-[207px] w-[840px]",
+  },
 } as const;
 
 interface SlideNavigationProps {
@@ -31,10 +39,9 @@ export default function BookCarouselNavigation({
 
   return (
     <div
-      className={`absolute top-1/2 translate-y-1/2 flex justify-between items-center z-20 pointer-events-none 
-        ${s.height}  ${s.width} ${
-        showPrevButton ? "left-[-17]" : "right-[-17]"
-      } }`}
+      className={`absolute top-0 flex justify-between items-center z-20 pointer-events-none ${
+        s.className
+      } ${showPrevButton ? "left-[-17px]" : "right-[-17px]"}`}
     >
       <div className="flex justify-start">
         {showPrevButton && (

@@ -5,21 +5,21 @@ export interface Book {
   name: string;
   description?: string;
   price: number;
-  category_id: string;
   image_urls: string[];
-  stock_quantity: number;
-  sku: string;
   is_active: boolean;
   created_at: string;
   updated_at: string;
   author?: string;
   views?: number;
+  publish_date?: string;
+  status: Status;
 }
-export interface BookCard {
-  id: string;
+export interface BookCardProps {
+  id: number;
   name: string;
   author: string;
   image_urls: string[];
+  status?: Status;
 }
 export interface BookImage {
   id: string;
@@ -35,4 +35,16 @@ export interface BookTableProps {
   is_active: boolean;
   created_at: string;
   updated_at: string;
+}
+export interface RecommendedBookProps {
+  id: number;
+  name: string;
+  author: string;
+  description: string;
+  image_urls: string;
+  badges: Array<{
+    label: string;
+    icon: string;
+    priority: number;
+  }>;
 }

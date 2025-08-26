@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { lusitana } from "@/app/ui/fonts";
-import Search from "@/app/ui/search";
+import Search from "@/app/ui/share/search/search";
 import { FormattedCustomersTable } from "@/app/interface/customer";
 import { PencilIcon, Trash } from "lucide-react";
 import EditButton from "../slides/editButton";

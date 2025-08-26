@@ -51,7 +51,7 @@ export default function BookCarousel({ books, variant }: BookCarouselProps) {
 
   return (
     <div className={`relative ${cfg.container}`}>
-      <div className="relative mt-3 overflow-hidden">
+      <div className="relative overflow-hidden">
         <div
           className="flex transition-transform duration-300 ease-in-out h-fit"
           style={{ transform: `translateX(-${currentSlide * 100}%)` }}
@@ -59,7 +59,7 @@ export default function BookCarousel({ books, variant }: BookCarouselProps) {
         >
           {slides.map((page, i) => (
             <div key={i} className="w-full flex-shrink-0">
-              <div className={`grid mt-3 ${cfg.grid}`}>
+              <div className={`grid  ${cfg.grid}`}>
                 {page.map((book) => (
                   <BookCard key={book.id} book={book} variant={variant} />
                 ))}

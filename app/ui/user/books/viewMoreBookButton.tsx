@@ -6,7 +6,7 @@ interface ViewMoreBookButton {
   context?: string;
 }
 
-export default async function ViewMoreBookButton({
+export default function ViewMoreBookButton({
   url,
   context,
 }: ViewMoreBookButton) {

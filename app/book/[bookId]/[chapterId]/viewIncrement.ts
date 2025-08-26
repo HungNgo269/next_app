@@ -5,7 +5,7 @@ import { incrementChapterView } from "./action";
 import { useAuthStore } from "@/app/store/useAuthStore";
 
 interface ViewIncrementerProps {
-  chapterId: string;
+  chapterId: number;
 }
 
 export default function ViewIncrementer({ chapterId }: ViewIncrementerProps) {

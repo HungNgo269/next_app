@@ -5,9 +5,11 @@ import Image from "next/image";
 import { fetchBookByIdActions } from "@/app/actions/bookActions";
 import { fetchCategoryOfBookAction } from "@/app/actions/categoryActions";
 import Link from "next/link";
-import { ChapterContainer } from "@/app/ui/chapter/chapterContainer";
+import { ChapterContainer } from "@/app/ui/share/chapter/chapterContainer";
 import { fetchChapterOfBookAction } from "@/app/actions/chapterActions";
 import { Book } from "@/app/interface/book";
+import FooterComponent from "@/app/ui/user/footer/footerComponent";
+import HeaderCustomer from "@/app/ui/user/headerCustomer/header";
 
 type PageProps = {
   params: Promise<{
@@ -166,7 +168,7 @@ export default async function BookPage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen bg-gray-50 w-full">
-      <div className="w-full h-64 relative">
+      <div className="w-full h-72 relative">
         <Image
           src={book.image_urls[0]}
           alt="book banner"
@@ -265,7 +267,7 @@ export default async function BookPage({ params }: PageProps) {
               </p>
             </CardContent>
           </Card>
-          <div className="mt-5">
+          <div className="mt-5 mb-8">
             <div className="space-y-4">
               <Card>
                 <CardContent className="p-4">
@@ -295,6 +297,7 @@ export default async function BookPage({ params }: PageProps) {
           </div>
         </div>
       </div>
+      <FooterComponent></FooterComponent>
     </div>
   );
 }

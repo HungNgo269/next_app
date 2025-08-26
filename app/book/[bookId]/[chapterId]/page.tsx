@@ -3,21 +3,34 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { Chapter } from "@/app/interface/chapter";
 import ViewIncrementer from "./viewIncrement";
-import { fetchChapterActions } from "./action";
+import {
+  checkNextChapterAction,
+  checkPrevChapterAction,
+  fetchChapterActions,
+} from "./action";
 import ChapterToolBar from "@/app/ui/user/chapter/chapterToolBar";
 import { getServerReaderSettings, ReaderSettings } from "@/lib/readerSetting";
 import ChapterContent from "@/app/ui/user/chapter/chapterContent";
+import { checkNextChapter } from "./data";
 
 type PageProps = {
   params: Promise<{
-    chapterId: string;
+    chapterId: number;
+    bookId: number;
   }>;
 };
 
 export default async function ChapterPage({ params }: PageProps) {
-  const { chapterId } = await params;
+  const { chapterId, bookId } = await params;
   const [chapterData] = await Promise.all([fetchChapterActions(chapterId)]);
   const chapter: Chapter = chapterData;
+  const [idPrevChapter, idNextChapter] = await Promise.all([
+    checkPrevChapterAction(chapter.chapter_number),
+    checkNextChapterAction(chapter.chapter_number),
+  ]);
+  console.log("prev", idPrevChapter);
+  console.log("next", idNextChapter);
+
   const settings: ReaderSettings = (await getServerReaderSettings()) || 16;
 
   return (
@@ -26,18 +39,6 @@ export default async function ChapterPage({ params }: PageProps) {
 
       {/* Main Content */}
       <div className={`max-w-4xl mx-auto px-4 py-8 `}>
-        {/* Chapter Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold mb-2">Phần 1</h1>
-          <h2 className="text-xl font-semibold mb-4">Chương 02</h2>
-          <div className="text-sm text-muted-foreground space-x-4">
-            <span>0 Bình luận</span>
-            <span>-</span>
-            <span>Độ dài: 2.331 từ</span>
-            <span>-</span>
-            <span>Cập nhật: 1 giờ</span>
-          </div>
-        </div>
         <ChapterContent chapter={chapter} settings={settings}></ChapterContent>
 
         {/* Navigation Buttons - Hidden on mobile/tablet */}
@@ -58,7 +59,12 @@ export default async function ChapterPage({ params }: PageProps) {
           </Button>
         </div>
       </div>
-      <ChapterToolBar iniSettings={settings}></ChapterToolBar>
+      <ChapterToolBar
+        iniSettings={settings}
+        bookId={bookId}
+        idPrev={idPrevChapter}
+        idNext={idNextChapter}
+      ></ChapterToolBar>
     </div>
   );
 }

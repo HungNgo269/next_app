@@ -11,6 +11,7 @@ export interface Chapter {
 export interface ChapterStats {
   totalViews: number;
   uniqueViews: number;
+  guestViews?: number;
   todayViews: number;
 }
 
@@ -22,6 +23,8 @@ export interface ViewResult {
   success: boolean;
   totalViews?: number;
   dailyViews?: number;
+  guestViews?: number;
+  isNewView?: boolean;
   error?: string;
   message?: string;
 }

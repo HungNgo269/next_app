@@ -10,39 +10,6 @@ export async function fetchBookById(id: string) {
   }
 }
 
-export async function fetchBookByCategory() {
-  try {
-    let res =
-      await sql`Select * from books b join book_categories bc on b.id = bc.book_id 
-    join categories c on bc.category_id= c.id order by views limit 10`;
-    return res;
-  } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch Categories.");
-  }
-}
-
-export async function fetchMostViewedBookByCategory(query: string) {
-  try {
-    const res = await sql`
-      SELECT 
-        b.id,
-        b.name,
-        b.author,
-        b.image_urls
-      FROM books b
-      JOIN books_categories bc ON b.id = bc.book_id
-      JOIN categories c ON bc.category_id = c.id
-      WHERE c.id = ${query}
-      ORDER BY b.views DESC
-      LIMIT 10
-    `;
-    return res;
-  } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch Categories.");
-  }
-}
 export async function fetchBookImage(bookId: string) {
   try {
     const res = await sql`
@@ -100,5 +67,61 @@ export async function fetchBooksByPage(query: string, currentPage: number) {
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch Slides.");
+  }
+}
+
+export async function fetchAllBook(query: string, currentPage: number) {
+  const offset = (currentPage - 1) * 30;
+  try {
+    const data = await sql`
+      SELECT id,name,status,image_urls,is_active,created_at,updated_at
+      FROM books
+      WHERE
+    id::text ILIKE ${`%${query}%`} OR
+    name ILIKE ${`%${query}%`} OR
+    status::text ILIKE ${`%${query}%`} OR
+    image_urls::text ILIKE ${`%${query}%`} OR
+    is_active::text ILIKE ${`%${query}%`} 
+         order by id asc
+      limit ${ITEMS_PER_PAGE} OFFSET ${offset}
+        `;
+    return data;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch Slides.");
+  }
+}
+export async function fetchOurRecommendedBook(bookId: string) {
+  try {
+    const res = await sql`
+      SELECT 
+        b.id, b.name, b.image_urls, b.author, b.description,
+        badges.label, badges.icon, badges.priority
+      FROM books b 
+      JOIN book_badges bb ON b.id = bb.book_id
+      JOIN badges badges ON bb.badge_id = badges.id
+      WHERE b.id = ${bookId}
+      ORDER BY badges.priority
+    `;
+
+    if (res.length === 0) return null;
+
+    const book = {
+      id: res[0].id,
+      name: res[0].name,
+      image_urls: res[0].image_urls[0],
+      author: res[0].author,
+      description: res[0].description,
+      badges: res.map((row) => ({
+        label: row.label,
+        icon: row.icon,
+        priority: row.priority,
+      })),
+    };
+
+    return book;
+  } catch (error) {
+    console.error("Server Action Error:", error);
+    throw new Error("Failed to fetch recommended book");
   }
 }

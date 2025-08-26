@@ -17,7 +17,7 @@ export default class ChapterViewService {
   constructor() {}
 
   async incrementView(
-    chapterId: string,
+    chapterId: number,
     userId?: string,
     ipAddress?: string
   ): Promise<ViewResult> {
@@ -28,25 +28,26 @@ export default class ChapterViewService {
       const today = new Date().toISOString().split("T")[0];
       const dailyViewKey = `chapter:${chapterId}:views:${today}`;
       const uniqueViewKey = `chapter:${chapterId}:unique_views`;
+
       // Track unique view - ưu tiên userId, fallback sang IP
       let isNewUniqueView = false;
+      let shouldExecutePipeline = false;
+
       console.log("userId", userId);
+
       if (userId) {
         const viewerKey = `user:${userId}:viewed:${chapterId}`;
         const hasViewed = await redis.exists(viewerKey);
         if (!hasViewed) {
           pipeline.sadd(uniqueViewKey, userId);
-
           pipeline.setex(viewerKey, this.USER_VIEW_TTL, 1);
-
-          isNewUniqueView = true;
-
           pipeline.incr(viewKey); //+1
-
           pipeline.incr(dailyViewKey);
           pipeline.expire(dailyViewKey, this.DAILY_TTL);
+          pipeline.zincrby("chapters:ranking:views", 1, chapterId);
 
-          pipeline.zincrby("chapters:ranking:views", 1, chapterId); //tên sorted set -> tăng bao nhiêu -> tên phần tử được tăng
+          isNewUniqueView = true;
+          shouldExecutePipeline = true;
         }
       } else if (ipAddress && ipAddress !== "unknown") {
         const hashedIP = this.hashIP(ipAddress);
@@ -59,16 +60,48 @@ export default class ChapterViewService {
           pipeline.incr(viewKey); //+1
           pipeline.incr(dailyViewKey);
           pipeline.expire(dailyViewKey, this.DAILY_TTL);
-          pipeline.zincrby("chapters:ranking:views", 1, chapterId); //tên sorted set -> tăng bao nhiêu -> tên phần tử được tăng
+          pipeline.zincrby("chapters:ranking:views", 1, chapterId);
+
           isNewUniqueView = true;
+          shouldExecutePipeline = true;
         }
       }
-      const results = await pipeline.exec();
-      return {
-        success: true,
-        totalViews: results[0] as number,
-        dailyViews: results[1] as number,
-      };
+
+      // Chỉ execute pipeline khi có operations
+      if (shouldExecutePipeline) {
+        const results = await pipeline.exec();
+        // Redis pipeline exec() trả về array các [error, result] tuples
+        const pipelineResults = results as [Error | null, any][] | null;
+
+        if (!pipelineResults) {
+          throw new Error("Pipeline execution failed");
+        }
+
+        // Lấy kết quả từ incr operations (index 2 và 3 trong pipeline)
+        const totalViewsResult = pipelineResults[2]; // incr(viewKey)
+        const dailyViewsResult = pipelineResults[3]; // incr(dailyViewKey)
+
+        const totalViews = (totalViewsResult?.[1] as number) || 0;
+        const dailyViews = (dailyViewsResult?.[1] as number) || 0;
+        console.log("checkResuilt", pipelineResults);
+
+        return {
+          success: true,
+          totalViews,
+          dailyViews,
+          isNewView: isNewUniqueView,
+        };
+      } else {
+        // Trường hợp đã view rồi, trả về stats hiện tại
+        const currentStats = await this.getChapterStats(chapterId);
+        console.log("current", currentStats);
+        return {
+          success: true,
+          totalViews: currentStats?.totalViews || 0,
+          dailyViews: currentStats?.todayViews || 0,
+          isNewView: false,
+        };
+      }
     } catch (error) {
       console.error("Error incrementing view:", error);
       return {
@@ -77,7 +110,8 @@ export default class ChapterViewService {
       };
     }
   }
-  async getChapterStats(chapterId: string): Promise<ChapterStats | null> {
+
+  async getChapterStats(chapterId: number): Promise<ChapterStats | null> {
     try {
       const pipeline = redis.pipeline();
       const viewKey = `chapter:${chapterId}:views`;
@@ -89,18 +123,28 @@ export default class ChapterViewService {
       pipeline.scard(uniqueViewKey);
       pipeline.get(dailyViewKey);
 
-      const [totalViews, uniqueViews, todayViews] = await pipeline.exec();
+      const results = await pipeline.exec();
+      // Redis pipeline exec() trả về array các [error, result] tuples
+      const pipelineResults = results as [Error | null, any][] | null;
 
+      // Kiểm tra results trước khi parse
+      if (!pipelineResults || pipelineResults.length !== 3) {
+        return null;
+      }
+
+      const [totalViewsResult, uniqueViewsResult, todayViewsResult] =
+        pipelineResults;
       return {
-        totalViews: parseInt(totalViews as string) || 0,
-        uniqueViews: parseInt(uniqueViews as string) || 0,
-        todayViews: parseInt(todayViews as string) || 0,
+        totalViews: parseInt(String(totalViewsResult?.[1] || "0")) || 0,
+        uniqueViews: parseInt(String(uniqueViewsResult?.[1] || "0")) || 0,
+        todayViews: parseInt(String(todayViewsResult?.[1] || "0")) || 0,
       };
     } catch (error) {
       console.error("Error getting chapter stats:", error);
       return null;
     }
   }
+
   private hashIP(ip: string): string {
     return createHash("sha256").update(ip).digest("hex");
   }
@@ -127,9 +171,9 @@ export default class ChapterViewService {
         }
       }
     }
-    // nhót
     return "unknown";
   }
+
   static isValidIP(ip: string): boolean {
     const ipv4Regex =
       /^(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)){3}$/;

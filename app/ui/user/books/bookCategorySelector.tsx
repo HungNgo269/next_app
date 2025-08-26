@@ -4,8 +4,8 @@ import { memo } from "react";
 
 interface CategorySelectorProps {
   categories: Category[];
-  selectedCategory: string;
-  onCategoryChange: (categoryId: string) => void;
+  selectedCategory: number;
+  onCategoryChange: (categoryId: number) => void;
 }
 
 function CategorySelector({

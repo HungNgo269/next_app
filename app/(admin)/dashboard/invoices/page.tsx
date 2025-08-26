@@ -1,5 +1,5 @@
 import Pagination from "@/app/ui/invoices/pagination";
-import Search from "@/app/ui/search";
+import Search from "@/app/ui/share/search/search";
 import Table from "@/app/ui/invoices/table";
 import { lusitana } from "@/app/ui/fonts";
 import { InvoicesTableSkeleton } from "@/app/ui/skeletons";

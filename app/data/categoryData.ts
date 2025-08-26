@@ -1,16 +1,19 @@
 import { sql } from "@/lib/db";
-export async function fetchBookByCategory() {
+export async function fetchBookByCategory(categoryId: number) {
   try {
-    let res =
-      await sql`Select * from book b join book_categories bc on b.id = bc.book_id 
-    join categories c on bc.category_id= c.id order by views limit 10`;
+    let res = await sql`
+      SELECT b.id, b.name, b.image_urls, b.author, b.status 
+      FROM books b 
+      JOIN books_categories bc ON b.id = bc.book_id 
+      JOIN categories c ON bc.category_id = c.id  
+      WHERE c.id = ${categoryId}
+    `;
     return res;
   } catch (error) {
     console.error("Database Error:", error);
-    throw new Error("Failed to fetch Categories.");
+    throw new Error("Failed to fetch books by category.");
   }
 }
-
 export async function fetchMostViewedBookByCategory(id: string) {
   try {
     const res = await sql`

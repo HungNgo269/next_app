@@ -1,41 +1,76 @@
-import { Chapter } from "@/app/interface/chapter";
-import { ProductCard, ProductImage } from "@/app/interface/book";
-import { sql } from "@/lib/db";
-import Image from "next/image";
+import {
+  getcategoryIdBySlug,
+  getcategoryNameBySlug,
+} from "@/app/constant/categories";
+import { fetchBookByCategory } from "../data/categoryData";
+import CategoryFilter from "../ui/share/genre/categoryFilter";
+import { BookCardProps } from "../interface/book";
+import BookCard from "../ui/user/books/bookCard";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import MostPopularBook from "../ui/user/ranking/mostPopularBook";
 
-type PageProps = {
-  params: {};
-};
-export default async function BooksPage({ params }: PageProps) {
-  //   const Chapters: Chapter[] = await sql`
-  //   SELECT id,product_id, title, chapter_number, is_free
-  //   FROM chapters
-  //   WHERE id = ${ChapterId}
-  // `;
-  //   const Chapter = Chapters[0];
+interface BookPageProps {
+  searchParams: Promise<{ tag?: string }>;
+}
 
-  //   const Books: ProductImage[] = await sql`
-  //   SELECT image_urls
-  //   FROM products
-  //   WHERE id = ${BookId}
-  // `;
-  //   const image = Books[0].image_urls[0];
+export default async function BookPage({ searchParams }: BookPageProps) {
+  const { tag } = await searchParams;
+  const categoryId = getcategoryIdBySlug(tag);
+  const books: BookCardProps[] = await fetchBookByCategory(categoryId);
+  const categoryName = getcategoryNameBySlug(tag);
+  console.log("book", books);
+  async function handleCategoryChangeAction(formData: FormData) {
+    "use server";
+
+    const selectedCategory = formData.get("category") as string;
+    console.log("🔄 Category change server action:", selectedCategory);
+    revalidatePath("/book");
+    if (selectedCategory === "all") {
+      redirect("/book");
+    } else {
+      redirect(`/book?tag=${selectedCategory}`);
+    }
+  }
 
   return (
-    <>Book</>
-    // <div className="flex flex-col  w-[220px] h-[445px] p-1 mt-10">
-    //   <div className="relative w-[200px] h-[300px]">
-    //     <Image
-    //       src={Chapter?.image_urls[0]}
-    //       alt={Chapter.name}
-    //       fill
-    //       className="object-cover rounded"
-    //     />
-    //   </div>
+    <div className=" mx-auto w-[1190px]">
+      <div className="flex  justify-between mt-4">
+        <div className="w-[850px]   flex flex-col gap-5">
+          <div className="mb-6">
+            <CategoryFilter
+              currentGenre={tag}
+              onCategoryChange={handleCategoryChangeAction}
+            />
+          </div>
 
-    //   <div className="flex flex-col h-fit w-full mt-2.5">
-    //     <span className="line-clamp-2  font-bold w-full">{Chapter.name}</span>
-    //   </div>
-    // </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+            {books && books.length > 0
+              ? (books as BookCardProps[]).map((book: BookCardProps) => (
+                  <BookCard variant="sm" book={book} key={book.id} />
+                ))
+              : ""}
+          </div>
+        </div>
+
+        <div className="w-[300px]  flex flex-col gap-5">
+          <MostPopularBook />
+        </div>
+      </div>
+    </div>
   );
+}
+
+export async function generateMetadata({ searchParams }: BookPageProps) {
+  const { tag } = await searchParams;
+  const categoryName = tag ? getcategoryNameBySlug(tag) : null;
+
+  return {
+    title: categoryName
+      ? `Sách ${categoryName} - Bookstore`
+      : "Tất cả sách - Bookstore",
+    description: categoryName
+      ? `Khám phá bộ sưu tập sách ${categoryName} tại bookstore`
+      : "Khám phá bộ sưu tập sách đa dạng với nhiều thể loại",
+  };
 }

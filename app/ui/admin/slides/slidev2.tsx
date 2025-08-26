@@ -120,8 +120,8 @@ export default function Carousel() {
   }, [isPlaying, nextSlide]);
 
   return (
-    <div className=" relative max-w-4xl mx-auto bg-white rounded-[8px] shadow-lg overflow-hidden mt-10  ">
-      <div className="relative h-[350px] md:h-[400px] overflow-hidden ">
+    <div className=" relative w-full mx-auto bg-white shadow-lg overflow-hidden ">
+      <div className="relative h-[450px] md:h-[500px] overflow-hidden ">
         <div
           className="flex transition-transform duration-300 ease-in-out h-full"
           style={{ transform: `translateX(-${currentSlide * 100}%)` }} //translateX(100)=>sang phải 1 slide
@@ -162,14 +162,12 @@ export default function Carousel() {
             </div>
           ))}
         </div>
-
-        {/* Navigation arrows */}
         <Button
           variant="outline"
           size="icon"
-          className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white border-gray-200 shadow-lg z-10 rounded-[50%]"
+          className="absolute right-24 bottom-0 -translate-y-1/2 bg-white/90 hover:bg-white border-gray-200 shadow-lg z-30 rounded-[50%]"
           onClick={prevSlide}
-          disabled={isTransitioning}
+          // disabled={isTransitioning}
         >
           <ChevronLeft className="h-5 w-5" />
           <span className="sr-only">Previous slide</span>
@@ -178,9 +176,9 @@ export default function Carousel() {
         <Button
           variant="outline"
           size="icon"
-          className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white border-gray-200 shadow-lg z-10  rounded-[50%]"
+          className="absolute right-4 bottom-0 -translate-y-1/2 bg-white/90 hover:bg-white border-gray-200 shadow-lg z-30  rounded-[50%]"
           onClick={nextSlide}
-          disabled={isTransitioning}
+          // disabled={isTransitioning}
         >
           <ChevronRight className="h-5 w-5" />
           <span className="sr-only">Next slide</span>
@@ -190,7 +188,7 @@ export default function Carousel() {
         <Button
           variant="outline"
           size="icon"
-          className="absolute top-4 right-4 bg-white/90 hover:bg-white border-gray-200 shadow-lg z-10 rounded-[50%]"
+          className="absolute bottom-0 right-14 -translate-y-1/2 bg-white/90 hover:bg-white border-gray-200 shadow-lg z-30 rounded-[50%]"
           onClick={togglePlayPause}
         >
           {isPlaying ? (
@@ -202,6 +200,7 @@ export default function Carousel() {
             {isPlaying ? "Pause" : "Play"} carousel
           </span>
         </Button>
+        {/* Navigation arrows */}
       </div>
       <div className="flex justify-center items-center space-x-2 py-4 bg-transparent   absolute z-10 bottom-0 left-0 right-0">
         {slides.map((_, index) => (

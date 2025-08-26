@@ -2,12 +2,12 @@
 
 import ChapterViewService from "@/lib/chapterViewService";
 import { headers } from "next/headers";
-import fetchChapter from "./data";
+import { checkNextChapter, checkPrevChapter, fetchChapter } from "./data";
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { defaultSettings, ReaderSettings } from "@/lib/readerSetting";
 
-export async function incrementChapterView(chapterId: string, userId?: string) {
+export async function incrementChapterView(chapterId: number, userId?: string) {
   try {
     const headersList = await headers();
 
@@ -55,7 +55,7 @@ export async function incrementChapterView(chapterId: string, userId?: string) {
   }
 }
 
-export async function getChapterStats(chapterId: string) {
+export async function getChapterStats(chapterId: number) {
   try {
     const chapterService = new ChapterViewService();
     const stats = await chapterService.getChapterStats(chapterId);
@@ -76,7 +76,7 @@ export async function getChapterStats(chapterId: string) {
     };
   }
 }
-export async function fetchChapterActions(chapterId: string) {
+export async function fetchChapterActions(chapterId: number) {
   try {
     return await fetchChapter(chapterId);
   } catch (error) {
@@ -110,4 +110,22 @@ export async function updateReaderSettings(settings: Partial<ReaderSettings>) {
   // }
 
   revalidatePath("/");
+}
+// Navigation functions
+export async function checkPrevChapterAction(currentChapterNumber: number) {
+  try {
+    return await checkPrevChapter(currentChapterNumber);
+  } catch (error) {
+    console.error("Server Action Error:", error);
+    throw new Error("Failed to fetch category books");
+  }
+}
+
+export async function checkNextChapterAction(currentChapterNumber: number) {
+  try {
+    return await checkNextChapter(currentChapterNumber);
+  } catch (error) {
+    console.error("Server Action Error:", error);
+    throw new Error("Failed to fetch category books");
+  }
 }

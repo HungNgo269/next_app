@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Book } from "@/app/interface/book";
+import { Book, BookCardProps } from "@/app/interface/book";
 
 type Variant = "lg" | "sm";
 // cho 2 component kích thước khác nhau.
@@ -25,7 +25,7 @@ export default function BookCard({
   book,
   variant = "lg",
 }: {
-  book: Book;
+  book: BookCardProps;
   variant?: Variant;
 }) {
   const s = MAP[variant];

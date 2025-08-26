@@ -1,9 +1,11 @@
 "use server";
 
 import {
+  fetchAllBook,
   fetchBookById,
   fetchBookImage,
   fetchBooksByPage,
+  fetchOurRecommendedBook,
 } from "../data/bookData";
 import { fetchMostViewedBookByCategory } from "../data/categoryData";
 
@@ -39,6 +41,22 @@ export async function fetchBooksByPageActions(
 ) {
   try {
     return await fetchBooksByPage(query, currentPage);
+  } catch (error) {
+    console.error("Server Action Error:", error);
+    throw new Error("Failed to fetch category books");
+  }
+}
+export async function fetchAllBookAction(query: string, currentPage: number) {
+  try {
+    return await fetchAllBook(query, currentPage);
+  } catch (error) {
+    console.error("Server Action Error:", error);
+    throw new Error("Failed to fetch category books");
+  }
+}
+export async function fetchOurRecommendedBookAction(bookId: number) {
+  try {
+    return await fetchOurRecommendedBook(bookId);
   } catch (error) {
     console.error("Server Action Error:", error);
     throw new Error("Failed to fetch category books");

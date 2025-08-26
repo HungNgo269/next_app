@@ -4,30 +4,15 @@ interface HistoryListProps {
   items: string[];
   onSelect: (item: string) => void;
   onRemove: (item: string) => void;
-  onClearAll: () => void;
 }
 
 export default function HistoryList({
   items,
   onSelect,
   onRemove,
-  onClearAll,
 }: HistoryListProps) {
   return (
     <div className="py-2" aria-label="Search history">
-      <div className="flex items-center justify-between px-4 py-2 border-b border-gray-100">
-        <span className="text-sm font-medium text-gray-600">
-          Lịch sử tìm kiếm
-        </span>
-        <button
-          onClick={onClearAll}
-          className="text-sm text-blue-600 hover:text-blue-800"
-          type="button"
-        >
-          Xóa tất cả
-        </button>
-      </div>
-
       {items.map((item, i) => (
         <div
           key={`${item}-${i}`}

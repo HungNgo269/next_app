@@ -68,8 +68,6 @@ export default function SearchComponent() {
   const removeFromHistory = (itemToRemove: string) =>
     setSearchHistory((prev) => prev.filter((item) => item !== itemToRemove));
 
-  const clearHistory = () => setSearchHistory([]);
-
   const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
     if (e.key === "Enter") handleSearch(query);
     if (e.key === "Escape") setIsOpen(false);
@@ -90,10 +88,10 @@ export default function SearchComponent() {
   }, []);
 
   return (
-    <div className="max-w-xl mx-auto">
+    <div className="w-full max-w-xl mx-auto">
       <div className="relative">
         <div
-          className={`flex items-center border-2 rounded-2xl overflow-hidden bg-white transition-all duration-200 h-10 ${
+          className={`flex items-center justify-center border-2 rounded-lg overflow-hidden bg-white transition-all duration-200 h-8 ${
             isOpen ? "border-blue-500 shadow-lg " : "border-gray-300 shadow-sm "
           }`}
         >
@@ -125,19 +123,9 @@ export default function SearchComponent() {
             trending={trendingSearches}
             onSelect={handleSearch}
             onRemoveHistoryItem={removeFromHistory}
-            onClearHistory={clearHistory}
           />
         )}
       </div>
-
-      {/* Search Result Display */}
-      {query && !isOpen && (
-        <div className="mt-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
-          <p className="text-sm text-blue-800">
-            Đang tìm kiếm: <span className="font-semibold">{query}</span>
-          </p>
-        </div>
-      )}
     </div>
   );
 }
