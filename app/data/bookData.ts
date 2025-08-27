@@ -9,7 +9,20 @@ export async function fetchBookById(id: string) {
     throw new Error("Failed to fetch book by id.");
   }
 }
-
+export async function fetchNewBook() {
+  try {
+    let res = await sql`
+  SELECT id,name,author,image_urls
+  FROM Books 
+  ORDER BY  created_at DESC
+  LIMIT 10
+`;
+    return res;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch book by id.");
+  }
+}
 export async function fetchBookImage(bookId: string) {
   try {
     const res = await sql`

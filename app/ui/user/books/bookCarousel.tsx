@@ -1,9 +1,10 @@
 "use client";
 
 import { Book } from "@/app/interface/book";
-import { useMemo, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
 import BookCard from "./bookCard";
 import BookCarouselNavigation from "./bookCarouselNavigation";
+import { BookCardSkeleton } from "../../skeletons";
 
 type Variant = "lg" | "sm";
 interface BookCarouselProps {
@@ -48,7 +49,7 @@ export default function BookCarousel({ books, variant }: BookCarouselProps) {
     setIsTransitioning(true);
     setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
   };
-
+  console.log(":slide", slides);
   return (
     <div className={`relative ${cfg.container}`}>
       <div className="relative overflow-hidden">
@@ -61,7 +62,13 @@ export default function BookCarousel({ books, variant }: BookCarouselProps) {
             <div key={i} className="w-full flex-shrink-0">
               <div className={`grid  ${cfg.grid}`}>
                 {page.map((book) => (
-                  <BookCard key={book.id} book={book} variant={variant} />
+                  <Suspense
+                    fallback={
+                      <BookCardSkeleton variant={variant}></BookCardSkeleton>
+                    }
+                  >
+                    <BookCard key={book.id} book={book} variant={variant} />
+                  </Suspense>
                 ))}
               </div>
             </div>

@@ -11,20 +11,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useRouter } from "next/navigation";
 interface CategoryFilterProps {
   currentGenre?: string;
-  onCategoryChange: (formData: FormData) => Promise<void>; // server action
 }
 
-export default function CategoryFilter({
-  currentGenre,
-  onCategoryChange,
-}: CategoryFilterProps) {
+export default function CategoryFilter({ currentGenre }: CategoryFilterProps) {
   const [isPending, startTransition] = useTransition();
-
+  const router = useRouter();
   const handleFormAction = (formData: FormData) => {
+    const formDataEntries = Object.fromEntries(formData.entries());
+    console.log("FormData fields:", formDataEntries);
+
+    const category = formData.get("category")?.toString();
+    console.log("Category:", category);
+
     startTransition(async () => {
-      await onCategoryChange(formData);
+      await router.push(`/book?tag=${category}`);
     });
   };
 

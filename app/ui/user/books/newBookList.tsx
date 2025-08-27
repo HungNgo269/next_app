@@ -6,7 +6,7 @@ import ViewMoreBookButton from "./viewMoreBookButton";
 
 export default async function NewBookList() {
   const Books: Book[] = await sql`
-  SELECT *
+  SELECT id,name,author,image_urls
   FROM Books 
   ORDER BY  created_at DESC
   LIMIT 10

@@ -1,11 +1,12 @@
 import { fetchMostFollowBookAllTimeAction } from "@/app/actions/rankingActions";
-import { BookCard } from "@/app/interface/book";
+import { BookCard, BookCardProps } from "@/app/interface/book";
 import Link from "next/link";
 import ImageCard from "../../share/image/imageCard";
+import { FetchMostFollowBookAllTime } from "@/app/data/rankingData";
 
 export default async function MostPopularBook() {
-  const books: BookCard[] = await fetchMostFollowBookAllTimeAction();
-  console.log("first", books);
+  const books: BookCardProps[] = await FetchMostFollowBookAllTime();
+  console.log("it did rerender", books);
   return (
     <div>
       <div>
@@ -15,7 +16,7 @@ export default async function MostPopularBook() {
       </div>
 
       <div className="space-y-3 mt-6">
-        {books.map((book, index) => (
+        {books.map((book: BookCardProps, index) => (
           <div
             key={book.id}
             className="flex flex-row items-center gap-2 h-[80px] "

@@ -6,8 +6,6 @@ import { fetchBookByCategory } from "../data/categoryData";
 import CategoryFilter from "../ui/share/genre/categoryFilter";
 import { BookCardProps } from "../interface/book";
 import BookCard from "../ui/user/books/bookCard";
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import MostPopularBook from "../ui/user/ranking/mostPopularBook";
 
 interface BookPageProps {
@@ -20,28 +18,13 @@ export default async function BookPage({ searchParams }: BookPageProps) {
   const books: BookCardProps[] = await fetchBookByCategory(categoryId);
   const categoryName = getcategoryNameBySlug(tag);
   console.log("book", books);
-  async function handleCategoryChangeAction(formData: FormData) {
-    "use server";
-
-    const selectedCategory = formData.get("category") as string;
-    console.log("🔄 Category change server action:", selectedCategory);
-    revalidatePath("/book");
-    if (selectedCategory === "all") {
-      redirect("/book");
-    } else {
-      redirect(`/book?tag=${selectedCategory}`);
-    }
-  }
 
   return (
-    <div className=" mx-auto w-[1190px]">
-      <div className="flex  justify-between mt-4">
+    <div className=" mx-auto w-[1190px] mt-20">
+      <div className="flex  justify-between">
         <div className="w-[850px]   flex flex-col gap-5">
           <div className="mb-6">
-            <CategoryFilter
-              currentGenre={tag}
-              onCategoryChange={handleCategoryChangeAction}
-            />
+            <CategoryFilter currentGenre={tag} />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">

@@ -1,12 +1,12 @@
 "use client";
 import { useState, useMemo, useCallback, useEffect, Suspense } from "react";
 import CategorySelector from "./bookCategorySelector";
-import BookList from "./bestSellerList";
 import { Category } from "@/app/interface/category";
 import { Book } from "@/app/interface/book";
 import { fetchMostViewedBookByCategoryActions } from "@/app/actions/bookActions";
 import ViewMoreBookButton from "./viewMoreBookButton";
 import { getcategorySlugById } from "@/app/constant/categories";
+import BookCarousel from "./bookCarousel";
 
 interface BookCategoryContainerProps {
   categories: Category[];
@@ -77,7 +77,7 @@ export default function BookCategoryContainer({
         </div>
 
         <div className="">
-          <BookList books={displayBooks} loading={loading} error={error} />
+          <BookCarousel books={books} variant="lg"></BookCarousel>
         </div>
       </div>
     </div>

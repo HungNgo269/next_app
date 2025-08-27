@@ -1,145 +1,100 @@
 "use client";
 
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, Autoplay } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
-import { useEffect, useState } from "react";
-import { Slide } from "@/app/interface/slide";
-const Slide = () => {
-  const [images, setImages] = useState<string[]>([]);
+import { useState } from "react";
+import SlideContent from "./slideContent";
+import SlideControls from "./slideController";
+export interface SlideItem {
+  id: number;
+  image: string;
+  title: string;
+  description?: string;
+  link: string;
+  alt: string;
+}
 
-  useEffect(() => {
-    const getData = async () => {
-      const result = await fetch("api/upload/slides");
-      const data: Slide[] = await result.json();
-      setImages(data.map((item) => item.image_url));
-    };
-    try {
-      getData();
-    } catch (error) {
-      console.error("Error fetching slides:", error);
-    }
-  }, []);
+export interface SlideSlide {
+  id: number;
+  title?: string;
+  subtitle?: string;
+  backgroundColor?: string;
+  items: SlideItem;
+}
+
+// data/slides.ts
+
+export const slides: SlideSlide[] = [
+  {
+    id: 1,
+    items: {
+      id: 1,
+      image:
+        "https://res.cloudinary.com/dm3j1fqob/image/upload/v1751940644/slides/itcybgip34j0yunz4kpv.jpg",
+      title: "Summer Sale - Up to 70% Off",
+      description: "Discover amazing deals on electronics, fashion, and more",
+      link: "/summer-sale",
+      alt: "Summer sale banner",
+    },
+  },
+  {
+    id: 2,
+    title: "Featured Categories",
+    subtitle: "Shop our most popular items",
+    backgroundColor: "bg-gradient-to-br from-blue-50 to-purple-50",
+    items: {
+      id: 1,
+      image:
+        "https://res.cloudinary.com/dm3j1fqob/image/upload/v1751940644/slides/itcybgip34j0yunz4kpv.jpg",
+      title: "Electronics",
+      description: "Latest gadgets & tech",
+      link: "/electronics",
+      alt: "Electronics category",
+    },
+  },
+  {
+    id: 3,
+    backgroundColor: "bg-gradient-to-r from-green-50 to-blue-50",
+    items: {
+      id: 1,
+      image:
+        "https://res.cloudinary.com/dm3j1fqob/image/upload/v1751940644/slides/itcybgip34j0yunz4kpv.jpg",
+      title: "New iPhone 15",
+      description: "Starting at $799",
+      link: "/iphone-15",
+      alt: "iPhone 15",
+    },
+  },
+  {
+    id: 4,
+    items: {
+      id: 1,
+      image:
+        "https://res.cloudinary.com/dm3j1fqob/image/upload/v1751940644/slides/itcybgip34j0yunz4kpv.jpg",
+      title: "Black Friday Deals",
+      description: "Biggest sale of the year - Don't miss out!",
+      link: "/black-friday",
+      alt: "Black Friday sale banner",
+    },
+  },
+];
+export default function Slide() {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+
+  const handleSlideChange = (newSlide: number) => {
+    setIsTransitioning(true);
+    setCurrentSlide(newSlide);
+    setTimeout(() => setIsTransitioning(false), 300);
+  };
 
   return (
-    <div className="relative z-20">
-      <div style={{ width: "100%", height: "450px" }}>
-        <Swiper
-          navigation={true}
-          autoplay={{
-            delay: 3000,
-            disableOnInteraction: false,
-          }}
-          modules={[Navigation, Pagination, Autoplay]}
-          pagination={{
-            clickable: true,
-            bulletClass: "swiper-pagination-bullet custom-bullet",
-            bulletActiveClass:
-              "swiper-pagination-bullet-active custom-bullet-active",
-            renderBullet: (index, className) =>
-              '<span class="' +
-              className +
-              '" data-slide="' +
-              index +
-              '"></span>',
-          }}
-          lazyPreloadPrevNext={3}
-          lazyPreloaderClass="swiper-lazy-preloader"
-          slidesPerView={1}
-          loop={true}
-          style={{ height: "100%" }}
-          watchSlidesProgress={true}
-        >
-          {images.map((src, index) => (
-            <SwiperSlide key={index}>
-              <div className="relative w-full h-full">
-                <img
-                  src={src}
-                  alt={`Slide ${index}`}
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                  loading="lazy"
-                />
-                {/* Gradient overlay chỉ áp dụng cho ảnh này */}
-                <div className="absolute bg-gradient-to-t from-gray-950 w-full h-[120px] bottom-0 z-0 pointer-events-none"></div>
-              </div>
-              <div className="swiper-lazy-preloader"></div>
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      </div>
-
-      <style jsx global>{`
-        .swiper-pagination {
-          bottom: 20px !important;
-          right: 20px !important;
-          left: auto !important;
-          width: auto !important;
-          text-align: right !important;
-          z-index: 30 !important;
-          display: flex !important;
-          flex-direction: row !important;
-          justify-content: flex-end !important;
-        }
-
-        .custom-bullet {
-          width: 8px !important;
-          height: 8px !important;
-          background: rgba(255, 255, 255, 0.2) !important;
-          border-radius: 50% !important;
-          margin: 0 3px !important;
-          opacity: 1 !important;
-          transition: all 0.3s ease !important;
-          cursor: pointer !important;
-          z-index: 30 !important;
-        }
-
-        .custom-bullet-active {
-          background: white !important;
-          transform: scale(1.1) !important;
-        }
-
-        .swiper-pagination-bullet:hover {
-          background: white !important;
-          transform: scale(1.1) !important;
-        }
-
-        /* Navigation Arrow Styles */
-        .swiper-button-next,
-        .swiper-button-prev {
-          width: 44px !important;
-          height: 44px !important;
-          background: rgba(255, 255, 255, 0.3) !important;
-          backdrop-filter: blur(6px) !important;
-          -webkit-backdrop-filter: blur(6px) !important;
-          border-radius: 50% !important;
-          transition: all 0.3s ease !important;
-          z-index: 30 !important;
-          box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-          border: solid 1px rgba(255, 255, 255, 0.3) !important;
-        }
-
-        .swiper-button-next:after,
-        .swiper-button-prev:after {
-          font-size: 12px !important;
-          color: white !important;
-          font-weight: bold !important;
-        }
-
-        .swiper-button-next:hover,
-        .swiper-button-prev:hover {
-          background: rgba(255, 255, 255, 0.4) !important;
-        }
-
-        .swiper-button-next.swiper-button-disabled,
-        .swiper-button-prev.swiper-button-disabled {
-          opacity: 0.3 !important;
-          cursor: not-allowed !important;
-        }
-      `}</style>
+    <div className="relative w-full mx-auto bg-white shadow-lg overflow-hidden">
+      <SlideContent slides={slides} currentSlide={currentSlide} />
+      <SlideControls
+        totalSlides={slides.length}
+        currentSlide={currentSlide}
+        onSlideChange={handleSlideChange}
+        isTransitioning={isTransitioning}
+      />
     </div>
   );
-};
-
-export default Slide;
+}

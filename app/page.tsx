@@ -1,7 +1,6 @@
 import { Suspense } from "react";
 
 import { BookOpen, Download, Users } from "lucide-react";
-import Carousel from "./ui/admin/slides/slidev2";
 import Image from "next/image";
 import Header from "./ui/user/headerCustomer/headerMain";
 import BestSellerContainer from "./ui/user/books/bestSellerContainer";
@@ -13,6 +12,8 @@ import MostPopularSeries from "./ui/user/ranking/mostPopularSeries";
 import FooterComponent from "./ui/user/footer/footerComponent";
 import SectionComponent from "./ui/user/section/section";
 import { ScrollHeader } from "./ui/user/headerCustomer/scrollHeader";
+import Slide from "./ui/admin/slides/slide";
+import { SlideSkeleton } from "./ui/skeletons";
 
 export default function HomePage() {
   return (
@@ -22,8 +23,8 @@ export default function HomePage() {
           <ScrollHeader children={<Header></Header>}></ScrollHeader>
         </Suspense>
       </header>
-      <Suspense>
-        <Carousel />
+      <Suspense fallback={<SlideSkeleton></SlideSkeleton>}>
+        <Slide />
       </Suspense>
       <div className=" mx-auto mt-10 w-[1190px]">
         <Suspense>
