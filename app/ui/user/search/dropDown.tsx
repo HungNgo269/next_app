@@ -26,7 +26,8 @@ const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
     return (
       <div
         ref={ref}
-        className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-50 max-h-96 overflow-y-auto backdrop-blur-sm"
+        className="absolute top-full left-0 right-0 mt-2
+         bg-white rounded-xl shadow-xl z-50 max-h-96 overflow-y-auto backdrop-blur-sm"
         style={{
           boxShadow:
             "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",

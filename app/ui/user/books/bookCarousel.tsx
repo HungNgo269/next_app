@@ -58,21 +58,22 @@ export default function BookCarousel({ books, variant }: BookCarouselProps) {
           style={{ transform: `translateX(-${currentSlide * 100}%)` }}
           onTransitionEnd={() => setIsTransitioning(false)}
         >
-          {slides.map((page, i) => (
-            <div key={i} className="w-full flex-shrink-0">
-              <div className={`grid  ${cfg.grid}`}>
+          <div className="w-full flex-shrink-0">
+            {slides.map((page, pageIndex) => (
+              <div key={`slide-${pageIndex}`} className={`grid  ${cfg.grid}`}>
                 {page.map((book) => (
                   <Suspense
+                    key={book.id}
                     fallback={
                       <BookCardSkeleton variant={variant}></BookCardSkeleton>
                     }
                   >
-                    <BookCard key={book.id} book={book} variant={variant} />
+                    <BookCard book={book} variant={variant} />
                   </Suspense>
                 ))}
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
 

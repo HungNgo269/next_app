@@ -1,6 +1,6 @@
 "use client";
 import React, { useMemo, useRef, useState, useEffect } from "react";
-import { Search } from "lucide-react";
+import { Search, X } from "lucide-react";
 import SearchInput from "./searchInput";
 import Dropdown from "./dropDown";
 
@@ -29,9 +29,16 @@ const trendingSearches: string[] = [
   "Cloud computing basics",
 ];
 
-export default function SearchComponent() {
+export default function SearchComponent({
+  compact = false,
+}: {
+  compact?: boolean;
+}) {
   const [query, setQuery] = useState<string>("");
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false); // your dropdown open
+  const [isCompactOpen, setIsCompactOpen] = useState<boolean>(false); // mobile overlay
+
+  // ✅ your search history kept intact
   const [searchHistory, setSearchHistory] = useState<string[]>([
     "React hooks tutorial",
     "JavaScript ES6 features",
@@ -62,6 +69,7 @@ export default function SearchComponent() {
 
     setQuery(q);
     setIsOpen(false);
+    if (compact) setIsCompactOpen(false); // close overlay on mobile after searching
     console.log("Searching for:", q);
   };
 
@@ -70,10 +78,13 @@ export default function SearchComponent() {
 
   const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
     if (e.key === "Enter") handleSearch(query);
-    if (e.key === "Escape") setIsOpen(false);
+    if (e.key === "Escape") {
+      setIsOpen(false);
+      if (compact) setIsCompactOpen(false);
+    }
   };
 
-  // Close on outside click
+  // Close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Node;
@@ -87,25 +98,31 @@ export default function SearchComponent() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  return (
+  // Autofocus when opening compact overlay
+  useEffect(() => {
+    if (isCompactOpen && inputRef.current) inputRef.current.focus();
+  }, [isCompactOpen]);
+
+  // ---- shared search UI (your original structure) ----
+  const SearchUI = (
     <div className="w-full max-w-xl mx-auto">
       <div className="relative">
         <div
-          className={`flex items-center justify-center border-2 rounded-lg overflow-hidden bg-white transition-all duration-200 h-8 ${
-            isOpen ? "border-blue-500 shadow-lg " : "border-gray-300 shadow-sm "
-          }`}
+          className={`flex items-center justify-center border-2 rounded-lg overflow-hidden bg-white transition-all duration-200 h-9
+            ${
+              isOpen ? "border-blue-500 shadow-lg" : "border-gray-300 shadow-sm"
+            }`}
         >
           <SearchInput
             ref={inputRef}
             value={query}
             onChange={setQuery}
-            onClear={() => setQuery("")}
             onFocus={() => setIsOpen(true)}
             onKeyDown={handleKeyDown}
           />
           <button
             onClick={() => handleSearch(query)}
-            className={`px-6 py-4 transition-all duration-200 text-black `}
+            className="mr-3 transition-all duration-200 text-black"
             aria-label="Search"
             type="button"
           >
@@ -113,7 +130,6 @@ export default function SearchComponent() {
           </button>
         </div>
 
-        {/* Dropdown */}
         {isOpen && (
           <Dropdown
             ref={dropdownRef}
@@ -128,4 +144,51 @@ export default function SearchComponent() {
       </div>
     </div>
   );
+
+  // ---- compact mode (mobile/tablet): icon -> full-screen overlay) ----
+  if (compact) {
+    return (
+      <>
+        <button
+          onClick={() => setIsCompactOpen(true)}
+          className="p-2 text-gray-700"
+          aria-label="Open search"
+        >
+          <Search className="h-5 w-5" />
+        </button>
+
+        {isCompactOpen && (
+          <div className="fixed inset-0 z-50">
+            {/* backdrop */}
+            <div
+              className="absolute inset-0 bg-black/40"
+              onClick={() => {
+                setIsOpen(false);
+                setIsCompactOpen(false);
+              }}
+            />
+            {/* panel */}
+            <div className="absolute inset-x-0 top-0 bg-white p-3 shadow-lg rounded-b-2xl">
+              <div className="flex items-center justify-between mb-2">
+                <span className="font-medium">Search</span>
+                <button
+                  onClick={() => {
+                    setIsOpen(false);
+                    setIsCompactOpen(false);
+                  }}
+                  className="p-1"
+                  aria-label="Close search"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+              {SearchUI}
+            </div>
+          </div>
+        )}
+      </>
+    );
+  }
+
+  return SearchUI;
 }

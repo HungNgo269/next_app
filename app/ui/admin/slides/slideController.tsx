@@ -57,7 +57,7 @@ export default function SlideControls({
         size="icon"
         className="absolute right-24 bottom-10 bg-white/90 hover:bg-white border-gray-200 shadow-lg z-30 rounded-[50%]"
         onClick={prevSlide}
-        disabled={isTransitioning}
+        // disabled={isTransitioning}
       >
         <ChevronLeft className="h-5 w-5" />
         <span className="sr-only">Previous slide</span>
@@ -68,7 +68,7 @@ export default function SlideControls({
         size="icon"
         className="absolute right-4  bottom-10 bg-white/90 hover:bg-white border-gray-200 shadow-lg z-30 rounded-[50%]"
         onClick={nextSlide}
-        disabled={isTransitioning}
+        // disabled={isTransitioning}
       >
         <ChevronRight className="h-5 w-5" />
         <span className="sr-only">Next slide</span>

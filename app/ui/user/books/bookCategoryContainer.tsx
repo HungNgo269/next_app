@@ -45,9 +45,6 @@ export default function BookCategoryContainer({
       fetchBooks(selectedCategory);
     }
   }, [selectedCategory, fetchBooks]);
-  const displayBooks = useMemo(() => {
-    return books;
-  }, [books]);
 
   const dynamicTitle = useMemo(() => {
     const selectedCat = categories.find((cat) => cat.id === selectedCategory);
@@ -76,9 +73,11 @@ export default function BookCategoryContainer({
           ></ViewMoreBookButton>
         </div>
 
-        <div className="">
-          <BookCarousel books={books} variant="lg"></BookCarousel>
-        </div>
+        <BookCarousel
+          key="category-carousel"
+          books={books}
+          variant="lg"
+        ></BookCarousel>
       </div>
     </div>
   );

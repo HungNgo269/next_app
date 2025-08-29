@@ -5,7 +5,7 @@ export default async function BestSellerContainer() {
   const categories: Category[] = await fetchCategories();
   return (
     <div className="flex flex-row justify-between">
-      <BookCategoryContainer categories={categories} />
+      <BookCategoryContainer key="category-container" categories={categories} />
     </div>
   );
 }

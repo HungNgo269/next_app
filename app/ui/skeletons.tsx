@@ -218,76 +218,55 @@ export function InvoicesTableSkeleton() {
 }
 export function SlideSkeleton() {
   return (
-    <div className={`${shimmer}mt-6 flow-root relative`}>
-      <div className="inline-block min-w-full align-middle">
-        <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
-          {/* Mobile */}
-          <div className="md:hidden">
-            {[...Array(3)].map((_, i) => (
-              <div
-                key={i}
-                className="mb-2 w-full animate-pulse rounded-md bg-white p-4"
-              >
-                <div className="flex items-center justify-between border-b pb-4">
-                  <div>
-                    <div className="mb-2 flex items-center">
-                      <div className="mr-2 h-7 w-7 rounded-full bg-gray-300" />
-                      <div className="h-4 w-28 rounded bg-gray-300" />
-                    </div>
-                    <div className="h-3 w-40 rounded bg-gray-200" />
-                  </div>
-                  <div className="h-6 w-14 rounded bg-gray-200" />
-                </div>
-                <div className="flex w-full justify-end pt-4 gap-2">
-                  <div className="h-5 w-5 rounded bg-gray-300" />
-                  <div className="h-5 w-5 rounded bg-gray-300" />
-                </div>
-              </div>
-            ))}
-          </div>
+    <div
+      className={`${shimmer} relative w-full mx-auto bg-white shadow-lg overflow-hidden`}
+    >
+      <div className="relative h-[450px] md:h-[500px] overflow-hidden">
+        {/* Main skeleton slide */}
+        <div className="w-full h-full relative">
+          {/* Image skeleton */}
+          <div className="absolute inset-0 bg-gray-200 animate-pulse" />
 
-          {/* Desktop */}
-          <table className="hidden min-w-full text-gray-900 md:table">
-            <thead className="rounded-lg text-left text-sm font-normal">
-              <tr>
-                <th className="px-4 py-5 sm:pl-6">Tiêu đề</th>
-                <th className="px-3 py-5">Thông tin thêm</th>
-                <th className="px-3 py-5">Thứ tự hiển thị</th>
-                <th className="px-3 py-5">Trạng thái</th>
-                <th className="py-3 pl-6 pr-3">
-                  <span className="sr-only">Actions</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white">
-              {[...Array(3)].map((_, i) => (
-                <tr key={i} className="animate-pulse border-b text-sm">
-                  <td className="py-3 pl-6 pr-3 whitespace-nowrap">
-                    <div className="flex items-center gap-3">
-                      <div className="h-7 w-7 rounded-full bg-gray-300" />
-                      <div className="h-4 w-28 rounded bg-gray-200" />
-                    </div>
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap">
-                    <div className="h-3 w-40 rounded bg-gray-200" />
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap">
-                    <div className="h-3 w-10 rounded bg-gray-200" />
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap">
-                    <div className="h-5 w-16 rounded bg-gray-200" />
-                  </td>
-                  <td className="py-3 pl-6 pr-3 whitespace-nowrap">
-                    <div className="flex justify-end gap-3">
-                      <div className="h-5 w-5 rounded bg-gray-300" />
-                      <div className="h-5 w-5 rounded bg-gray-300" />
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          {/* Gradient overlay skeleton */}
+          <div className="absolute inset-0 bg-gradient-to-r from-gray-300/50 to-transparent" />
+
+          {/* Content skeleton */}
+          <div className="absolute inset-0 flex items-center">
+            <div className="p-8 md:p-12 max-w-2xl space-y-4">
+              {/* Title skeleton */}
+              <div className="space-y-2">
+                <div className="h-8 md:h-12 bg-gray-300 rounded animate-pulse w-3/4" />
+                <div className="h-8 md:h-12 bg-gray-300 rounded animate-pulse w-1/2" />
+              </div>
+
+              {/* Description skeleton */}
+              <div className="space-y-2">
+                <div className="h-5 md:h-6 bg-gray-300 rounded animate-pulse w-full" />
+                <div className="h-5 md:h-6 bg-gray-300 rounded animate-pulse w-2/3" />
+              </div>
+
+              {/* Button skeleton */}
+              <div className="h-12 w-32 bg-gray-300 rounded-lg animate-pulse" />
+            </div>
+          </div>
         </div>
+
+        {/* Navigation buttons skeleton */}
+        <div className="absolute right-24 bottom-0 -translate-y-1/2 w-10 h-10 bg-gray-200 rounded-full animate-pulse shadow-lg" />
+        <div className="absolute right-4 bottom-0 -translate-y-1/2 w-10 h-10 bg-gray-200 rounded-full animate-pulse shadow-lg" />
+        <div className="absolute bottom-0 right-14 -translate-y-1/2 w-10 h-10 bg-gray-200 rounded-full animate-pulse shadow-lg" />
+      </div>
+
+      {/* Slide indicators skeleton */}
+      <div className="flex justify-center items-center space-x-2 py-4 bg-transparent absolute z-10 bottom-0 left-0 right-0">
+        {[...Array(4)].map((_, index) => (
+          <div
+            key={index}
+            className={`w-3 h-3 rounded-full animate-pulse ${
+              index === 0 ? "bg-gray-400 scale-110" : "bg-gray-300"
+            }`}
+          />
+        ))}
       </div>
     </div>
   );

@@ -5,6 +5,7 @@ import {
   fetchBookById,
   fetchBookImage,
   fetchBooksByPage,
+  fetchNewBook,
   fetchOurRecommendedBook,
 } from "../data/bookData";
 import { fetchMostViewedBookByCategory } from "../data/categoryData";
@@ -15,6 +16,15 @@ export async function fetchBookByIdActions(id: string) {
   } catch (error) {
     console.error("Server Action Error:", error);
     throw new Error("Failed to fetch category books");
+  }
+}
+
+export async function fetchNewBookAction() {
+  try {
+    return await fetchNewBook();
+  } catch (error) {
+    console.error("Server Action Error:", error);
+    throw new Error("Failed to fetch new books");
   }
 }
 

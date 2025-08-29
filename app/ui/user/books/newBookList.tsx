@@ -3,14 +3,10 @@ import BookCard from "./bookCard";
 import { Book } from "@/app/interface/book";
 import BookCarousel from "./bookCarousel";
 import ViewMoreBookButton from "./viewMoreBookButton";
+import { fetchNewBookAction } from "@/app/actions/bookActions";
 
 export default async function NewBookList() {
-  const Books: Book[] = await sql`
-  SELECT id,name,author,image_urls
-  FROM Books 
-  ORDER BY  created_at DESC
-  LIMIT 10
-`;
+  const Books: Book[] = await fetchNewBookAction();
   return (
     <div className="flex flex-col justify-center items-center ">
       <div className="flex flex-row items-center justify-between w-full gap-2">
@@ -19,7 +15,11 @@ export default async function NewBookList() {
         </span>
         <ViewMoreBookButton url="/"></ViewMoreBookButton>
       </div>
-      <BookCarousel variant="sm" books={Books}></BookCarousel>
+      <BookCarousel
+        variant="sm"
+        key="new-book-carousel"
+        books={Books}
+      ></BookCarousel>
     </div>
   );
 }
