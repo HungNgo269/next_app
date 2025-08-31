@@ -1,36 +1,49 @@
 import {
   getcategoryIdBySlug,
   getcategoryNameBySlug,
+  sortOptions,
 } from "@/app/constant/categories";
 import { fetchBookByCategory } from "../data/categoryData";
 import CategoryFilter from "../ui/share/genre/categoryFilter";
 import { BookCardProps } from "../interface/book";
 import BookCard from "../ui/user/books/bookCard";
 import MostPopularBook from "../ui/user/ranking/mostPopularBook";
+import CategoryName from "../ui/user/books/bookCategoryName";
+import SortSelection from "../ui/user/books/bookCategorySortSelection";
+import { fetchBookByCategorySortAction } from "../actions/bookActions";
 
 interface BookPageProps {
-  searchParams: Promise<{ tag?: string }>;
+  searchParams: Promise<{ tag?: string; sort?: string }>;
 }
 
 export default async function BookPage({ searchParams }: BookPageProps) {
-  const { tag } = await searchParams;
+  let { tag, sort } = await searchParams;
+  if (sort === undefined) {
+    sort = "popularity";
+  }
+  const sortOptions: string = sort;
   const categoryId = getcategoryIdBySlug(tag);
-  const books: BookCardProps[] = await fetchBookByCategory(categoryId);
-  const categoryName = getcategoryNameBySlug(tag);
+  const books: BookCardProps[] = await fetchBookByCategorySortAction(
+    categoryId,
+    sortOptions,
+    1,
+    "DESC"
+  );
   console.log("book", books);
 
   return (
     <div className=" mx-auto w-[1190px] mt-20">
       <div className="flex  justify-between">
         <div className="w-[850px]   flex flex-col gap-5">
-          <div className="mb-6">
+          <CategoryName></CategoryName>
+          <div className="flex flex-row mb-6 justify-between">
             <CategoryFilter currentGenre={tag} />
+            <SortSelection currentSort={sortOptions}></SortSelection>
           </div>
           <div
             className="
-    flex gap-3 overflow-x-auto md:overflow-x-auto
+    flex gap-3 overflow-x-auto md:overflow-x-hidden
     md:grid md:grid-cols-3 lg:grid-cols-5 
-    scrollbar-hide
   "
           >
             {books && books.length > 0
@@ -54,11 +67,9 @@ export async function generateMetadata({ searchParams }: BookPageProps) {
   const categoryName = tag ? getcategoryNameBySlug(tag) : null;
 
   return {
-    title: categoryName
-      ? `Sách ${categoryName} - Bookstore`
-      : "Tất cả sách - Bookstore",
+    title: categoryName ? ` ${categoryName} - Bookstore` : " Bookstore",
     description: categoryName
-      ? `Khám phá bộ sưu tập sách ${categoryName} tại bookstore`
-      : "Khám phá bộ sưu tập sách đa dạng với nhiều thể loại",
+      ? `${categoryName} at bookstore`
+      : "Interesting book",
   };
 }

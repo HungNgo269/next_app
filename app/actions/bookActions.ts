@@ -2,6 +2,7 @@
 
 import {
   fetchAllBook,
+  fetchBookByCategorySort,
   fetchBookById,
   fetchBookImage,
   fetchBooksByPage,
@@ -67,6 +68,19 @@ export async function fetchAllBookAction(query: string, currentPage: number) {
 export async function fetchOurRecommendedBookAction(bookId: number) {
   try {
     return await fetchOurRecommendedBook(bookId);
+  } catch (error) {
+    console.error("Server Action Error:", error);
+    throw new Error("Failed to fetch category books");
+  }
+}
+export async function fetchBookByCategorySortAction(
+  categoryId: number,
+  sort: string,
+  currentPage: number,
+  order: string
+) {
+  try {
+    return await fetchBookByCategorySort(categoryId, sort, currentPage, order);
   } catch (error) {
     console.error("Server Action Error:", error);
     throw new Error("Failed to fetch category books");

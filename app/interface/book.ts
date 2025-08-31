@@ -11,7 +11,7 @@ export interface Book {
   updated_at: string;
   author?: string;
   views?: number;
-  publish_date?: string;
+  publish_date?: string | Date;
   status: Status;
 }
 export interface BookCardProps {
@@ -20,6 +20,7 @@ export interface BookCardProps {
   author: string;
   image_urls: string[];
   status?: Status;
+  rating?: number;
 }
 export interface BookImage {
   id: string;

@@ -1,4 +1,5 @@
 import { sql } from "@/lib/db";
+
 export async function fetchBookByCategory(categoryId: number) {
   try {
     let res = await sql`

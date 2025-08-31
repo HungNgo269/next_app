@@ -104,7 +104,7 @@ export async function fetchAllBook(query: string, currentPage: number) {
     throw new Error("Failed to fetch Slides.");
   }
 }
-export async function fetchOurRecommendedBook(bookId: string) {
+export async function fetchOurRecommendedBook(bookId: number) {
   try {
     const res = await sql`
       SELECT 
@@ -136,5 +136,49 @@ export async function fetchOurRecommendedBook(bookId: string) {
   } catch (error) {
     console.error("Server Action Error:", error);
     throw new Error("Failed to fetch recommended book");
+  }
+}
+
+export async function fetchBookByCategorySort(
+  categoryId: number,
+  sort: string,
+  currentPage: number,
+  order: string
+) {
+  const offset = (currentPage - 1) * 30;
+
+  // Validate input
+  const allowedSorts = ["views", "rating", "newest", "popularity"];
+  const allowedOrders = ["ASC", "DESC"];
+
+  if (!allowedSorts.includes(sort) || !allowedOrders.includes(order)) {
+    throw new Error("Invalid sort parameters");
+  }
+
+  try {
+    const data = await sql`
+  SELECT b.id, b.name, b.status, b.image_urls, b.rating
+  FROM books b 
+  JOIN books_categories bc ON b.id = bc.book_id
+  WHERE bc.category_id = ${categoryId}
+  ORDER BY 
+    ${
+      sort === "views"
+        ? sql`b.views`
+        : sort === "rating"
+        ? sql`b.rating`
+        : sort === "popularity"
+        ? sql`b.popularity`
+        : sort === "created_at"
+        ? sql`b.created_at`
+        : sql`b.name`
+    }
+    ${order === "DESC" ? sql`DESC` : sql`ASC`}
+  LIMIT 30 OFFSET ${offset}
+`;
+    return data;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch books by category.");
   }
 }

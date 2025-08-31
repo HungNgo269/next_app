@@ -59,7 +59,9 @@ export default function BookCategoryContainer({
 
   return (
     <div className="mt-6">
-      <h1 className="text-xl font-semibold mb-2">{dynamicTitle}</h1>
+      <span className="text-lg sm:text-xl md:text-2xl font-semibold mb-2">
+        {dynamicTitle}
+      </span>
 
       <div className="flex flex-col  gap-2">
         <div className="flex flex-row justify-between">
