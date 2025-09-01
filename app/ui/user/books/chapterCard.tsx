@@ -17,7 +17,7 @@ export default async function ChapterCard({ ChapterId }: PageProps) {
     <div className="flex flex-row h-[190px]">
       <Link
         className="relative min-w-[130px] h-[190px] group overflow-hidden rounded-[8px]"
-        href={`book/${book.id}/${chapter.id}`}
+        href={`book/${book.id}/chapter/${chapter.id}`}
       >
         <ImageCard
           bookImage={book.image_urls[0]}

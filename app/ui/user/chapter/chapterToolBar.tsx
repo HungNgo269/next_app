@@ -23,8 +23,8 @@ import {
 import { Button } from "@/components/ui/button";
 import React, { useState, useTransition } from "react";
 import { ReaderSettings } from "@/lib/readerSetting";
-import { updateReaderSettings } from "@/app/book/[bookId]/[chapterId]/action";
 import Link from "next/link";
+import { updateReaderSettings } from "@/app/book/[bookId]/chapter/[chapterId]/action";
 
 interface Props {
   iniSettings: ReaderSettings;
@@ -264,7 +264,7 @@ export default function ChapterToolBar({
         <Link
           href={
             idPrev != null
-              ? `${process.env.NEXT_PUBLIC_BASE_URL}/book/${bookId}/${idPrev}`
+              ? `${process.env.NEXT_PUBLIC_BASE_URL}/book/${bookId}/chapter/${idPrev}`
               : `${process.env.NEXT_PUBLIC_BASE_URL}/book/${bookId}`
           }
           aria-disabled={idPrev == null} // Ngăn điều hướng bằng bàn phím
@@ -282,7 +282,7 @@ export default function ChapterToolBar({
         <Link
           href={
             idNext != null
-              ? `${process.env.NEXT_PUBLIC_BASE_URL}/book/${bookId}/${idNext}`
+              ? `${process.env.NEXT_PUBLIC_BASE_URL}/book/${bookId}/chapter/${idNext}`
               : `${process.env.NEXT_PUBLIC_BASE_URL}/book/${bookId}`
           }
           aria-disabled={idNext == null}

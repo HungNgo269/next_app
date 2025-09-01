@@ -6,7 +6,6 @@ import { FetchMostFollowBookAllTime } from "@/app/data/rankingData";
 
 export default async function MostPopularBook() {
   const books: BookCardProps[] = await FetchMostFollowBookAllTime();
-  console.log("it did rerender", books);
   return (
     <div>
       <div>

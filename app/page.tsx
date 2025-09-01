@@ -26,11 +26,11 @@ export default function HomePage() {
       <Suspense fallback={<SlideSkeleton></SlideSkeleton>}>
         <Slide />
       </Suspense>
-      <div className=" mx-auto mt-10 w-[1190px]">
+      <div className="w-full mx-auto mt-10 sm:w-[1190px]">
         <Suspense>
           <BestSellerContainer />
         </Suspense>
-        <div className="flex  justify-between mt-10">
+        <div className="flex  justify-between mt-10 sm:flex-row ">
           <div className="w-[850px]   flex flex-col gap-5">
             <Suspense>
               <NewBookList />
@@ -63,9 +63,11 @@ export default function HomePage() {
             </Suspense> */}
           </div>
         </div>
-        <Suspense>
-          <SectionComponent></SectionComponent>
-        </Suspense>
+        <div className="hidden sm:block">
+          <Suspense>
+            <SectionComponent></SectionComponent>
+          </Suspense>
+        </div>
       </div>
       <div className=" mx-auto mt-10 w-[1190px]">
         <Suspense>

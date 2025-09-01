@@ -1,4 +1,4 @@
-type UserRole = "user" | "admin" | "subUser";
+type UserRole = "user" | "admin" | "subUser" | "editor";
 
 interface User {
   id: string;

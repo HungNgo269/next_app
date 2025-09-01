@@ -1,5 +1,6 @@
 "use server";
 
+import { sql } from "@/lib/db";
 import {
   fetchAllBook,
   fetchBookByCategorySort,
@@ -8,6 +9,7 @@ import {
   fetchBooksByPage,
   fetchNewBook,
   fetchOurRecommendedBook,
+  fetchTotalBookPageByCategory,
 } from "../data/bookData";
 import { fetchMostViewedBookByCategory } from "../data/categoryData";
 
@@ -81,6 +83,14 @@ export async function fetchBookByCategorySortAction(
 ) {
   try {
     return await fetchBookByCategorySort(categoryId, sort, currentPage, order);
+  } catch (error) {
+    console.error("Server Action Error:", error);
+    throw new Error("Failed to fetch category books");
+  }
+}
+export async function fetchTotalBookPageByCategoryAction(categoryId: number) {
+  try {
+    return await fetchTotalBookPageByCategory(categoryId);
   } catch (error) {
     console.error("Server Action Error:", error);
     throw new Error("Failed to fetch category books");

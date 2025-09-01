@@ -13,7 +13,7 @@ export default function ViewMoreBookButton({
   return (
     <Link href={url}>
       <button className="flex items-center text-gray-600 hover:text-gray-900 transition-colors">
-        {context ? (
+        {context === "chapter" ? (
           <span className="text-sm mr-1 line-clamp-1 w-fit">
             View More Chapter
           </span>

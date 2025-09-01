@@ -2,7 +2,8 @@
 
 import { Chapter } from "@/app/interface/chapter";
 import Image from "next/image";
-import { redirect, usePathname } from "next/navigation";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 interface ChapterContainerProps {
@@ -30,9 +31,7 @@ export function ChapterContainer({
   const hasMoreChapters = chapters.length > initialVisibleChapters;
   const pathName = usePathname();
   console.log(pathName);
-  const handleRedirect = (chapterId: string) => {
-    redirect(`${pathName}/${chapterId}`);
-  };
+
   return (
     <div className="flex flex-row items-center justify-start space-x-3 mb-3 gap-4">
       <div>
@@ -66,7 +65,6 @@ export function ChapterContainer({
                     <div
                       key={chapter.id}
                       className="flex items-center justify-between group"
-                      onClick={() => handleRedirect(chapter.id)}
                     >
                       <div className="flex items-center gap-2 min-w-0 flex-1">
                         {/* {isNewChapter(chapter.createdAt, 7) && (
@@ -74,12 +72,12 @@ export function ChapterContainer({
                         Mới
                       </span>
                     )} */}
-                        <a
-                          href="#"
+                        <Link
+                          href={`${pathName}/chapter/${chapter.id}`}
                           className="text-blue-600 hover:text-blue-800 hover:underline text-sm truncate"
                         >
                           {chapter.title}
-                        </a>
+                        </Link>
                       </div>
                       <span className="text-gray-400 text-sm flex-shrink-0 ml-2">
                         {chapter.createdAt}

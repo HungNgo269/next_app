@@ -1,7 +1,7 @@
 import Header from "@/app/ui/user/headerCustomer/headerMain";
 import { ScrollHeader } from "../ui/user/headerCustomer/scrollHeader";
 
-export default function BookLayout({
+export default async function BookLayout({
   children,
 }: {
   children: React.ReactNode;

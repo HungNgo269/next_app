@@ -13,11 +13,11 @@ export default async function BookRecommend() {
   ]);
   console.log("recpm", recommendedBooks);
   return (
-    <div className="w-full">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">
-          Our Recommended Books
-        </h2>
+    <div className="flex flex-col justify-center items-center gap-4">
+      <div className="flex flex-row items-center justify-between w-full gap-2">
+        <span className="font-bold text-2xl text-start flex-1 min-w-0 truncate">
+          Our Choice
+        </span>
         <ViewMoreBookButton url="/"></ViewMoreBookButton>
       </div>
 

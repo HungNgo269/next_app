@@ -9,7 +9,6 @@ import { ChapterContainer } from "@/app/ui/share/chapter/chapterContainer";
 import { fetchChapterOfBookAction } from "@/app/actions/chapterActions";
 import { Book } from "@/app/interface/book";
 import FooterComponent from "@/app/ui/user/footer/footerComponent";
-import HeaderCustomer from "@/app/ui/user/headerCustomer/header";
 
 type PageProps = {
   params: Promise<{

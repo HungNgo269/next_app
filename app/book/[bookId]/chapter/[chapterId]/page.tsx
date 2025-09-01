@@ -11,7 +11,6 @@ import {
 import ChapterToolBar from "@/app/ui/user/chapter/chapterToolBar";
 import { getServerReaderSettings, ReaderSettings } from "@/lib/readerSetting";
 import ChapterContent from "@/app/ui/user/chapter/chapterContent";
-import { checkNextChapter } from "./data";
 
 type PageProps = {
   params: Promise<{

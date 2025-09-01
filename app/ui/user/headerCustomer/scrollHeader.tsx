@@ -1,4 +1,5 @@
 "use client";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 interface ScrollHeaderProps {
@@ -7,6 +8,7 @@ interface ScrollHeaderProps {
 
 export function ScrollHeader({ children }: ScrollHeaderProps) {
   const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -23,7 +25,10 @@ export function ScrollHeader({ children }: ScrollHeaderProps) {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-
+  //cho nó chạy ở sau hook nếu ko muốn lỗi chênh hook
+  if (pathname.includes("/chapter")) {
+    return null;
+  }
   return (
     // <div
     //   className={`${

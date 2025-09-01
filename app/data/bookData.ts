@@ -157,7 +157,7 @@ export async function fetchBookByCategorySort(
 
   try {
     const data = await sql`
-  SELECT b.id, b.name, b.status, b.image_urls, b.rating
+  SELECT b.id, b.name, b.status, b.image_urls, b  .rating
   FROM books b 
   JOIN books_categories bc ON b.id = bc.book_id
   WHERE bc.category_id = ${categoryId}
@@ -180,5 +180,19 @@ export async function fetchBookByCategorySort(
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch books by category.");
+  }
+}
+export async function fetchTotalBookPageByCategory(categoryId: number) {
+  try {
+    const data = await sql`
+  SELECT COUNT(*) 
+  FROM books b join books_categories bc on bc.book_id = b.id 
+  WHERE bc.id =${categoryId};
+`;
+    const totalPages = Math.ceil(Number(data[0].count) / 30);
+    return totalPages;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch Slide page.");
   }
 }
