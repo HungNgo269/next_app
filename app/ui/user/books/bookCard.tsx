@@ -1,8 +1,6 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
-import { Book, BookCardProps } from "@/app/interface/book";
+import { BookCardProps } from "@/app/interface/book";
 
 type Variant = "lg" | "sm";
 // cho 2 component kích thước khác nhau.

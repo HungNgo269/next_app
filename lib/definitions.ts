@@ -1,13 +1,4 @@
 // User Management
-export type User = {
-  id: string;
-  name: string;
-  email: string;
-  password: string;
-  role: "admin" | "subUser" | "user";
-  created_at: string;
-  updated_at: string;
-};
 
 export type Customer = {
   id: string;

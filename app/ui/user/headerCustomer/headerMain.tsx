@@ -4,28 +4,24 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Badge } from "@/components/ui/badge";
-import {
-  ShoppingCart,
-  Bell,
-  Heart,
-  Menu,
-  ChevronDown,
-  BookOpen,
-} from "lucide-react";
+import { Heart, Menu, ChevronDown } from "lucide-react";
 import SearchComponent from "../search/searchComponent";
-import ModeToggle from "../../share/theme/themeButton";
 import Link from "next/link";
-import { ScrollHeader } from "./scrollHeader";
 import { UserButton } from "./headerUserButton";
 import { Logo } from "../../share/Button/logo";
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 
-export default function Header() {
+export default async function Header() {
+  const session = await auth();
+  const user = session?.user;
+  const handleSignIn = () => {
+    redirect("/register");
+  };
   return (
-    <div className="w-full border-b-black ">
+    <div className="w-full">
       <div className="sm:max-w-xl md:max-w-2xl lg:max-w-7xl mx-auto">
         <div className="flex items-center justify-between h-16 px-2">
           <div className="flex flex-row items-center">
@@ -55,7 +51,7 @@ export default function Header() {
 
             {/* Desktop extras */}
             <div className="hidden sm:block">
-              <DropdownMenu>
+              <DropdownMenu modal={false}>
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="ghost"
@@ -73,9 +69,19 @@ export default function Header() {
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
+            {user ? (
+              <UserButton />
+            ) : (
+              <div className="flex flex-row gap-4">
+                <Button>
+                  <Link href={"/register"}>Sign In</Link>
+                </Button>
 
-            {/* Always show user button */}
-            <UserButton />
+                <Button variant={"outline"}>
+                  <Link href={"/login"}>Login</Link>
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -15,7 +15,7 @@ export async function fetchBookByCategory(categoryId: number) {
     throw new Error("Failed to fetch books by category.");
   }
 }
-export async function fetchMostViewedBookByCategory(id: string) {
+export async function fetchMostViewedBookByCategory(id: number) {
   try {
     const res = await sql`
       SELECT 

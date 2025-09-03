@@ -1,5 +1,5 @@
 "use client";
-import { useState, useMemo, useCallback, useEffect, Suspense } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import CategorySelector from "./bookCategorySelector";
 import { Category } from "@/app/interface/category";
 import { Book } from "@/app/interface/book";
@@ -19,16 +19,17 @@ export default function BookCategoryContainer({
   const [selectedCategory, setSelectedCategory] = useState(defaultCategory);
   const [selectedCategorySlug, setSelectedCategorySlug] = useState("classic");
   const [books, setBooks] = useState<Book[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
   const fetchBooks = useCallback(async (categoryId: string) => {
     if (!categoryId) return;
-
     setLoading(true);
     setError("");
-
+    setBooks([]);
     try {
       const response = await fetchMostViewedBookByCategoryActions(categoryId);
+      console.log("yeah");
       if (!response) throw new Error("Failed to fetch category");
       setBooks(response);
     } catch (err: unknown) {
@@ -63,23 +64,17 @@ export default function BookCategoryContainer({
         {dynamicTitle}
       </span>
 
-      <div className="flex flex-col  gap-2">
+      <div className="flex flex-col gap-2">
         <div className="flex flex-row justify-between">
           <CategorySelector
             categories={categories}
             selectedCategory={selectedCategory}
             onCategoryChange={handleCategoryChange}
           />
-          <ViewMoreBookButton
-            url={`/book?tag=${selectedCategorySlug}`}
-          ></ViewMoreBookButton>
+          <ViewMoreBookButton url={`/book?tag=${selectedCategorySlug}`} />
         </div>
 
-        <BookCarousel
-          key="category-carousel"
-          books={books}
-          variant="lg"
-        ></BookCarousel>
+        <BookCarousel books={books} variant="lg" isLoading={loading} />
       </div>
     </div>
   );

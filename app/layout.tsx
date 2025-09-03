@@ -1,4 +1,4 @@
-import "@/app/ui/global.css";
+import "@/app/globals.css";
 import { inter } from "@/app/ui/fonts";
 import { Metadata } from "next";
 import ClientProviders from "@/components/clientProvider";

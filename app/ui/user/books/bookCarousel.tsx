@@ -1,7 +1,7 @@
 "use client";
 
 import { Book } from "@/app/interface/book";
-import { Suspense, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import BookCard from "./bookCard";
 import BookCarouselNavigation from "./bookCarouselNavigation";
 import { BookCardSkeleton } from "../../skeletons";
@@ -10,6 +10,7 @@ type Variant = "lg" | "sm";
 interface BookCarouselProps {
   books: Book[];
   variant?: Variant;
+  isLoading?: boolean;
 }
 
 const CONFIG = {
@@ -24,19 +25,29 @@ const CONFIG = {
 } as const;
 const ITEMS_PER_SLIDE = 5;
 
-export default function BookCarousel({ books, variant }: BookCarouselProps) {
+export default function BookCarousel({
+  books,
+  variant = "lg",
+  isLoading = false,
+}: BookCarouselProps) {
   const cfg = CONFIG[variant];
-
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
+  const displayItems = useMemo(() => {
+    if (isLoading) {
+      return Array(10).fill(null);
+    }
+    return books;
+  }, [books, isLoading]);
+
   const slides = useMemo(() => {
-    const chunks: Book[][] = [];
-    for (let i = 0; i < books.length; i += ITEMS_PER_SLIDE) {
-      chunks.push(books.slice(i, i + ITEMS_PER_SLIDE));
+    const chunks: (Book | null)[][] = [];
+    for (let i = 0; i < displayItems.length; i += ITEMS_PER_SLIDE) {
+      chunks.push(displayItems.slice(i, i + ITEMS_PER_SLIDE));
     }
     return chunks;
-  }, [books]);
+  }, [displayItems]);
 
   const nextSlide = () => {
     if (isTransitioning) return;
@@ -49,7 +60,7 @@ export default function BookCarousel({ books, variant }: BookCarouselProps) {
     setIsTransitioning(true);
     setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
   };
-  console.log(":slide", slides);
+
   return (
     <div className={`relative ${cfg.container}`}>
       <div className="relative overflow-hidden">
@@ -58,22 +69,27 @@ export default function BookCarousel({ books, variant }: BookCarouselProps) {
           style={{ transform: `translateX(-${currentSlide * 100}%)` }}
           onTransitionEnd={() => setIsTransitioning(false)}
         >
-          <div className="w-full flex-shrink-0">
-            {slides.map((page, pageIndex) => (
-              <div key={`slide-${pageIndex}`} className={`grid  ${cfg.grid}`}>
-                {page.map((book) => (
-                  <Suspense
-                    key={book.id}
-                    fallback={
-                      <BookCardSkeleton variant={variant}></BookCardSkeleton>
-                    }
-                  >
-                    <BookCard book={book} variant={variant} />
-                  </Suspense>
-                ))}
-              </div>
-            ))}
-          </div>
+          {slides.map((page, pageIndex) => (
+            <div
+              key={`slide-${pageIndex}`}
+              className={`w-full flex-shrink-0 grid ${cfg.grid}`}
+            >
+              {page.map((book, bookIndex) => {
+                const itemKey =
+                  book?.id || `skeleton-${pageIndex}-${bookIndex}`;
+
+                return (
+                  <div key={itemKey}>
+                    {book ? (
+                      <BookCard book={book} variant={variant} />
+                    ) : (
+                      <BookCardSkeleton variant={variant} />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          ))}
         </div>
       </div>
 

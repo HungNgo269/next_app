@@ -40,8 +40,8 @@ export default function SortSelection({ currentSort }: Props) {
           disabled={isPending}
           className={`text-sm font-medium transition-all duration-200 hover:scale-105 ${
             selectedSort === option.slug
-              ? "bg-blue-600 hover:bg-blue-700"
-              : "bg-gray-100 hover:bg-gray-200"
+              ? " hover:opacity-98"
+              : " hover:bg-gray-200"
           }`}
         >
           {option.name}

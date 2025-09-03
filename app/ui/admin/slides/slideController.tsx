@@ -38,7 +38,6 @@ export default function SlideControls({
     setIsPlaying(!isPlaying);
   };
 
-  // Auto-advance slides
   useEffect(() => {
     if (!isPlaying) return;
 
@@ -51,13 +50,11 @@ export default function SlideControls({
 
   return (
     <>
-      {/* Navigation Arrows */}
       <Button
         variant="outline"
         size="icon"
         className="absolute right-24 bottom-10 bg-white/90 hover:bg-white border-gray-200 shadow-lg z-30 rounded-[50%]"
         onClick={prevSlide}
-        // disabled={isTransitioning}
       >
         <ChevronLeft className="h-5 w-5" />
         <span className="sr-only">Previous slide</span>
@@ -68,13 +65,11 @@ export default function SlideControls({
         size="icon"
         className="absolute right-4  bottom-10 bg-white/90 hover:bg-white border-gray-200 shadow-lg z-30 rounded-[50%]"
         onClick={nextSlide}
-        // disabled={isTransitioning}
       >
         <ChevronRight className="h-5 w-5" />
         <span className="sr-only">Next slide</span>
       </Button>
 
-      {/* Play/Pause Button */}
       <Button
         variant="outline"
         size="icon"
@@ -89,7 +84,6 @@ export default function SlideControls({
         <span className="sr-only">{isPlaying ? "Pause" : "Play"} Slide</span>
       </Button>
 
-      {/* Dot Indicators */}
       <div className="flex justify-center items-center space-x-2 py-4 bg-transparent absolute z-10 bottom-0 left-0 right-0">
         {Array.from({ length: totalSlides }, (_, index) => (
           <button

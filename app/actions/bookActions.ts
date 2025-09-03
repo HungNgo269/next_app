@@ -31,7 +31,7 @@ export async function fetchNewBookAction() {
   }
 }
 
-export async function fetchMostViewedBookByCategoryActions(categoryId: string) {
+export async function fetchMostViewedBookByCategoryActions(categoryId: number) {
   try {
     return await fetchMostViewedBookByCategory(categoryId);
   } catch (error) {

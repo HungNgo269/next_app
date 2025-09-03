@@ -1,5 +1,4 @@
-"use client";
-
+import { AuthUser, useAuthStore } from "@/app/store/useAuthStore";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,27 +11,27 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   Settings,
-  User,
-  LogOut,
   CreditCard,
   Bell,
   HelpCircle,
+  User,
+  LogOut,
 } from "lucide-react";
+import { auth, signOut } from "@/auth";
 
 interface UserButtonProps {
-  user?: {
-    name: string;
-    email: string;
-    avatar?: string;
-  };
+  user?: AuthUser;
 }
 
-export function UserButton({ user }: UserButtonProps) {
-  // Default user data for demo purposes
+export async function UserButton({ user }: UserButtonProps) {
+  const session = await auth();
+  console.log("session", session);
+  console.log("user", session?.user);
   const userData = user || {
     name: "John Doe",
     email: "john.doe@example.com",
-    avatar: "/diverse-user-avatars.png",
+    avatar:
+      "https://res.cloudinary.com/dm3j1fqob/image/upload/v1751940644/slides/itcybgip34j0yunz4kpv.jpg",
   };
 
   const getInitials = (name: string) => {
@@ -45,7 +44,7 @@ export function UserButton({ user }: UserButtonProps) {
   };
 
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
@@ -53,7 +52,10 @@ export function UserButton({ user }: UserButtonProps) {
         >
           <Avatar className="h-10 w-10 md:h-12 md:w-12">
             <AvatarImage
-              src={userData.avatar || "/placeholder.svg"}
+              src={
+                userData.avatar ||
+                "https://res.cloudinary.com/dm3j1fqob/image/upload/v1751940644/slides/itcybgip34j0yunz4kpv.jpg"
+              }
               alt={userData.name}
             />
             <AvatarFallback className="bg-primary text-primary-foreground">
@@ -93,9 +95,19 @@ export function UserButton({ user }: UserButtonProps) {
           <span>Help & Support</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="cursor-pointer text-destructive focus:text-destructive">
-          <LogOut className="mr-2 h-4 w-4" />
-          <span>Log out</span>
+        <DropdownMenuItem className="cursor-pointer">
+          <form
+            action={async () => {
+              "use server";
+              await signOut({ redirectTo: "/" });
+            }}
+            className="w-full"
+          >
+            <button className="w-full flex items-center px-2 py-1.5 text-sm cursor-pointer text-destructive hover:bg-accent rounded-sm">
+              <LogOut className="mr-2 h-4 w-4" />
+              <span>Log out</span>
+            </button>
+          </form>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

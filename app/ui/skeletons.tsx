@@ -293,7 +293,7 @@ export function BookCardSkeleton({ variant = "lg" }: { variant?: Variant }) {
   const s = MAP[variant];
 
   return (
-    <div className={`flex flex-col p-1 ${s.card}`}>
+    <div className={`flex flex-col p-1 ${s.card} ${shimmer}`}>
       <div
         className={`relative overflow-hidden rounded-[8px] bg-muted animate-pulse ${s.imgWrap}`}
       >

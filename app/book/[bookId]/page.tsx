@@ -272,7 +272,7 @@ export default async function BookPage({ params }: PageProps) {
                 <CardContent className="p-4">
                   <ChapterContainer
                     title={book.name}
-                    coverImage="/placeholder.svg?height=160&width=120"
+                    coverImage="https://res.cloudinary.com/dm3j1fqob/image/upload/v1751940644/slides/itcybgip34j0yunz4kpv.jpg?height=160&width=120"
                     chapters={chapters}
                     totalChapters={62}
                   ></ChapterContainer>

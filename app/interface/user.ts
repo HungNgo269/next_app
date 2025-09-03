@@ -1,6 +1,6 @@
-type UserRole = "user" | "admin" | "subUser" | "editor";
+export type UserRole = "user" | "admin" | "subUser" | "editor";
 
-interface User {
+export default interface User {
   id: string;
   name: string;
   email: string;

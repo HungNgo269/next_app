@@ -11,16 +11,16 @@ import MostPopularBook from "./ui/user/ranking/mostPopularBook";
 import MostPopularSeries from "./ui/user/ranking/mostPopularSeries";
 import FooterComponent from "./ui/user/footer/footerComponent";
 import SectionComponent from "./ui/user/section/section";
-import { ScrollHeader } from "./ui/user/headerCustomer/scrollHeader";
 import Slide from "./ui/admin/slides/slide";
 import { SlideSkeleton } from "./ui/skeletons";
+import { HeaderWrapper } from "./ui/user/headerCustomer/headerWrapper";
 
 export default function HomePage() {
   return (
     <>
       <header className="ml-auto mr-auto  ">
         <Suspense>
-          <ScrollHeader children={<Header></Header>}></ScrollHeader>
+          <HeaderWrapper children={<Header></Header>}></HeaderWrapper>
         </Suspense>
       </header>
       <Suspense fallback={<SlideSkeleton></SlideSkeleton>}>

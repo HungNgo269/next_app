@@ -1,17 +1,15 @@
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
+import { memo } from "react";
 
-interface ViewMoreBookButton {
+interface ViewMoreBookButtonProps {
   url: string;
   context?: string;
 }
 
-export default function ViewMoreBookButton({
-  url,
-  context,
-}: ViewMoreBookButton) {
+function ViewMoreBookButton({ url, context }: ViewMoreBookButtonProps) {
   return (
-    <Link href={url}>
+    <Link href={url} className=" ml-auto">
       <button className="flex items-center text-gray-600 hover:text-gray-900 transition-colors">
         {context === "chapter" ? (
           <span className="text-sm mr-1 line-clamp-1 w-fit">
@@ -27,3 +25,4 @@ export default function ViewMoreBookButton({
     </Link>
   );
 }
+export default memo(ViewMoreBookButton);

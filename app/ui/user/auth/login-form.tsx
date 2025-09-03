@@ -12,6 +12,7 @@ import { authenticate } from "@/app/(auth)/login/actions";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import PasswordField from "./passwordField";
+import { LoginCanvas } from "@/app/(auth)/login/loginCanvas";
 
 export default function LoginForm() {
   const searchParams = useSearchParams();
@@ -38,6 +39,7 @@ export default function LoginForm() {
           }}
         ></div>
       </div>
+      <LoginCanvas width="third"></LoginCanvas>
 
       {/* Left side - Login form */}
       <div className="flex-1 flex flex-col justify-center px-6 lg:px-12 relative z-10 my-auto">
@@ -157,35 +159,6 @@ export default function LoginForm() {
       </div>
 
       {/* Right side - Decorative */}
-      <div className="hidden lg:flex flex-1 items-center justify-center relative bg-gradient-to-br from-blue-900/20 to-purple-900/20">
-        <div className="text-center space-y-8 p-12">
-          <div className="space-y-4">
-            <h2 className="text-4xl font-bold text-white">
-              Join thousands of users
-            </h2>
-            <p className="text-xl text-gray-300 max-w-md">
-              Experience the power of modern authentication with enhanced
-              security and seamless user experience.
-            </p>
-          </div>
-
-          {/* Feature highlights */}
-          <div className="grid grid-cols-1 gap-6 max-w-sm mx-auto">
-            <div className="flex items-center space-x-3 text-gray-300">
-              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-              <span>Secure authentication</span>
-            </div>
-            <div className="flex items-center space-x-3 text-gray-300">
-              <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-              <span>Fast and reliable</span>
-            </div>
-            <div className="flex items-center space-x-3 text-gray-300">
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-              <span>Privacy focused</span>
-            </div>
-          </div>
-        </div>
-      </div>
     </form>
   );
 }

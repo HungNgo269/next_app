@@ -1,5 +1,5 @@
 import Header from "@/app/ui/user/headerCustomer/headerMain";
-import { ScrollHeader } from "../ui/user/headerCustomer/scrollHeader";
+import { HeaderWrapper } from "../ui/user/headerCustomer/headerWrapper";
 
 export default async function BookLayout({
   children,
@@ -8,7 +8,7 @@ export default async function BookLayout({
 }) {
   return (
     <div>
-      <ScrollHeader children={<Header></Header>}></ScrollHeader>
+      <HeaderWrapper children={<Header></Header>}></HeaderWrapper>
       {children}
     </div>
   );

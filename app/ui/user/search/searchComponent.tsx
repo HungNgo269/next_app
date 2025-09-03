@@ -35,10 +35,9 @@ export default function SearchComponent({
   compact?: boolean;
 }) {
   const [query, setQuery] = useState<string>("");
-  const [isOpen, setIsOpen] = useState<boolean>(false); // your dropdown open
-  const [isCompactOpen, setIsCompactOpen] = useState<boolean>(false); // mobile overlay
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isCompactOpen, setIsCompactOpen] = useState<boolean>(false);
 
-  // ✅ your search history kept intact
   const [searchHistory, setSearchHistory] = useState<string[]>([
     "React hooks tutorial",
     "JavaScript ES6 features",
@@ -69,7 +68,7 @@ export default function SearchComponent({
 
     setQuery(q);
     setIsOpen(false);
-    if (compact) setIsCompactOpen(false); // close overlay on mobile after searching
+    if (compact) setIsCompactOpen(false);
     console.log("Searching for:", q);
   };
 
@@ -84,7 +83,6 @@ export default function SearchComponent({
     }
   };
 
-  // Close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Node;
@@ -98,12 +96,10 @@ export default function SearchComponent({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Autofocus when opening compact overlay
   useEffect(() => {
     if (isCompactOpen && inputRef.current) inputRef.current.focus();
   }, [isCompactOpen]);
 
-  // ---- shared search UI (your original structure) ----
   const SearchUI = (
     <div className="w-full max-w-xl mx-auto">
       <div className="relative">

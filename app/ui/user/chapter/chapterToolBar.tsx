@@ -61,8 +61,6 @@ export default function ChapterToolBar({
       await updateReaderSettings({ [key]: value });
     });
   };
-  console.log("first", idPrev);
-  console.log("second", idNext);
   return (
     <div className="hidden lg:block fixed right-4 top-1/2 -translate-y-1/2 z-50">
       <div className="flex flex-col gap-2 bg-card border rounded-lg shadow-lg items-center">
