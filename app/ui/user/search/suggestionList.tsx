@@ -18,7 +18,7 @@ export default function SugggestionList({
       {suggestions.map((s, index) => (
         <SuggestionItem
           key={index}
-          icon={<Search size={16} className="text-blue-500 mr-4" />}
+          icon={<Search size={16} className="text-primary mr-4" />}
           value={s}
           query={query}
           onClick={() => onSelect(s)}

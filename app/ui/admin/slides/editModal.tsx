@@ -229,7 +229,7 @@ export default async function EditModal({
             <button
               onClick={resetEdit}
               type="button"
-              className="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center gap-2 rounded-lg"
+              className="px-6 py-3 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground font-semibold hover:from-primary/90 hover:to-primary/70 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center gap-2 rounded-lg"
               disabled={isEditing}
             >
               <Upload className="w-4 h-4" />

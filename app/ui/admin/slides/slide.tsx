@@ -39,7 +39,7 @@ export const slides: SlideSlide[] = [
     id: 2,
     title: "Featured Categories",
     subtitle: "Shop our most popular items",
-    backgroundColor: "bg-gradient-to-br from-blue-50 to-purple-50",
+    backgroundColor: "bg-gradient-to-br from-primary/5 to-accent/5",
     items: {
       id: 1,
       image:
@@ -52,7 +52,7 @@ export const slides: SlideSlide[] = [
   },
   {
     id: 3,
-    backgroundColor: "bg-gradient-to-r from-green-50 to-blue-50",
+    backgroundColor: "bg-gradient-to-r from-green-50 to-primary/5",
     items: {
       id: 1,
       image:

@@ -14,7 +14,7 @@ export default function StatusLabel({ status }: { status: Status }) {
         "inline-flex items-center rounded-full px-2 py-1 text-xs font-medium",
         {
           "bg-green-100 text-green-800": status === Status.completed,
-          "bg-blue-100 text-blue-800": status === Status.on_going,
+          "bg-primary/10 text-primary/80": status === Status.on_going,
           "bg-yellow-100 text-yellow-800": status === Status.hiatus,
           "bg-red-100 text-red-800": status === Status.cancelled,
         }

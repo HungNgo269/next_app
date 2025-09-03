@@ -18,7 +18,7 @@ export default function SuggestionItem({
   return (
     <div
       onClick={onClick}
-      className="flex items-center px-5 py-3 hover:bg-blue-50 cursor-pointer group transition-colors"
+      className="flex items-center px-5 py-3 hover:bg-primary/10 cursor-pointer group transition-colors"
       role="option"
     >
       {icon}

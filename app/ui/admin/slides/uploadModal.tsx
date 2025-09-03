@@ -87,7 +87,7 @@ export default function UploadModal({
       onClick={handleBackdropClick}
     >
       <div className="bg-white max-w-3xl w-full max-h-[95vh] overflow-hidden shadow-2xl rounded-lg">
-        <div className="flex justify-between items-center p-6 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-indigo-50">
+        <div className="flex justify-between items-center p-6 border-b border-gray-100 bg-gradient-to-r from-primary/5 to-accent/5">
           <div>
             <h2 className="text-2xl font-bold text-gray-900">Upload Image</h2>
             <p className="text-sm text-gray-600 mt-1">
@@ -199,7 +199,7 @@ export default function UploadModal({
                   disabled={!isFormValid}
                   className={`px-8 py-3 font-semibold transition-all flex items-center justify-center gap-2 rounded-lg ${
                     isFormValid
-                      ? "bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                      ? "bg-gradient-to-r from-primary to-primary/80 text-primary-foreground hover:from-primary/90 hover:to-primary/70 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                       : "bg-gray-200 text-gray-400 cursor-not-allowed"
                   }`}
                 >

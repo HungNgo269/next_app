@@ -43,7 +43,7 @@ export default async function SlideFormFields({
             onChange={(e) => setField("title", e.target.value)}
             required
             disabled={disabled}
-            className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:bg-gray-50 disabled:text-gray-500 ${
+            className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all disabled:bg-gray-50 disabled:text-gray-500 ${
               getFieldError("title")
                 ? "border-red-300 bg-red-50"
                 : "border-gray-200 hover:border-gray-300"
@@ -76,7 +76,7 @@ export default async function SlideFormFields({
             onChange={(e) => setField("order", e.target.value)}
             required
             disabled={disabled}
-            className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:bg-gray-50 disabled:text-gray-500 ${
+            className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all disabled:bg-gray-50 disabled:text-gray-500 ${
               getFieldError("order")
                 ? "border-red-300 bg-red-50"
                 : "border-gray-200 hover:border-gray-300"
@@ -108,7 +108,7 @@ export default async function SlideFormFields({
           onChange={(e) => setField("desc", e.target.value)}
           required
           disabled={disabled}
-          className={`w-full px-4 py-3 border-2 rounded-lg resize-y focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:bg-gray-50 disabled:text-gray-500 ${
+          className={`w-full px-4 py-3 border-2 rounded-lg resize-y focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all disabled:bg-gray-50 disabled:text-gray-500 ${
             getFieldError("desc")
               ? "border-red-300 bg-red-50"
               : "border-gray-200 hover:border-gray-300"
@@ -139,7 +139,7 @@ export default async function SlideFormFields({
           onChange={(e) => setField("redirectLink", e.target.value)}
           required
           disabled={disabled}
-          className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:bg-gray-50 disabled:text-gray-500 ${
+          className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all disabled:bg-gray-50 disabled:text-gray-500 ${
             getFieldError("redirectLink")
               ? "border-red-300 bg-red-50"
               : "border-gray-200 hover:border-gray-300"

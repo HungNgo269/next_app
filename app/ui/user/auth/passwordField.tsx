@@ -30,7 +30,7 @@ export default function PasswordField({
       </label>
       <div className="relative">
         <input
-          className="w-full h-12 px-4 bg-gray-800/50 backdrop-blur-sm border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all peer"
+          className="w-full h-12 px-4 bg-gray-800/50 backdrop-blur-sm border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all peer"
           id={id}
           type={showPassword ? "text" : "password"}
           name={name}

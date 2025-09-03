@@ -10,9 +10,9 @@ interface ViewMoreBookButtonProps {
 function ViewMoreBookButton({ url, context }: ViewMoreBookButtonProps) {
   return (
     <Link href={url} className=" ml-auto">
-      <button className="flex items-center text-gray-600 hover:text-gray-900 transition-colors">
+      <button className="flex items-center text-gray-600 hover:text-gray-900 transition-colors cursor-pointer">
         {context === "chapter" ? (
-          <span className="text-sm mr-1 line-clamp-1 w-fit">
+          <span className="text-sm mr-1 line-clamp-1 w-fit ">
             View More Chapter
           </span>
         ) : (

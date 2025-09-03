@@ -53,7 +53,7 @@ export default function SlideControls({
       <Button
         variant="outline"
         size="icon"
-        className="absolute right-24 bottom-10 bg-white/90 hover:bg-white border-gray-200 shadow-lg z-30 rounded-[50%]"
+        className="absolute right-24 bottom-10 bg-white/90 hover:bg-white border-gray-200 shadow-lg z-30 rounded-[50%] cursor-pointer"
         onClick={prevSlide}
       >
         <ChevronLeft className="h-5 w-5" />
@@ -63,7 +63,7 @@ export default function SlideControls({
       <Button
         variant="outline"
         size="icon"
-        className="absolute right-4  bottom-10 bg-white/90 hover:bg-white border-gray-200 shadow-lg z-30 rounded-[50%]"
+        className="absolute right-4  bottom-10 bg-white/90 hover:bg-white border-gray-200 shadow-lg z-30 rounded-[50%] cursor-pointer"
         onClick={nextSlide}
       >
         <ChevronRight className="h-5 w-5" />
@@ -73,7 +73,7 @@ export default function SlideControls({
       <Button
         variant="outline"
         size="icon"
-        className="absolute bottom-10 right-14  bg-white/90 hover:bg-white border-gray-200 shadow-lg z-30 rounded-[50%]"
+        className="absolute bottom-10 right-14  bg-white/90 hover:bg-white border-gray-200 shadow-lg z-30 rounded-[50%] cursor-pointer"
         onClick={togglePlayPause}
       >
         {isPlaying ? (
@@ -90,7 +90,7 @@ export default function SlideControls({
             key={index}
             className={`w-3 h-3 rounded-full transition-all duration-200 ${
               index === currentSlide
-                ? "bg-blue-600 scale-110"
+                ? "bg-primary scale-110"
                 : "bg-gray-300 hover:bg-gray-400"
             }`}
             onClick={() => goToSlide(index)}

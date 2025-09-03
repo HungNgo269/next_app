@@ -106,7 +106,7 @@ export default function SearchComponent({
         <div
           className={`flex items-center justify-center border-2 rounded-lg overflow-hidden bg-white transition-all duration-200 h-9
             ${
-              isOpen ? "border-blue-500 shadow-lg" : "border-gray-300 shadow-sm"
+              isOpen ? "border-primary shadow-lg" : "border-gray-300 shadow-sm"
             }`}
         >
           <SearchInput

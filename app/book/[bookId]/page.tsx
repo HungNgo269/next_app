@@ -175,7 +175,7 @@ export default async function BookPage({ params }: PageProps) {
           className="opacity-90 blur-sm object-cover"
         />
 
-        <div className="absolute inset-0 bg-black bg-opacity-40">
+        <div className="absolute inset-0  bg-opacity-40">
           <div className=" mx-auto px-4 h-full flex items-end pb-6">
             <div className="flex items-center gap-6 w-[1200px] mx-auto">
               <div className="relative w-[200px] h-fit flex-shrink-0 mt-12 rounded-md">
@@ -240,7 +240,7 @@ export default async function BookPage({ params }: PageProps) {
                 <Star className="w-5 h-5" />
                 <span className="text-xs">Rating</span>
               </button>
-              <button className="flex flex-col items-center space-y-1 text-gray-600 hover:text-blue-500">
+              <button className="flex flex-col items-center space-y-1 text-gray-600 hover:text-primary">
                 <BookOpen className="w-5 h-5" />
                 <span className="text-xs">BookMark</span>
               </button>
