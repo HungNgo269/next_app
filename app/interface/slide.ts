@@ -20,7 +20,7 @@ export interface SlideResponse {
   updated_at?: string;
 }
 
-export interface SlideTable {
+export interface SlideTableProps {
   id: string;
   image_url: string;
   title: string;

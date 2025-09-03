@@ -1,5 +1,5 @@
-import cloudinary from "@/app/lib/cloudinary";
-import { sql } from "@/app/lib/db";
+import cloudinary from "@/lib/cloudinary";
+import { sql } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 import { UploadApiResponse } from "cloudinary";
 
@@ -25,8 +25,6 @@ export async function POST(req: NextRequest) {
     const desc = formData.get("desc") as string;
     const link = formData.get("link") as string;
     const order = formData.get("order") as string;
-
-    const id = crypto.randomUUID();
 
     const file = formData.get("file") as File;
     if (!file) {
@@ -57,8 +55,8 @@ export async function POST(req: NextRequest) {
 
     try {
       const dbResult = await sql`
-        INSERT INTO slides (id,title, description, image_url, public_id,redirect_url,display_order)
-        VALUES (${id},${title}, ${desc}, ${cloudinaryResult.secure_url}, ${cloudinaryResult.public_id},${link},${order})
+        INSERT INTO slides (title, description, image_url, public_id,redirect_url,display_order)
+        VALUES (${title}, ${desc}, ${cloudinaryResult.secure_url}, ${cloudinaryResult.public_id},${link},${order})
         RETURNING *
       `;
 

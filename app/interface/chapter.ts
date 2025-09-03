@@ -2,8 +2,8 @@ export interface Chapter {
   id: string;
   title: string;
   content: string;
-  bookId: string;
-  chapterNumber: number;
+  book_id: string;
+  chapter_number: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -11,6 +11,7 @@ export interface Chapter {
 export interface ChapterStats {
   totalViews: number;
   uniqueViews: number;
+  guestViews?: number;
   todayViews: number;
 }
 
@@ -22,6 +23,8 @@ export interface ViewResult {
   success: boolean;
   totalViews?: number;
   dailyViews?: number;
+  guestViews?: number;
+  isNewView?: boolean;
   error?: string;
   message?: string;
 }
@@ -35,4 +38,11 @@ export interface TopChapter {
   rank: number;
   chapterId: string;
   views: number;
+}
+
+export interface ChapterUploadProps {
+  book_id: number;
+  title: string;
+  chapter_number: number;
+  content: string;
 }

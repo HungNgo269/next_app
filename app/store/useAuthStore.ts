@@ -1,9 +1,11 @@
 import { create } from "zustand";
+import { UserRole } from "../interface/user";
 
 export type AuthUser = {
   id: string;
   name: string;
   email: string;
+  image_url?: string;
   role?: UserRole;
 };
 
@@ -14,7 +16,7 @@ export type AuthState = {
 };
 
 export type AuthActions = {
-  login: (user: User) => void;
+  login: (user: AuthUser) => void;
   register: (user: AuthUser) => void;
   logout: () => void;
   setLoading: (loading: boolean) => void;

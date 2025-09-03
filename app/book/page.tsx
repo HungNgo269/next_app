@@ -1,41 +1,91 @@
-import { Chapter } from "@/app/interface/chapter";
-import { ProductCard, ProductImage } from "@/app/interface/book";
-import { sql } from "@/app/lib/db";
-import Image from "next/image";
+import {
+  getcategoryIdBySlug,
+  getcategoryNameBySlug,
+  sortOptions,
+} from "@/app/constant/categories";
+import { fetchBookByCategory } from "../data/categoryData";
+import CategoryFilter from "../ui/share/genre/categoryFilter";
+import { BookCardProps } from "../interface/book";
+import BookCard from "../ui/user/books/bookCard";
+import MostPopularBook from "../ui/user/ranking/mostPopularBook";
+import CategoryName from "../ui/user/books/bookCategoryName";
+import SortSelection from "../ui/user/books/bookCategorySortSelection";
+import {
+  fetchBookByCategorySortAction,
+  fetchTotalBookPageByCategoryAction,
+} from "../actions/bookActions";
+import Pagination from "../ui/share/pagination/pagination";
+import FooterComponent from "../ui/user/footer/footerComponent";
 
-type PageProps = {
-  params: {};
-};
-export default async function BooksPage({ params }: PageProps) {
-  //   const Chapters: Chapter[] = await sql`
-  //   SELECT id,product_id, title, chapter_number, is_free
-  //   FROM chapters
-  //   WHERE id = ${ChapterId}
-  // `;
-  //   const Chapter = Chapters[0];
+interface BookPageProps {
+  searchParams: Promise<{ tag?: string; sort?: string }>;
+}
 
-  //   const Books: ProductImage[] = await sql`
-  //   SELECT image_urls
-  //   FROM products
-  //   WHERE id = ${BookId}
-  // `;
-  //   const image = Books[0].image_urls[0];
+export default async function BookPage({ searchParams }: BookPageProps) {
+  let { tag, sort } = await searchParams;
+  if (sort === undefined) {
+    sort = "popularity";
+  }
+  const sortOptions: string = sort;
+  const categoryId = getcategoryIdBySlug(tag);
+  const totalPages = await fetchTotalBookPageByCategoryAction(categoryId);
+
+  const books: BookCardProps[] = await fetchBookByCategorySortAction(
+    categoryId,
+    sortOptions,
+    1,
+    "DESC"
+  );
+
+  console.log("book", books);
 
   return (
-    <>Book</>
-    // <div className="flex flex-col  w-[220px] h-[445px] p-1 mt-10">
-    //   <div className="relative w-[200px] h-[300px]">
-    //     <Image
-    //       src={Chapter?.image_urls[0]}
-    //       alt={Chapter.name}
-    //       fill
-    //       className="object-cover rounded"
-    //     />
-    //   </div>
+    <div className=" mx-auto w-[1190px] mt-20">
+      <div className="flex  justify-between">
+        <div className="w-[850px]   flex flex-col gap-5">
+          <CategoryName></CategoryName>
+          <div className="flex flex-row mb-6 justify-between">
+            <CategoryFilter currentGenre={tag} />
+            <SortSelection currentSort={sortOptions}></SortSelection>
+          </div>
+          <div className=" flex flex-col ">
+            <div
+              className="
+    flex gap-3 overflow-x-auto md:overflow-x-hidden
+    md:grid md:grid-cols-3 lg:grid-cols-5  w-full
+  "
+            >
+              {books && books.length > 0
+                ? (books as BookCardProps[]).map((book: BookCardProps) => (
+                    <BookCard variant="sm" book={book} key={book.id} />
+                  ))
+                : ""}
+            </div>
+            <div className="mt-5 flex w-full justify-center">
+              <Pagination totalPages={totalPages} />
+            </div>
+          </div>
+        </div>
 
-    //   <div className="flex flex-col h-fit w-full mt-2.5">
-    //     <span className="line-clamp-2  font-bold w-full">{Chapter.name}</span>
-    //   </div>
-    // </div>
+        <div className="w-[300px]  flex flex-col gap-5">
+          <MostPopularBook />
+        </div>
+      </div>
+      <div className="mt-10">
+        <FooterComponent></FooterComponent>
+      </div>
+    </div>
   );
+}
+
+export async function generateMetadata({ searchParams }: BookPageProps) {
+  const { tag } = await searchParams;
+  const categoryName = tag ? getcategoryNameBySlug(tag) : null;
+
+  return {
+    title: categoryName ? ` ${categoryName} - Bookstore` : " Bookstore",
+    description: categoryName
+      ? `${categoryName} at bookstore`
+      : "Interesting book",
+  };
 }

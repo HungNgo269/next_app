@@ -1,4 +1,4 @@
-import "@/app/ui/global.css";
+import "@/app/globals.css";
 import { inter } from "@/app/ui/fonts";
 import { Metadata } from "next";
 import ClientProviders from "@/components/clientProvider";
@@ -21,7 +21,7 @@ export default async function RootLayout({
   const session = await auth();
   return (
     <html lang="en">
-      <body className={`${inter.className} antialiased font-normal`}>
+      <body className={`${inter.className} antialiased font-normal `}>
         <ClientProviders session={session}>{children}</ClientProviders>
       </body>
     </html>

@@ -1,9 +1,9 @@
 "use client";
 
-import { Toaster } from "react-hot-toast";
 import { SessionProvider } from "next-auth/react";
 import { useHydrateAuth } from "@/app/store/useHydrateAuth";
 import { Session } from "next-auth";
+import { ThemeProvider } from "./themeProvider";
 
 function HydrateWrapper() {
   useHydrateAuth();
@@ -20,6 +20,14 @@ export default function ClientProvider({
   return (
     <SessionProvider session={session}>
       <HydrateWrapper />
+      {/* <ThemeProvider
+        attribute="class"
+        defaultTheme="light"
+        enableSystem
+        disableTransitionOnChange
+      >
+        {children}
+      </ThemeProvider> */}
       {children}
     </SessionProvider>
   );

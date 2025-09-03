@@ -1,10 +1,11 @@
 "use server";
 import { z } from "zod";
 import bcrypt from "bcrypt";
-import { sql } from "@/app/lib/db";
-import registerSchema from "@/app/lib/validation/registerSchema";
+import { sql } from "@/lib/db";
+import registerSchema from "@/app/schema/registerSchema";
 import { redirect } from "next/navigation";
 import { signIn } from "@/auth";
+// import { createSession } from "../lib/session";
 
 type ActionResult = {
   success: boolean;
@@ -140,7 +141,7 @@ export async function registerUserAction(
       password: formData.get("passWord") as string,
       redirect: false,
     });
-    shouldRedirect = true;
+
     if (loginResult?.error) {
       return {
         success: false,
@@ -148,6 +149,9 @@ export async function registerUserAction(
           "Registration successful but login failed. Please login manually.",
       };
     }
+    // await createSession(cleanedData.id);
+
+    redirect("/dashboard");
   } catch (error) {
     // Zod validation errors
     if (error instanceof z.ZodError) {
@@ -188,8 +192,5 @@ export async function registerUserAction(
     };
   }
 
-  if (shouldRedirect) {
-    redirect("/dashboard");
-  }
   return {} as never;
 }

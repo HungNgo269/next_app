@@ -1,33 +1,19 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
-import postgres from "postgres";
 import { z } from "zod";
-import type { User } from "@/app/lib/definitions";
 import { authConfig } from "./auth.config";
+import { getUser } from "./app/data/userData";
 
-const sql = postgres(process.env.DATABASE_URL!, { ssl: "require" });
-
-async function getUser(email: string): Promise<User | undefined> {
-  try {
-    const user = await sql<User[]>`SELECT * FROM users WHERE email=${email}`;
-    console.log("user check", user);
-    return user[0];
-  } catch (error) {
-    console.error("Failed to fetch user:", error);
-    throw new Error("Failed to fetch user.");
-  }
-}
-
-export const { auth, signIn, signOut } = NextAuth({
+export const { auth, signIn, signOut, handlers } = NextAuth({
   ...authConfig,
   session: {
     strategy: "jwt", //accesstoken
-    // maxAge: 15 * 60,
+    maxAge: 15 * 60,
   },
   //rf token
   jwt: {
-    // maxAge: 7 * 24 * 60 * 60,
+    maxAge: 7 * 24 * 60 * 60,
   },
   providers: [
     Credentials({
@@ -38,16 +24,36 @@ export const { auth, signIn, signOut } = NextAuth({
 
         if (parsedCredentials.success) {
           const { email, password } = parsedCredentials.data;
+
+          if (!email || !password) {
+            console.log("Email or password is missing");
+            return null;
+          }
           const user = await getUser(email);
+          console.log("email", email);
+          console.log("óa", password);
+          console.log("úe", user);
 
           if (!user) return null;
+
+          if (!user.password) {
+            console.log("User password is not set in database");
+            return null;
+          }
           const passwordsMatch = await bcrypt.compare(password, user.password);
-          if (passwordsMatch) return user;
+
+          if (passwordsMatch) {
+            return user;
+          } else {
+            console.log("Password doesn't match");
+            return null;
+          }
         }
 
-        ("Invalid credentials");
+        console.log("Invalid credentials format");
         return null;
       },
     }),
   ],
 });
+export const { GET, POST } = handlers;

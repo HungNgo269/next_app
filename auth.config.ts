@@ -1,5 +1,4 @@
 import type { NextAuthConfig } from "next-auth";
-import { getToken, type JWT } from "next-auth/jwt";
 
 export const authConfig = {
   pages: {

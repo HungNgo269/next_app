@@ -1,46 +1,77 @@
 import { Suspense } from "react";
-import Carousel from "@/app/ui/slides/slidev2";
-import NewChapterList from "@/app/ui/books/newChapterList";
-import MostFollowBook from "@/app/ui/ranking/mostFollowBook";
-import BestSeller from "@/app/ui/books/bestSellerContainer";
-import Header from "./ui/headerCustomer/headerMain";
-import Footer from "./ui/footer/footerMain";
-import Banner from "./ui/banner/bannerMain";
-import RecentlyDiscoveredSection from "./ui/books/newBook";
+
+import { BookOpen, Download, Users } from "lucide-react";
+import Image from "next/image";
+import Header from "./ui/user/headerCustomer/headerMain";
+import BestSellerContainer from "./ui/user/books/bestSellerContainer";
+import NewBookList from "./ui/user/books/newBookList";
+import NewChapterList from "./ui/user/books/newChapterList";
+import BookRecommend from "./ui/user/books/bookRecommend";
+import MostPopularBook from "./ui/user/ranking/mostPopularBook";
+import MostPopularSeries from "./ui/user/ranking/mostPopularSeries";
+import FooterComponent from "./ui/user/footer/footerComponent";
+import SectionComponent from "./ui/user/section/section";
+import Slide from "./ui/admin/slides/slide";
+import { SlideSkeleton } from "./ui/skeletons";
+import { HeaderWrapper } from "./ui/user/headerCustomer/headerWrapper";
 
 export default function HomePage() {
   return (
     <>
-      <header className="ml-auto mr-auto w-[1190px]">
+      <header className="ml-auto mr-auto  ">
         <Suspense>
-          <Header></Header>
+          <HeaderWrapper children={<Header></Header>}></HeaderWrapper>
         </Suspense>
       </header>
-      <div className=" mx-auto mt-10 w-[1190px]">
+      <Suspense fallback={<SlideSkeleton></SlideSkeleton>}>
+        <Slide />
+      </Suspense>
+      <div className="w-full mx-auto mt-10 sm:w-[1190px]">
         <Suspense>
-          <Carousel />
+          <BestSellerContainer />
         </Suspense>
+        <div className="flex  justify-between mt-10 sm:flex-row ">
+          <div className="w-[850px]   flex flex-col gap-5">
+            <Suspense>
+              <NewBookList />
+            </Suspense>
 
-        <Suspense>
-          <BestSeller />
-        </Suspense>
-        <div className="flex  justify-between mt-10">
-          <div className="w-[840px]  ">
             <Suspense>
               <NewChapterList />
             </Suspense>
+            <Suspense>
+              <BookRecommend></BookRecommend>
+            </Suspense>
           </div>
-          <div className="w-[300px]  ">
-            <Suspense>{/* <MostFollowBook /> */}</Suspense>
+          <div className="w-[300px]  flex flex-col gap-5">
+            <Suspense>
+              <MostPopularBook />
+            </Suspense>
+            <Suspense>
+              <MostPopularSeries />
+            </Suspense>
+            {/* <Suspense>
+              <section className="mb-10">
+                <Image
+                  src="/testwideimg.jpg"
+                  alt="Banner"
+                  width={300}
+                  height={0}
+                  className="h-auto rounded-[8px]"
+                />
+              </section>
+            </Suspense> */}
           </div>
         </div>
-        <div className="flex justify-center mt-10">
-          <Banner></Banner>
+        <div className="hidden sm:block">
+          <Suspense>
+            <SectionComponent></SectionComponent>
+          </Suspense>
         </div>
       </div>
       <div className=" mx-auto mt-10 w-[1190px]">
         <Suspense>
-          <Footer></Footer>
+          <FooterComponent></FooterComponent>
         </Suspense>
       </div>
     </>
