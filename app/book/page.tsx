@@ -1,9 +1,7 @@
 import {
   getcategoryIdBySlug,
   getcategoryNameBySlug,
-  sortOptions,
 } from "@/app/constant/categories";
-import { fetchBookByCategory } from "../data/categoryData";
 import CategoryFilter from "../ui/share/genre/categoryFilter";
 import { BookCardProps } from "../interface/book";
 import BookCard from "../ui/user/books/bookCard";

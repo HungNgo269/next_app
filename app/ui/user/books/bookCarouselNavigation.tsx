@@ -39,7 +39,7 @@ export default function BookCarouselNavigation({
 
   return (
     <div
-      className={`absolute top-0 flex justify-between items-center z-20 pointer-events-none ${
+      className={`absolute top-0 flex justify-between items-center z-20 pointer-events-none  ${
         s.className
       } ${showPrevButton ? "left-[-17px]" : "right-[-17px]"}`}
     >
@@ -48,7 +48,7 @@ export default function BookCarouselNavigation({
           <Button
             variant="outline"
             size="icon"
-            className="bg-white/90 hover:bg-white border-gray-200 shadow-lg rounded-full pointer-events-auto"
+            className="bg-white/90 hover:bg-white border-gray-200 shadow-lg rounded-full  cursor-pointer  pointer-events-auto"
             onClick={onPrevSlide}
             aria-label="Previous slide"
           >
@@ -62,7 +62,7 @@ export default function BookCarouselNavigation({
           <Button
             variant="outline"
             size="icon"
-            className="bg-white/90 hover:bg-white border-gray-200 shadow-lg rounded-full pointer-events-auto"
+            className="bg-white/90 hover:bg-white border-gray-200 shadow-lg rounded-full   cursor-pointer pointer-events-auto"
             onClick={onNextSlide}
             aria-label="Next slide"
           >

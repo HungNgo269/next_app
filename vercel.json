@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/app/api/sync-views",
-      "schedule": "*/30 * * * *"
+      "schedule": "*/3600 * * * *"
     }
   ]
 }

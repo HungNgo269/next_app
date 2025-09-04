@@ -101,13 +101,28 @@ export const sortOptions = [
     name: "Sort By Rating",
   },
 ];
-
+export const sortOptionsTime = [
+  {
+    id: 1,
+    name: "Today",
+  },
+  {
+    id: 2,
+    name: "Week",
+  },
+  {
+    id: 3,
+    name: "Month",
+  },
+];
 // Type safety
 export type categorieslug = (typeof categories)[number]["slug"];
 export type category = (typeof categories)[number];
 
 export type sortSlug = (typeof sortOptions)[number]["slug"];
 export type sort = (typeof sortOptions)[number];
+
+export type sortTimeName = (typeof sortOptions)[number]["name"];
 
 // Utility functions for category
 export const getcategoryBySlug = (slug: string): category | undefined => {
@@ -169,6 +184,12 @@ export const sort_OPTIONS = [
   ...sortOptions.map((options) => ({
     id: options.id,
     slug: options.slug,
+    name: options.name,
+  })),
+];
+export const sort_OPTIONS_time = [
+  ...sortOptionsTime.map((options) => ({
+    id: options.id,
     name: options.name,
   })),
 ];

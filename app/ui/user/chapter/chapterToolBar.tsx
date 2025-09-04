@@ -269,10 +269,14 @@ export default function ChapterToolBar({
           onClick={(e) => idPrev == null && e.preventDefault()} // Ngăn click khi không có idNext
         >
           <Button
-            disabled={idPrev == null}
+            disabled={!idPrev}
             variant="ghost"
             size="icon"
-            className={`w-10 h-10 ${idPrev == null ? "opacity-50" : ""}`}
+            className={`w-10 h-10 ${
+              idPrev === null
+                ? "opacity-50 cursor-not-allowed"
+                : "cursor-pointer "
+            }`}
           >
             <ChevronLeft className="w-5 h-5" />
           </Button>
@@ -287,10 +291,14 @@ export default function ChapterToolBar({
           onClick={(e) => idNext == null && e.preventDefault()}
         >
           <Button
-            disabled={idNext == null}
+            disabled={!idPrev}
             variant="ghost"
             size="icon"
-            className={`w-10 h-10 ${idNext == null ? "opacity-50" : ""}`}
+            className={`w-10 h-10 ${
+              idNext === null
+                ? "opacity-50 cursor-not-allowed"
+                : "cursor-pointer "
+            }`}
           >
             <ChevronRight className="w-5 h-5" />
           </Button>

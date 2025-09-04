@@ -28,15 +28,18 @@ export default async function ChapterCard({ ChapterId }: PageProps) {
 
       <div className="flex flex-col h-fit w-fit mt-1 pl-6">
         <Link
-          href={`book/${book.id}/${chapter.id}`}
-          className="line-clamp-1  font-bold w-full"
+          href={`book/${book.id}`}
+          className="line-clamp-1  font-bold w-full hover:underline"
         >
           {book.name}
         </Link>
         <div className="line-clamp-2">
-          <span className=" font-medium ">
+          <Link
+            href={`book/${book.id}/chapter/${chapter.id}`}
+            className="line-clamp-1  font-medium w-full hover:underline"
+          >
             Chapter {chapter.chapter_number}
-          </span>
+          </Link>
         </div>
         <span className="line-clamp-3 w-full mt-2">{book.description}</span>
       </div>

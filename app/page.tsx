@@ -44,12 +44,12 @@ export default function HomePage() {
             </Suspense>
           </div>
           <div className="w-[300px]  flex flex-col gap-5">
-            <Suspense>
+            {/* <Suspense>
               <MostPopularBook />
-            </Suspense>
-            <Suspense>
+            </Suspense> */}
+            {/* <Suspense>
               <MostPopularSeries />
-            </Suspense>
+            </Suspense> */}
             {/* <Suspense>
               <section className="mb-10">
                 <Image

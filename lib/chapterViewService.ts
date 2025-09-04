@@ -1,13 +1,6 @@
 import redis from "./redis";
 import { createHash } from "crypto";
-import type {
-  Chapter,
-  ChapterStats,
-  ChapterWithStats,
-  ViewResult,
-  ViewHistoryItem,
-  TopChapter,
-} from "@/app/interface/chapter";
+import type { ChapterStats, ViewResult } from "@/app/interface/chapter";
 
 export default class ChapterViewService {
   private readonly CACHE_TTL = 3600; // 1 hour
@@ -77,14 +70,12 @@ export default class ChapterViewService {
           throw new Error("Pipeline execution failed");
         }
 
-        // Lấy kết quả từ incr operations (index 2 và 3 trong pipeline)
         const totalViewsResult = pipelineResults[2]; // incr(viewKey)
         const dailyViewsResult = pipelineResults[3]; // incr(dailyViewKey)
 
         const totalViews = (totalViewsResult?.[1] as number) || 0;
         const dailyViews = (dailyViewsResult?.[1] as number) || 0;
-        console.log("checkResuilt", pipelineResults);
-
+        console.log("checkResuilt", pipelineResults); // [ 0, 'OK', 2, 1, 1, 2 ]
         return {
           success: true,
           totalViews,
