@@ -9,7 +9,7 @@ export default function NotFound() {
       <p>Could not find the requested invoice.</p>
       <Link
         href="/dashboard/invoices"
-        className="mt-4 rounded-md bg-blue-500 px-4 py-2 text-sm text-white transition-colors hover:bg-blue-400"
+        className="mt-4 rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground transition-colors hover:bg-primary/90"
       >
         Go Back
       </Link>

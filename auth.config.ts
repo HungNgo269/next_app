@@ -12,7 +12,7 @@ export const authConfig = {
     // JWT callback - runs whenever JWT is created, updated, or accessed
     async jwt({ token, user }) {
       if (user) {
-        const user1 = user as User;
+        const user1 = user as UserToken;
         token.id = user1.id;
         token.email = user1.email;
         token.name = user1.name;

@@ -15,7 +15,6 @@ export default function ChapterContent({
     fontSize: `${settings.fontSize}px`,
     lineHeight: settings.lineHeight,
   };
-  console.log("chapter", chapter);
   return (
     <article className={`max-w-4xl mx-auto px-4 py-8`} style={contentStyle}>
       <div className="prose prose-lg max-w-none leading-relaxed text-justify">

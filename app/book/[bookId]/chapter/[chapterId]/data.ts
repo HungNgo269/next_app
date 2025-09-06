@@ -1,6 +1,6 @@
 import { sql } from "@/lib/db";
 
-export async function fetchChapter(ChapterId: string) {
+export async function fetchChapter(ChapterId: number) {
   try {
     const data = await sql` SELECT *
     FROM chapters

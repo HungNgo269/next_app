@@ -171,7 +171,7 @@ export default function ImageUploadField({
   // Determine border and background colors based on state
   const getBorderColors = () => {
     if (displayError) return "border-red-300 bg-red-50";
-    if (isDragOver) return "border-blue-400 bg-blue-50";
+    if (isDragOver) return "border-primary/60 bg-primary/10";
     if (isValidFile) return "border-green-300 bg-green-50";
     return "border-gray-300 hover:border-gray-400 hover:bg-gray-50";
   };
@@ -235,7 +235,7 @@ export default function ImageUploadField({
                   <button
                     type="button"
                     onClick={handleChooseDifferentImage}
-                    className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-medium transition-colors flex items-center gap-2 mx-auto rounded-lg"
+                    className="px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground font-medium transition-colors flex items-center gap-2 mx-auto rounded-lg"
                     disabled={disabled}
                   >
                     <RefreshCw className="w-4 h-4" />
@@ -251,19 +251,19 @@ export default function ImageUploadField({
             <div className="flex flex-col items-center space-y-2">
               <div
                 className={`p-3 rounded-lg ${
-                  isValidFile ? "bg-green-100" : "bg-blue-100"
+                  isValidFile ? "bg-green-100" : "bg-primary/10"
                 }`}
               >
                 <Upload
                   className={`w-8 h-8 ${
-                    isValidFile ? "text-green-600" : "text-blue-600"
+                    isValidFile ? "text-green-600" : "text-primary"
                   }`}
                 />
               </div>
               <div>
                 <p className="font-medium text-gray-900">
                   Drop your image here, or{" "}
-                  <span className="text-blue-600 hover:text-blue-700 cursor-pointer">
+                  <span className="text-primary hover:text-primary/80 cursor-pointer">
                     browse
                   </span>
                 </p>

@@ -351,7 +351,7 @@ export default async function RecentlyDiscoveredSection() {
               {/* Book Info */}
               <div className="flex-1 space-y-2">
                 {/* Category Label */}
-                <div className="text-xs font-semibold text-blue-600 uppercase tracking-wide">
+                <div className="text-xs font-semibold text-primary uppercase tracking-wide">
                   {book.categoryLabel}
                 </div>
 

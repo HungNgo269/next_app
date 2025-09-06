@@ -1,8 +1,13 @@
-// import { JWTPayload } from "jose";
+import { UserRole } from "./user";
 
-// export interface SessionPayload extends JWTPayload {
-//   userId: string;
-//   expiresAt: Date;
-
-//   // Bạn KHÔNG cần tự thêm iat/exp – jose đã thêm qua .setIssuedAt() và .setExpirationTime()
-// }
+export default interface UserToken {
+  id: number;
+  name: string;
+  email: string;
+  role?: UserRole;
+  phone?: string;
+  image_url?: string;
+  address?: string;
+  created_at?: string;
+  updated_at?: string;
+}

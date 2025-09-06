@@ -1,34 +1,27 @@
 "use server";
 
-import ChapterViewService from "@/lib/chapterViewService";
-import { headers } from "next/headers";
 import { checkNextChapter, checkPrevChapter, fetchChapter } from "./data";
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { defaultSettings, ReaderSettings } from "@/lib/readerSetting";
+import {
+  getChapterStatsService,
+  getClientIP,
+  incrementViewService,
+} from "@/lib/chapterViewService";
 
-export async function incrementChapterView(chapterId: number, userId?: string) {
+export async function incrementChapterView(
+  chapterId: number,
+  bookId: number,
+  userId?: string,
+  request?: Request
+) {
   try {
-    const headersList = await headers();
+    const ipAddress = request ? getClientIP(request) : "unknown";
 
-    // Get client IP from headers
-    const getClientIP = (): string => {
-      const forwardedFor = headersList.get("x-forwarded-for");
-      const realIP = headersList.get("x-real-ip");
-      const cfConnectingIP = headersList.get("cf-connecting-ip");
-
-      if (cfConnectingIP) return cfConnectingIP;
-      if (realIP) return realIP;
-      if (forwardedFor) return forwardedFor.split(",")[0].trim();
-
-      return "127.0.0.1"; // fallback for development
-    };
-
-    const chapterService = new ChapterViewService();
-    const ipAddress = getClientIP();
-
-    const result = await chapterService.incrementView(
+    const result = await incrementViewService(
       chapterId,
+      bookId,
       userId,
       ipAddress
     );
@@ -36,8 +29,6 @@ export async function incrementChapterView(chapterId: number, userId?: string) {
     if (result.success) {
       return {
         success: true,
-        totalViews: result.totalViews,
-        dailyViews: result.dailyViews,
       };
     } else {
       console.error("Failed to increment view:", result.error);
@@ -57,8 +48,7 @@ export async function incrementChapterView(chapterId: number, userId?: string) {
 
 export async function getChapterStats(chapterId: number) {
   try {
-    const chapterService = new ChapterViewService();
-    const stats = await chapterService.getChapterStats(chapterId);
+    const stats = await getChapterStatsService(chapterId);
 
     return (
       stats || {

@@ -9,10 +9,9 @@ export interface Chapter {
 }
 
 export interface ChapterStats {
-  totalViews: number;
-  uniqueViews: number;
   guestViews?: number;
-  todayViews: number;
+  todayViews?: number;
+  result?: any;
 }
 
 export interface ChapterWithStats extends Chapter {

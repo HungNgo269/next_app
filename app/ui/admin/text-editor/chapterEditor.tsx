@@ -41,13 +41,13 @@ export default function ChapterEditor() {
 
       <button
         onClick={handleGetContent}
-        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded flex "
+        className="mt-4 px-4 py-2 bg-primary text-primary-foreground rounded flex "
       >
         Show Content
       </button>
       <button
         onClick={handleGetContent}
-        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded flex "
+        className="mt-4 px-4 py-2 bg-primary text-primary-foreground rounded flex "
       >
         Show Content
       </button>

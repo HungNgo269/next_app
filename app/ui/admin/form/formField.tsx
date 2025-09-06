@@ -117,10 +117,10 @@ export default function FormField({
     }
   }, [error]);
 
-  const inputClassName = `w-full px-4 py-3 border-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:bg-gray-50 disabled:text-gray-500 rounded-lg ${
+  const inputClassName = `w-full px-4 py-3 border-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all disabled:bg-gray-50 disabled:text-gray-500 rounded-lg ${
     displayError
       ? "border-red-300 bg-red-50"
-      : "border-gray-200 hover:border-gray-300 focus:border-blue-500"
+      : "border-gray-200 hover:border-gray-300 focus:border-primary"
   }`;
 
   const textareaClassName = `${inputClassName} resize-y`;

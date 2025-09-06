@@ -12,14 +12,11 @@ import Link from "next/link";
 import { UserButton } from "./headerUserButton";
 import { Logo } from "../../share/Button/logo";
 import { auth } from "@/auth";
-import { redirect } from "next/navigation";
 
 export default async function Header() {
   const session = await auth();
   const user = session?.user;
-  const handleSignIn = () => {
-    redirect("/register");
-  };
+
   return (
     <div className="w-full">
       <div className="sm:max-w-xl md:max-w-2xl lg:max-w-7xl mx-auto">
@@ -64,8 +61,12 @@ export default async function Header() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuItem>View watchlist</DropdownMenuItem>
-                  <DropdownMenuItem>Recently viewed</DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Link href={"#"}>View watchlist</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Link href={"#"}>Recently viewed</Link>
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
@@ -73,11 +74,10 @@ export default async function Header() {
               <UserButton />
             ) : (
               <div className="flex flex-row gap-4">
-                <Button>
+                <Button className="cursor-pointer">
                   <Link href={"/register"}>Sign In</Link>
                 </Button>
-
-                <Button variant={"outline"}>
+                <Button className="cursor-pointer" variant={"outline"}>
                   <Link href={"/login"}>Login</Link>
                 </Button>
               </div>

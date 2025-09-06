@@ -74,7 +74,7 @@ export function ChapterContainer({
                     )} */}
                         <Link
                           href={`${pathName}/chapter/${chapter.id}`}
-                          className="text-blue-600 hover:text-blue-800 hover:underline text-sm truncate"
+                          className="text-primary hover:text-primary/80 hover:underline text-sm truncate"
                         >
                           {chapter.title}
                         </Link>
@@ -95,7 +95,7 @@ export function ChapterContainer({
                 <div className="mt-4 pt-2 border-t border-gray-100">
                   <button
                     onClick={() => setShowAll(!showAll)}
-                    className="text-blue-600 hover:text-blue-800 hover:underline text-sm font-medium"
+                    className="text-primary hover:text-primary/80 hover:underline text-sm font-medium"
                   >
                     {showAll
                       ? "Thu gọn"

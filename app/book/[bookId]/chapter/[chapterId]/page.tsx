@@ -11,6 +11,7 @@ import {
 import ChapterToolBar from "@/app/ui/user/chapter/chapterToolBar";
 import { getServerReaderSettings, ReaderSettings } from "@/lib/readerSetting";
 import ChapterContent from "@/app/ui/user/chapter/chapterContent";
+import { auth } from "@/auth";
 
 type PageProps = {
   params: Promise<{
@@ -20,6 +21,8 @@ type PageProps = {
 };
 
 export default async function ChapterPage({ params }: PageProps) {
+  const session = await auth();
+  const user = session?.user;
   const { chapterId, bookId } = await params;
   const [chapterData] = await Promise.all([fetchChapterActions(chapterId)]);
   const chapter: Chapter = chapterData;
@@ -27,14 +30,15 @@ export default async function ChapterPage({ params }: PageProps) {
     checkPrevChapterAction(chapter.chapter_number),
     checkNextChapterAction(chapter.chapter_number),
   ]);
-  console.log("prev", idPrevChapter);
-  console.log("next", idNextChapter);
-
   const settings: ReaderSettings = (await getServerReaderSettings()) || 16;
 
   return (
     <div className="min-h-screen bg-background relative">
-      <ViewIncrementer chapterId={chapterId} />
+      <ViewIncrementer
+        userId={user?.id}
+        chapterId={chapterId}
+        bookId={bookId}
+      />
 
       {/* Main Content */}
       <div className={`max-w-4xl mx-auto px-4 py-8 `}>
@@ -44,14 +48,20 @@ export default async function ChapterPage({ params }: PageProps) {
         <div className="hidden lg:flex justify-between items-center mt-12 pt-8 border-t">
           <Button
             variant="outline"
-            className="flex items-center gap-2 bg-transparent"
+            disabled={!idPrevChapter}
+            className={`flex items-center gap-2 bg-transparent  ${
+              idPrevChapter === null ? "cursor-not-allowed" : "cursor-pointer "
+            }`}
           >
             <ChevronLeft className="w-4 h-4" />
             Chương trước
           </Button>
           <Button
             variant="outline"
-            className="flex items-center gap-2 bg-transparent"
+            disabled={!idNextChapter}
+            className={`flex items-center gap-2 bg-transparent  ${
+              idNextChapter === null ? "cursor-not-allowed" : "cursor-pointer "
+            }`}
           >
             Chương tiếp theo
             <ChevronRight className="w-4 h-4" />
