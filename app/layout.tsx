@@ -3,6 +3,7 @@ import { inter } from "@/app/ui/fonts";
 import { Metadata } from "next";
 import ClientProviders from "@/components/clientProvider";
 import { auth } from "@/auth";
+import CronInitializer from "./ui/cronIni";
 
 export const metadata: Metadata = {
   title: {
@@ -19,9 +20,12 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const session = await auth();
+
   return (
     <html lang="en">
       <body className={`${inter.className} antialiased font-normal `}>
+        <CronInitializer />
+
         <ClientProviders session={session}>{children}</ClientProviders>
       </body>
     </html>

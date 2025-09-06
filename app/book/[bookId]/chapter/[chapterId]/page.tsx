@@ -11,6 +11,7 @@ import {
 import ChapterToolBar from "@/app/ui/user/chapter/chapterToolBar";
 import { getServerReaderSettings, ReaderSettings } from "@/lib/readerSetting";
 import ChapterContent from "@/app/ui/user/chapter/chapterContent";
+import { auth } from "@/auth";
 
 type PageProps = {
   params: Promise<{
@@ -20,6 +21,8 @@ type PageProps = {
 };
 
 export default async function ChapterPage({ params }: PageProps) {
+  const session = await auth();
+  const user = session?.user;
   const { chapterId, bookId } = await params;
   const [chapterData] = await Promise.all([fetchChapterActions(chapterId)]);
   const chapter: Chapter = chapterData;
@@ -31,7 +34,11 @@ export default async function ChapterPage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen bg-background relative">
-      <ViewIncrementer chapterId={chapterId} />
+      <ViewIncrementer
+        userId={user?.id}
+        chapterId={chapterId}
+        bookId={bookId}
+      />
 
       {/* Main Content */}
       <div className={`max-w-4xl mx-auto px-4 py-8 `}>

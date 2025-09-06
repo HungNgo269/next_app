@@ -1,176 +1,338 @@
 import redis from "./redis";
-import { createHash } from "crypto";
-import type { ChapterStats, ViewResult } from "@/app/interface/chapter";
+import { sql } from "./db";
 
-export default class ChapterViewService {
-  private readonly CACHE_TTL = 3600; // 1 hour
-  private readonly DAILY_TTL = 86400 * 30; // 30 days
-  private readonly USER_VIEW_TTL = 86400; // 1 day
-  private readonly GUEST_VIEW_TTL = 3600;
-  constructor() {}
+// 1. Types & Interfaces
+interface ViewMetadata {
+  chapterId: number;
+  bookId: number;
+  userId?: string;
+  ipAddress?: string;
+  timestamp: string;
+}
 
-  async incrementView(
-    chapterId: number,
-    userId?: string,
-    ipAddress?: string
-  ): Promise<ViewResult> {
-    try {
-      const pipeline = redis.pipeline();
-      // Keys
-      const viewKey = `chapter:${chapterId}:views`;
-      const today = new Date().toISOString().split("T")[0];
-      const dailyViewKey = `chapter:${chapterId}:views:${today}`;
-      const uniqueViewKey = `chapter:${chapterId}:unique_views`;
+interface ViewResult {
+  success: boolean;
+  isNewView?: boolean;
+  error?: string;
+}
 
-      // Track unique view - ưu tiên userId, fallback sang IP
-      let isNewUniqueView = false;
-      let shouldExecutePipeline = false;
+interface ChapterViewStats {
+  totalViews: number;
+  uniqueUsers: number;
+  uniqueIPs: number;
+  bookId: number;
+}
 
-      console.log("userId", userId);
+// 2. Constants
+const UNIQUE_VIEW_TTL = 24 * 60 * 60; // 24 hours in seconds
+const VIEW_BATCH_KEY = "views:batch:pending";
+const VIEW_STATS_KEY_PREFIX = "chapter:stats:";
 
-      if (userId) {
-        const viewerKey = `user:${userId}:viewed:${chapterId}`;
-        const hasViewed = await redis.exists(viewerKey);
-        if (!hasViewed) {
-          pipeline.sadd(uniqueViewKey, userId);
-          pipeline.setex(viewerKey, this.USER_VIEW_TTL, 1);
-          pipeline.incr(viewKey); //+1
-          pipeline.incr(dailyViewKey);
-          pipeline.expire(dailyViewKey, this.DAILY_TTL);
-          pipeline.zincrby("chapters:ranking:views", 1, chapterId);
+// 3. Enhanced View Service
+export async function incrementViewService(
+  chapterId: number,
+  bookId: number,
+  userId?: string,
+  ipAddress?: string
+): Promise<ViewResult> {
+  try {
+    const pipeline = redis.pipeline();
+    const timestamp = new Date().toISOString();
 
-          isNewUniqueView = true;
-          shouldExecutePipeline = true;
-        }
-      } else if (ipAddress && ipAddress !== "unknown") {
-        const hashedIP = this.hashIP(ipAddress);
-        const viewerKey = `ip:${hashedIP}:viewed:${chapterId}`;
-        const hasViewed = await redis.exists(viewerKey);
+    // Keys
+    const viewKey = `chapter:${chapterId}:views`;
+    const metadataKey = `chapter:${chapterId}:metadata`;
+    const batchKey = VIEW_BATCH_KEY;
 
-        if (!hasViewed) {
-          pipeline.sadd(uniqueViewKey, hashedIP);
-          pipeline.setex(viewerKey, this.GUEST_VIEW_TTL, "1");
-          pipeline.incr(viewKey); //+1
-          pipeline.incr(dailyViewKey);
-          pipeline.expire(dailyViewKey, this.DAILY_TTL);
-          pipeline.zincrby("chapters:ranking:views", 1, chapterId);
+    let isNewUniqueView = false;
+    let viewerIdentifier: string;
 
-          isNewUniqueView = true;
-          shouldExecutePipeline = true;
-        }
+    // Hash IP for privacy
+    const hashedIP = hashIP(ipAddress) ? ipAddress : null;
+
+    // Check unique view based on userId or IP
+    if (userId) {
+      viewerIdentifier = `user:${userId}`;
+      const viewerKey = `${viewerIdentifier}:viewed:${chapterId}`;
+      const hasViewed = await redis.exists(viewerKey);
+
+      if (!hasViewed) {
+        // Mark as viewed
+        pipeline.set(viewerKey, "1", { ex: UNIQUE_VIEW_TTL });
+        isNewUniqueView = true;
       }
+    } else if (ipAddress && ipAddress !== "unknown") {
+      viewerIdentifier = `ip:${hashedIP}`;
+      const viewerKey = `${viewerIdentifier}:viewed:${chapterId}`;
+      const hasViewed = await redis.exists(viewerKey);
 
-      // Chỉ execute pipeline khi có operations
-      if (shouldExecutePipeline) {
-        const results = await pipeline.exec();
-        // Redis pipeline exec() trả về array các [error, result] tuples
-        const pipelineResults = results as [Error | null, any][] | null;
-
-        if (!pipelineResults) {
-          throw new Error("Pipeline execution failed");
-        }
-
-        const totalViewsResult = pipelineResults[2]; // incr(viewKey)
-        const dailyViewsResult = pipelineResults[3]; // incr(dailyViewKey)
-
-        const totalViews = (totalViewsResult?.[1] as number) || 0;
-        const dailyViews = (dailyViewsResult?.[1] as number) || 0;
-        console.log("checkResuilt", pipelineResults); // [ 0, 'OK', 2, 1, 1, 2 ]
-        return {
-          success: true,
-          totalViews,
-          dailyViews,
-          isNewView: isNewUniqueView,
-        };
-      } else {
-        // Trường hợp đã view rồi, trả về stats hiện tại
-        const currentStats = await this.getChapterStats(chapterId);
-        console.log("current", currentStats);
-        return {
-          success: true,
-          totalViews: currentStats?.totalViews || 0,
-          dailyViews: currentStats?.todayViews || 0,
-          isNewView: false,
-        };
+      if (!hasViewed) {
+        pipeline.set(viewerKey, "1", { ex: UNIQUE_VIEW_TTL });
+        isNewUniqueView = true;
       }
-    } catch (error) {
-      console.error("Error incrementing view:", error);
+    } else {
+      // No identifier, cannot track unique view
       return {
         success: false,
-        error: error instanceof Error ? error.message : "Unknown error",
+        error: `No user ID or valid IP address provided,userId :${userId},hashIP:${hashedIP}`,
       };
     }
-  }
 
-  async getChapterStats(chapterId: number): Promise<ChapterStats | null> {
-    try {
-      const pipeline = redis.pipeline();
-      const viewKey = `chapter:${chapterId}:views`;
-      const uniqueViewKey = `chapter:${chapterId}:unique_views`;
-      const today = new Date().toISOString().split("T")[0];
-      const dailyViewKey = `chapter:${chapterId}:views:${today}`;
+    if (isNewUniqueView) {
+      // Increment view counter
+      pipeline.incr(viewKey);
 
-      pipeline.get(viewKey);
-      pipeline.scard(uniqueViewKey);
-      pipeline.get(dailyViewKey);
+      // Update ranking
+      pipeline.zincrby("chapters:ranking:views", 1, chapterId);
 
-      const results = await pipeline.exec();
-      // Redis pipeline exec() trả về array các [error, result] tuples
-      const pipelineResults = results as [Error | null, any][] | null;
+      // Store metadata for this view
+      pipeline.hset(metadataKey, {
+        bookId: bookId.toString(),
+        lastViewedAt: timestamp,
+      });
 
-      // Kiểm tra results trước khi parse
-      if (!pipelineResults || pipelineResults.length !== 3) {
-        return null;
+      // Track unique users and IPs
+      if (userId) {
+        pipeline.sadd(`${metadataKey}:users`, userId);
+        pipeline.hincrby(`${metadataKey}:user_stats`, userId, 1);
+      }
+      if (hashedIP) {
+        pipeline.sadd(`${metadataKey}:ips`, hashedIP);
+        pipeline.hincrby(`${metadataKey}:ip_stats`, hashedIP, 1);
       }
 
-      const [totalViewsResult, uniqueViewsResult, todayViewsResult] =
-        pipelineResults;
-      return {
-        totalViews: parseInt(String(totalViewsResult?.[1] || "0")) || 0,
-        uniqueViews: parseInt(String(uniqueViewsResult?.[1] || "0")) || 0,
-        todayViews: parseInt(String(todayViewsResult?.[1] || "0")) || 0,
+      // Add to batch for database sync
+      const viewData: ViewMetadata = {
+        chapterId,
+        bookId,
+        userId,
+        ipAddress: hashedIP || undefined,
+        timestamp,
       };
-    } catch (error) {
-      console.error("Error getting chapter stats:", error);
-      return null;
+
+      pipeline.lpush(batchKey, JSON.stringify(viewData));
+
+      // Execute pipeline
+      const results = await pipeline.exec();
+
+      if (!results) {
+        throw new Error("Pipeline execution failed");
+      }
+
+      return {
+        success: true,
+        isNewView: true,
+      };
     }
+
+    return {
+      success: true,
+      isNewView: false,
+    };
+  } catch (error) {
+    console.error("Error incrementing view:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+    };
   }
+}
 
-  private hashIP(ip: string): string {
-    return createHash("sha256").update(ip).digest("hex");
+// 4. Get Chapter Stats
+export async function getChapterStatsService(
+  chapterId: number
+): Promise<ChapterViewStats | null> {
+  try {
+    const pipeline = redis.pipeline();
+    const viewKey = `chapter:${chapterId}:views`;
+    const metadataKey = `chapter:${chapterId}:metadata`;
+
+    pipeline.get(viewKey);
+    pipeline.hget(metadataKey, "bookId");
+    pipeline.scard(`${metadataKey}:users`);
+    pipeline.scard(`${metadataKey}:ips`);
+
+    const results = (await pipeline.exec()) as Array<[unknown, unknown]> | null;
+
+    if (!results) return null;
+
+    const viewCount = (results[0]?.[1] as string | null) ?? null;
+    const bookId = (results[1]?.[1] as string | null) ?? null;
+    const uniqueUsers = (results[2]?.[1] as number | null) ?? null;
+    const uniqueIPs = (results[3]?.[1] as number | null) ?? null;
+
+    return {
+      totalViews: parseInt(viewCount || "0"),
+      bookId: parseInt(bookId || "0"),
+      uniqueUsers: uniqueUsers || 0,
+      uniqueIPs: uniqueIPs || 0,
+    };
+  } catch (error) {
+    console.error("Error getting chapter stats:", error);
+    return null;
   }
+}
 
-  static getClientIP(request: Request): string {
-    const headers = [
-      "cf-connecting-ip", // Cloudflare
-      "x-real-ip", // Nginx
-      "x-forwarded-for", // Most proxies
-      "x-client-ip",
-      "x-forwarded",
-      "x-cluster-client-ip",
-      "forwarded-for",
-      "forwarded",
-    ];
+// 5. Batch Sync to Database
+export async function syncViewsToDatabase(): Promise<{
+  success: boolean;
+  processed: number;
+  errors: string[];
+}> {
+  const errors: string[] = [];
+  let processed = 0;
 
-    for (const header of headers) {
-      const value = request.headers.get(header);
-      if (value) {
-        // x-forwarded-for có thể có nhiều IP, lấy cái đầu tiên
-        const ip = value.split(",")[0].trim();
-        if (this.isValidIP(ip)) {
-          return ip;
+  try {
+    // Get all pending views from batch
+    const batchKey = VIEW_BATCH_KEY;
+    const batchSize = 100; // Process 100 at a time
+
+    let viewsData = await redis.lrange(batchKey, 0, batchSize - 1);
+
+    while (viewsData.length > 0) {
+      const views: ViewMetadata[] = viewsData.map((v) => JSON.parse(v));
+
+      // Group views by chapter for efficient updates
+      const chapterGroups = new Map<number, ViewMetadata[]>();
+
+      for (const view of views) {
+        if (!chapterGroups.has(view.chapterId)) {
+          chapterGroups.set(view.chapterId, []);
+        }
+        chapterGroups.get(view.chapterId)!.push(view);
+      }
+
+      // Process each chapter group
+      for (const [chapterId, chapterViews] of Array.from(
+        chapterGroups.entries()
+      )) {
+        try {
+          await syncChapterViews(chapterId, chapterViews);
+          processed += chapterViews.length;
+        } catch (error) {
+          errors.push(`Chapter ${chapterId}: ${error}`);
         }
       }
+
+      // Remove processed items from Redis
+      await redis.ltrim(batchKey, batchSize, -1);
+
+      // Get next batch
+      viewsData = await redis.lrange(batchKey, 0, batchSize - 1);
     }
-    return "unknown";
+
+    // Update aggregated stats in chapters table
+    await updateChapterAggregatedStats();
+
+    return {
+      success: errors.length === 0,
+      processed,
+      errors,
+    };
+  } catch (error) {
+    console.error("Error syncing views to database:", error);
+    return {
+      success: false,
+      processed,
+      errors: [
+        ...errors,
+        error instanceof Error ? error.message : "Unknown error",
+      ],
+    };
   }
+}
 
-  static isValidIP(ip: string): boolean {
-    const ipv4Regex =
-      /^(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)){3}$/;
-
-    const ipv6Regex = /^(([0-9a-fA-F]{1,4}):){7}([0-9a-fA-F]{1,4})$/;
-
-    return ipv4Regex.test(ip) || ipv6Regex.test(ip);
+async function syncChapterViews(
+  chapterId: number,
+  views: ViewMetadata[]
+): Promise<void> {
+  const stats = await getChapterStatsService(chapterId);
+  if (!stats) return;
+  for (const view of views) {
+    try {
+      await sql`
+        INSERT INTO chapter_views (
+          chapter_id, 
+          book_id, 
+          user_id, 
+          ip_address, 
+          viewed_at
+        )
+        VALUES (
+          ${chapterId},
+          ${stats.bookId},
+          ${view.userId || null},
+          ${view.ipAddress || null},
+          ${new Date(view.timestamp)}::timestamp
+        )
+        ON CONFLICT DO NOTHING;
+      `;
+    } catch (error) {
+      console.error(`Database Error for chapter ${chapterId}:`, error);
+      throw new Error(`Failed to sync view for chapter ${chapterId}`);
+    }
   }
+}
+
+async function updateChapterAggregatedStats(): Promise<void> {
+  const pattern = "chapter:*:views";
+  const keys = (await redis.keys(pattern)) as unknown as string[];
+
+  for (const key of keys) {
+    const chapterId = parseInt(String(key).split(":")[1] || "0", 10);
+    const raw = (await redis.get(key)) as unknown;
+    const count = raw != null ? parseInt(String(raw), 10) : 0;
+
+    if (Number.isFinite(count) && count > 0) {
+      try {
+        await sql`
+          UPDATE chapters
+          SET view_count = COALESCE(view_count, 0) + ${count},
+              updated_at = CURRENT_TIMESTAMP
+          WHERE id = ${chapterId};
+        `;
+      } catch (error) {
+        console.error("Database Error:", error);
+        throw new Error(`Failed to update view count for chapter ${chapterId}`);
+      }
+    }
+  }
+}
+function hashIP(ip: string): string {
+  const crypto = require("crypto");
+  return crypto
+    .createHash("sha256")
+    .update(ip + process.env.IP_SALT || "default-salt")
+    .digest("hex")
+    .substring(0, 16); // Use first 16 chars for shorter storage
+}
+
+export function getClientIP(request: Request): string {
+  const headers = [
+    "cf-connecting-ip",
+    "x-real-ip",
+    "x-forwarded-for",
+    "x-client-ip",
+    "x-forwarded",
+    "x-cluster-client-ip",
+    "forwarded-for",
+    "forwarded",
+  ];
+
+  for (const header of headers) {
+    const value = request.headers.get(header);
+    if (value) {
+      const ip = value.split(",")[0].trim();
+      if (isValidIP(ip)) {
+        return ip;
+      }
+    }
+  }
+  return "unknown";
+}
+export function isValidIP(ip: string): boolean {
+  const ipv4Regex =
+    /^(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)){3}$/;
+  const ipv6Regex = /^(([0-9a-fA-F]{1,4}):){7}([0-9a-fA-F]{1,4})$/;
+  return ipv4Regex.test(ip) || ipv6Regex.test(ip);
 }

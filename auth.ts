@@ -30,10 +30,6 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
             return null;
           }
           const user = await getUser(email);
-          console.log("email", email);
-          console.log("óa", password);
-          console.log("úe", user);
-
           if (!user) return null;
 
           if (!user.password) {

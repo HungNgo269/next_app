@@ -1,33 +1,8 @@
 "use client";
-import React, { useMemo, useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Search, X } from "lucide-react";
 import SearchInput from "./searchInput";
 import Dropdown from "./dropDown";
-
-const staticSuggestions: string[] = [
-  "React hooks useEffect",
-  "React hooks useState",
-  "React hooks custom",
-  "React context tutorial",
-  "React performance optimization",
-  "JavaScript async await",
-  "JavaScript promises",
-  "JavaScript array methods",
-  "CSS flexbox guide",
-  "CSS animations",
-  "Node.js authentication",
-  "Node.js REST API",
-  "Python pandas tutorial",
-  "Python data visualization",
-];
-
-const trendingSearches: string[] = [
-  "AI programming 2024",
-  "Web development trends",
-  "Mobile app design",
-  "Database optimization",
-  "Cloud computing basics",
-];
 
 export default function SearchComponent({
   compact = false,
@@ -37,43 +12,18 @@ export default function SearchComponent({
   const [query, setQuery] = useState<string>("");
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isCompactOpen, setIsCompactOpen] = useState<boolean>(false);
-
-  const [searchHistory, setSearchHistory] = useState<string[]>([
-    "React hooks tutorial",
-    "JavaScript ES6 features",
-    "CSS Grid layout",
-    "Node.js express",
-    "Python machine learning",
-  ]);
-
   const inputRef = useRef<HTMLInputElement | null>(null);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
-
-  const suggestions = useMemo<string[]>(() => {
-    if (!query.trim()) return [];
-    const q = query.toLowerCase();
-    return staticSuggestions
-      .filter((s) => s.toLowerCase().includes(q))
-      .slice(0, 8);
-  }, [query]);
 
   const handleSearch = (searchQuery: string) => {
     const q = (searchQuery ?? "").trim();
     if (!q) return;
-
-    setSearchHistory((prev) => {
-      const filtered = prev.filter((item) => item !== q);
-      return [q, ...filtered].slice(0, 10);
-    });
 
     setQuery(q);
     setIsOpen(false);
     if (compact) setIsCompactOpen(false);
     console.log("Searching for:", q);
   };
-
-  const removeFromHistory = (itemToRemove: string) =>
-    setSearchHistory((prev) => prev.filter((item) => item !== itemToRemove));
 
   const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
     if (e.key === "Enter") handleSearch(query);
@@ -104,10 +54,8 @@ export default function SearchComponent({
     <div className="w-full max-w-xl mx-auto">
       <div className="relative">
         <div
-          className={`flex items-center justify-center border-2 rounded-lg overflow-hidden bg-white transition-all duration-200 h-9
-            ${
-              isOpen ? "border-primary shadow-lg" : "border-gray-300 shadow-sm"
-            }`}
+          className={`flex items-center justify-center border-1 rounded-lg overflow-hidden bg-white transition-all duration-200 h-9
+            ${isOpen ? "border-primary shadow-lg" : "border-border shadow-sm"}`}
         >
           <SearchInput
             ref={inputRef}
@@ -126,21 +74,11 @@ export default function SearchComponent({
           </button>
         </div>
 
-        {isOpen && (
-          <Dropdown
-            ref={dropdownRef}
-            query={query}
-            suggestions={suggestions}
-            history={searchHistory}
-            trending={trendingSearches}
-            onSelect={handleSearch}
-            onRemoveHistoryItem={removeFromHistory}
-          />
-        )}
+        {isOpen && <Dropdown ref={dropdownRef} query={query} />}
       </div>
     </div>
   );
-
+  //claude
   // ---- compact mode (mobile/tablet): icon -> full-screen overlay) ----
   if (compact) {
     return (

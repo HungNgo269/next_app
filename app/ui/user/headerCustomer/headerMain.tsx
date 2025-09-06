@@ -74,11 +74,10 @@ export default async function Header() {
               <UserButton />
             ) : (
               <div className="flex flex-row gap-4">
-                <Button>
+                <Button className="cursor-pointer">
                   <Link href={"/register"}>Sign In</Link>
                 </Button>
-
-                <Button variant={"outline"}>
+                <Button className="cursor-pointer" variant={"outline"}>
                   <Link href={"/login"}>Login</Link>
                 </Button>
               </div>

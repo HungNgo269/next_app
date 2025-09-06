@@ -63,7 +63,7 @@ export default function ChapterToolBar({
   };
   return (
     <div className="hidden lg:block fixed right-4 top-1/2 -translate-y-1/2 z-50">
-      <div className="flex flex-col gap-2 bg-card border rounded-lg shadow-lg items-center">
+      <div className="flex flex-col gap-2 bg-card border rounded-lg shadow-lg items-center ">
         <Link href={`${process.env.NEXT_PUBLIC_BASE_URL}/book/${bookId}`}>
           <Button
             variant="ghost"
@@ -71,19 +71,19 @@ export default function ChapterToolBar({
             className="w-10 h-10"
             title="Trang chủ"
           >
-            <Home className="w-5 h-5" />
+            <Home className="w-5 h-5 " />
           </Button>
         </Link>
 
         <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="w-10 h-10">
+            <Button variant="ghost" size="icon" className="w-10 h-10 ">
               <TypeIcon className="w-5 h-5" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent
             side="left"
-            className="w-56"
+            className="w-56 "
             sideOffset={5}
             alignOffset={0}
             avoidCollisions={true}
