@@ -38,7 +38,7 @@ export default async function SlideTable({
                         height={28}
                         alt={`${slide.display_order}'s profile picture`}
                       />
-                      <p>{slide.title}</p>
+                      <span className="">{slide.title}</span>
                     </div>
                     <p className="text-sm text-gray-500">{slide.description}</p>
                   </div>
@@ -84,14 +84,7 @@ export default async function SlideTable({
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">
-                      <Image
-                        src={slide.image_url}
-                        className="mr-2 rounded-full"
-                        width={28}
-                        height={28}
-                        alt={`${slide.display_order}'s profile picture`}
-                      />
-                      <p>{slide.title}</p>
+                      <span className="w-60 truncate">{slide.title}</span>
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+import { Eye } from "lucide-react";
 
 interface PasswordFieldProps {
   id?: string;
@@ -45,7 +46,7 @@ export default function PasswordField({
           {showPassword ? (
             <EyeSlashIcon className="w-5 h-5" />
           ) : (
-            <EyeIcon className="w-5 h-5" />
+            <Eye className="w-5 h-5" />
           )}
         </button>
       </div>

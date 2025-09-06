@@ -1,5 +1,5 @@
 import { sql } from "../../lib/db";
-import { User } from "../interface/user";
+import User from "../interface/user";
 
 export async function getUser(email: string): Promise<User | undefined> {
   try {

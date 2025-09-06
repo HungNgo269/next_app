@@ -18,7 +18,7 @@ export default async function Page(props: {
   const totalPages = await fetchSlidePages(query);
 
   return (
-    <div className="max-w-6xl mx-auto p-8">
+    <div className="max-w-7xl mx-auto p-8">
       <ChapterEditor></ChapterEditor>
     </div>
   );

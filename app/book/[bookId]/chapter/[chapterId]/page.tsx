@@ -12,6 +12,7 @@ import ChapterToolBar from "@/app/ui/user/chapter/chapterToolBar";
 import { getServerReaderSettings, ReaderSettings } from "@/lib/readerSetting";
 import ChapterContent from "@/app/ui/user/chapter/chapterContent";
 import { auth } from "@/auth";
+import { getSessionCache } from "@/lib/utils/getSession";
 
 type PageProps = {
   params: Promise<{
@@ -21,7 +22,7 @@ type PageProps = {
 };
 
 export default async function ChapterPage({ params }: PageProps) {
-  const session = await auth();
+  const session = await getSessionCache();
   const user = session?.user;
   const { chapterId, bookId } = await params;
   const [chapterData] = await Promise.all([fetchChapterActions(chapterId)]);

@@ -1,7 +1,7 @@
 import { UserRole } from "./user";
 
 export default interface UserToken {
-  id: number;
+  id: string;
   name: string;
   email: string;
   role?: UserRole;

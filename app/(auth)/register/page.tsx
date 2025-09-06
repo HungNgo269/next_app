@@ -3,10 +3,8 @@ import { Suspense } from "react";
 
 export default function RegisterPage() {
   return (
-    <div>
-      <Suspense>
-        <RegisterForm />
-      </Suspense>
-    </div>
+    <Suspense>
+      <RegisterForm />
+    </Suspense>
   );
 }

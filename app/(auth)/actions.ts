@@ -3,17 +3,9 @@ import { z } from "zod";
 import bcrypt from "bcrypt";
 import { sql } from "@/lib/db";
 import registerSchema from "@/app/schema/registerSchema";
-import { redirect } from "next/navigation";
 import { signIn } from "@/auth";
-// import { createSession } from "../lib/session";
+import { ActionResult } from "../interface/actionResult";
 
-type ActionResult = {
-  success: boolean;
-  message?: string;
-  errors?: Record<string, string[]>;
-};
-
-// Kiểm tra email đã tồn tại
 async function checkEmailExists(email: string): Promise<boolean> {
   try {
     const result = await sql`
@@ -26,7 +18,6 @@ async function checkEmailExists(email: string): Promise<boolean> {
   }
 }
 
-// Kiểm tra username đã tồn tại
 async function checkUserNameExists(userName: string): Promise<boolean> {
   try {
     const result = await sql`
@@ -39,10 +30,9 @@ async function checkUserNameExists(userName: string): Promise<boolean> {
   }
 }
 
-// Kiểm tra tuổi hợp lệ
 function validateAge(dateOfBirth: Date): boolean {
   const currentDate = new Date();
-  const minAge = 13;
+  const minAge = 0;
   const maxAge = 120;
 
   const age = currentDate.getFullYear() - dateOfBirth.getFullYear();
@@ -83,7 +73,7 @@ async function validateBusinessRules(data: any): Promise<void> {
   }
 
   if (!validateAge(data.dateOfBirth)) {
-    errors.push("You must be between 13 and 120 years old");
+    errors.push("You must be between 0 and 150 years old");
   }
 
   if (!validateUserNameContent(data.userName)) {
@@ -103,8 +93,6 @@ export async function registerUserAction(
   prevState: ActionResult | undefined,
   formData: FormData
 ): Promise<ActionResult> {
-  let shouldRedirect = false;
-
   try {
     const rawData = {
       id: crypto.randomUUID(),
@@ -115,82 +103,119 @@ export async function registerUserAction(
       dateOfBirth: new Date(formData.get("dateOfBirth") as string),
     };
 
-    const validatedData = registerSchema.parse(rawData);
+    console.log("Raw data:", rawData);
 
-    await validateBusinessRules(validatedData);
+    let validatedData;
+    try {
+      validatedData = registerSchema.parse(rawData);
+    } catch (zodError) {
+      console.log("Zod validation failed:", zodError);
+      throw zodError;
+    }
+
+    try {
+      await validateBusinessRules(validatedData);
+    } catch (businessError) {
+      console.log("Business validation failed:", businessError);
+      throw businessError;
+    }
 
     const cleanedData = {
       id: validatedData.id,
       email: validatedData.email.trim().toLowerCase(),
-      name: validatedData.name,
+      name: validatedData.name.trim(),
       userName: validatedData.userName.trim(),
       passWord: validatedData.passWord,
       dateOfBirth: validatedData.dateOfBirth,
     };
 
+    console.log("Cleaned data:", cleanedData);
+
     const hashedPassword = await bcrypt.hash(cleanedData.passWord, 10);
 
     const result = await sql`
-      INSERT INTO users (id, email,name, user_name, password, date_of_birth)
+      INSERT INTO users (id, email, name, user_name, password, date_of_birth)
       VALUES (${cleanedData.id}, ${cleanedData.email}, ${cleanedData.name}, ${cleanedData.userName}, ${hashedPassword}, ${cleanedData.dateOfBirth})
-      RETURNING id, email,name, user_name, date_of_birth
+      RETURNING id, email, name, user_name, date_of_birth
     `;
 
+    console.log("User created:", result);
+
     const loginResult = await signIn("credentials", {
-      email: formData.get("email") as string,
-      password: formData.get("passWord") as string,
+      email: cleanedData.email,
+      password: cleanedData.passWord,
       redirect: false,
     });
 
     if (loginResult?.error) {
+      console.log("Login failed after registration:", loginResult.error);
       return {
         success: false,
         message:
-          "Registration successful but login failed. Please login manually.",
+          "Registration successful but auto-login failed. Please login manually.",
       };
     }
-    // await createSession(cleanedData.id);
 
-    redirect("/dashboard");
+    console.log("Login successful, redirecting...");
+
+    return {
+      success: true,
+      message: "Registration successful! Redirecting...",
+      redirectTo: "/dashboard",
+    };
   } catch (error) {
-    // Zod validation errors
+    console.error("Registration error:", error);
+
     if (error instanceof z.ZodError) {
       const fieldErrors: Record<string, string[]> = {};
+      const errorMessages: string[] = [];
 
       error.errors.forEach((err) => {
         const fieldName = err.path.join(".");
+        const message = err.message;
+
         if (!fieldErrors[fieldName]) {
           fieldErrors[fieldName] = [];
         }
-        fieldErrors[fieldName].push(err.message);
+        fieldErrors[fieldName].push(message);
+        errorMessages.push(`${fieldName}: ${message}`);
       });
 
       return {
         success: false,
-        message: "Validation failed",
+        message: `Validation failed: ${errorMessages.join(", ")}`,
         errors: fieldErrors,
       };
     }
+
     if (error instanceof Error && error.message.includes("duplicate key")) {
       if (error.message.includes("email")) {
         return {
           success: false,
-          message: "Email already exists",
+          message:
+            "This email is already registered. Please use a different email.",
         };
       }
       if (error.message.includes("user_name")) {
         return {
           success: false,
-          message: "Username already exists",
+          message:
+            "This username is already taken. Please choose a different username.",
         };
       }
     }
 
+    // Business validation errors
+    if (error instanceof Error) {
+      return {
+        success: false,
+        message: error.message,
+      };
+    }
+
     return {
       success: false,
-      message: "An error occurred during registration. Please try again.",
+      message: "An unexpected error occurred. Please try again later.",
     };
   }
-
-  return {} as never;
 }

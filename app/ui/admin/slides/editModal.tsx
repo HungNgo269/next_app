@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import BaseModal from "@/app/ui/admin/modal/baseAdminModal";
 import ImageUploadField from "../form/formImageUploadField";
 import FormField from "../form/formField";
 import { Loader2, Edit, Upload } from "lucide-react";
@@ -133,7 +132,7 @@ export default async function EditModal({
     !isEditing;
 
   return (
-    <BaseModal onClose={onClose} title="Edit Slide" maxWidth="max-w-3xl">
+    <div title="Edit Slide" className="max-w-3xl">
       <div className="space-y-6">
         {/* Form Fields Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -264,6 +263,6 @@ export default async function EditModal({
           </div>
         )}
       </div>
-    </BaseModal>
+    </div>
   );
 }

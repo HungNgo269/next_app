@@ -1,4 +1,5 @@
 import type { NextAuthConfig } from "next-auth";
+import UserToken from "./app/interface/session";
 
 export const authConfig = {
   pages: {
@@ -17,6 +18,7 @@ export const authConfig = {
         token.email = user1.email;
         token.name = user1.name;
         token.role = user1.role;
+        token.image_url = user1?.image_url;
         token.createdAt = user1.created_at;
         token.updatedAt = user1.updated_at;
       }
@@ -27,6 +29,7 @@ export const authConfig = {
       session.user.name = token.name;
       session.user.email = token.email;
       session.user.role = token.role;
+      session.user.image_url = token.image_url;
       return session;
     },
   },

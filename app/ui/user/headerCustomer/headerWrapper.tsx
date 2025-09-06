@@ -1,5 +1,3 @@
-import { auth } from "@/auth";
-
 interface HeaderWrapperProps {
   children: React.ReactNode; //header
 }
@@ -7,8 +5,6 @@ interface HeaderWrapperProps {
 //75 sương sương
 //100 trong suốt
 export async function HeaderWrapper({ children }: HeaderWrapperProps) {
-  const session = await auth();
-
   return (
     <div className="h-[66px] fixed top-0 left-0 w-full z-[21] text-black">
       <div

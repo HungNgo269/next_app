@@ -1,4 +1,4 @@
-import SlideSkeleton from "@/app/ui/admin/slides/slideSkeleton";
+import { SlideSkeleton } from "@/app/ui/skeletons";
 
 export default function Loading() {
   return <SlideSkeleton />;

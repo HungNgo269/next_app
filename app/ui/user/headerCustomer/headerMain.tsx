@@ -11,10 +11,10 @@ import SearchComponent from "../search/searchComponent";
 import Link from "next/link";
 import { UserButton } from "./headerUserButton";
 import { Logo } from "../../share/Button/logo";
-import { auth } from "@/auth";
+import { getSessionCache } from "@/lib/utils/getSession";
 
 export default async function Header() {
-  const session = await auth();
+  const session = await getSessionCache();
   const user = session?.user;
 
   return (
@@ -62,7 +62,7 @@ export default async function Header() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
                   <DropdownMenuItem>
-                    <Link href={"#"}>View watchlist</Link>
+                    <Link href={"#"}>View Bookmark</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <Link href={"#"}>Recently viewed</Link>

@@ -20,7 +20,7 @@ const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(({ query }, ref) => {
       role="listbox"
       aria-label="Search dropdown"
     >
-      <SearchResultItem  book={}></SearchResultItem>
+      {/* <SearchResultItem  book={}></SearchResultItem> */}
     </div>
   );
 });

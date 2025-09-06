@@ -12,13 +12,6 @@ const links = [
   { name: "Home", href: "/dashboard", icon: House },
   { name: "Slides", href: "/dashboard/slides", icon: Play },
   { name: "Books", href: "/dashboard/books", icon: NotebookText },
-
-  // {
-  //   name: "Invoices",
-  //   href: "/dashboard/invoices",
-  //   icon: DocumentDuplicateIcon,
-  // },
-  // { name: "Customers", href: "/dashboard/customers", icon: UserGroupIcon },
 ];
 
 export default function NavLinks() {

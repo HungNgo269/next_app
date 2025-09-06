@@ -1,147 +1,191 @@
 "use client";
 
-import { lusitana } from "@/app/ui/fonts";
-import {
-  AtSymbolIcon,
-  KeyIcon,
-  ExclamationCircleIcon,
-} from "@heroicons/react/24/outline";
+import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 import { ArrowRightIcon } from "@heroicons/react/20/solid";
-import { Button } from "@/app/ui/button";
-import { useActionState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useActionState, useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { registerUserAction } from "@/app/(auth)/actions";
 
 export default function RegisterForm() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
-  const [state, formAction, errorMessage, isPending] = useActionState(
+
+  const [state, formAction, isPending] = useActionState(
     registerUserAction,
     undefined
   );
 
+  useEffect(() => {
+    if (state?.success && state.redirectTo) {
+      setTimeout(() => {
+        router.push(state.redirectTo);
+      }, 1000);
+    }
+  }, [state, router]);
+
   return (
-    <form action={formAction} className="space-y-3">
-      <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
-        <h1 className={`${lusitana.className} mb-3 text-2xl`}>
-          Please log in to continue.
-        </h1>
-        <div className="w-full">
-          <div>
-            <label
-              className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-              htmlFor="email"
-            >
-              Email
-            </label>
-            <div className="relative">
-              <input
-                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
+    <div className="flex-1 flex items-center justify-center p-8 bg-background">
+      <div className="w-full max-w-md p-6">
+        <header className="space-y-1 text-center">
+          <h2 className="text-2xl font-bold">Register for NextBook</h2>
+          <p className="text-muted-foreground">
+            Create an account to get started
+          </p>
+        </header>
+
+        <div className="mt-6">
+          <form action={formAction} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="email" className="text-sm font-medium">
+                Email
+              </Label>
+              <Input
                 id="email"
-                type="email"
                 name="email"
+                type="email"
+                fieldSize="lg"
                 placeholder="Enter your email address"
                 required
               />
-              <AtSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
-          </div>
-          <div className="mt-4">
-            <label
-              className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-              htmlFor="name"
-            >
-              Full Name
-            </label>
-            <div className="relative">
-              <input
-                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
+
+            <div className="space-y-2">
+              <Label htmlFor="name" className="text-sm font-medium">
+                Full Name
+              </Label>
+              <Input
                 id="name"
-                type="text"
                 name="name"
+                type="text"
+                fieldSize="lg"
                 placeholder="Enter your full name"
                 required
                 minLength={6}
               />
-              <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
-          </div>
-          <div className="mt-4">
-            <label
-              className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-              htmlFor="userName"
-            >
-              User Name
-            </label>
-            <div className="relative">
-              <input
-                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
+
+            <div className="space-y-2">
+              <Label htmlFor="userName" className="text-sm font-medium">
+                Username
+              </Label>
+              <Input
                 id="userName"
-                type="text"
                 name="userName"
+                type="text"
+                fieldSize="lg"
                 placeholder="Enter your username"
                 required
                 minLength={6}
               />
-              <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
-          </div>
-          <div className="mt-4">
-            <label
-              className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-              htmlFor="passWord"
-            >
-              Password
-            </label>
-            <div className="relative">
-              <input
-                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
+
+            <div className="space-y-2">
+              <Label htmlFor="passWord" className="text-sm font-medium">
+                Password
+              </Label>
+              <Input
                 id="passWord"
-                type="password"
                 name="passWord"
+                type="password"
+                fieldSize="lg"
                 placeholder="Enter your password"
                 required
                 minLength={6}
               />
-              <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
-          </div>
-          <div className="mt-4">
-            <label
-              className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-              htmlFor="dateOfBirth"
-            >
-              Date Of Birth
-            </label>
-            <div className="relative">
-              <input
-                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
+
+            <div className="space-y-2">
+              <Label htmlFor="dateOfBirth" className="text-sm font-medium">
+                Date of Birth
+              </Label>
+              <Input
                 id="dateOfBirth"
-                type="date"
                 name="dateOfBirth"
+                type="date"
+                fieldSize="lg"
                 required
               />
-              <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
+
+            <input type="hidden" name="redirectTo" value={callbackUrl} />
+
+            {/* Success Message */}
+            {state?.success && (
+              <div className="flex items-center space-x-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+                <div className="h-5 w-5 text-green-600">✓</div>
+                <p className="text-sm text-green-800">{state.message}</p>
+              </div>
+            )}
+
+            {/* Error Message */}
+            {state && !state.success && (
+              <div className="flex items-center space-x-2 p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
+                <ExclamationCircleIcon className="h-5 w-5 text-destructive" />
+                <p className="text-sm text-destructive">{state.message}</p>
+              </div>
+            )}
+
+            <Button
+              className="w-full"
+              size="lg"
+              disabled={isPending || state?.success}
+            >
+              {isPending ? (
+                <div className="flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  Registering...
+                </div>
+              ) : state?.success ? (
+                <div className="flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2"></div>
+                  Redirecting...
+                </div>
+              ) : (
+                <div className="flex items-center justify-center hover:cursor-pointer">
+                  Register with Email
+                  <ArrowRightIcon className="ml-2 h-5 w-5" />
+                </div>
+              )}
+            </Button>
+          </form>
+
+          <hr className="border-0.5 border-border mt-6" />
+
+          {/* Footer */}
+          <div className="text-center mt-4">
+            <p className="text-muted-foreground text-sm">
+              Already have an account?{" "}
+              <Link href="/login" className="text-primary hover:underline">
+                Log in now
+              </Link>
+            </p>
+          </div>
+
+          <div className="mt-6 text-center">
+            <p className="text-xs text-muted-foreground">
+              By continuing, you agree to our{" "}
+              <Button
+                variant="link"
+                className="text-xs p-0 h-auto underline hover:cursor-pointer"
+              >
+                Terms of Service
+              </Button>{" "}
+              and{" "}
+              <Button
+                variant="link"
+                className="text-xs p-0 h-auto underline hover:cursor-pointer"
+              >
+                Privacy Policy
+              </Button>
+            </p>
           </div>
         </div>
-        <input type="hidden" name="redirectTo" value={callbackUrl} />
-        <Button className="mt-4 w-full" aria-disabled={isPending}>
-          Register <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
-        </Button>
-        <div
-          className="flex h-8 items-end space-x-1"
-          aria-live="polite"
-          aria-atomic="true"
-        >
-          {errorMessage && (
-            <>
-              <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
-              <p className="text-sm text-red-500">{errorMessage}</p>
-            </>
-          )}
-        </div>
       </div>
-    </form>
+    </div>
   );
 }

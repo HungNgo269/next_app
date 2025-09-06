@@ -1,8 +1,10 @@
 "use client";
 import UploadModal from "@/app/ui/admin/slides/uploadModal";
 import { useState } from "react";
-
-export default function UserActions() {
+interface props {
+  name: string;
+}
+export default function UserActions({ name }: props) {
   const [showUploadModal, setShowUploadModal] = useState(false);
 
   const handleUploadClick = () => {
@@ -19,7 +21,7 @@ export default function UserActions() {
   return (
     <div>
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Slides Management</h1>
+        <h1 className="text-3xl font-bold">{name} Management</h1>
         <button
           onClick={handleUploadClick}
           className="bg-primary text-primary-foreground px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-2"

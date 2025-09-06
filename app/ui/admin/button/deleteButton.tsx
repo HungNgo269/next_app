@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import { TrashIcon } from "@heroicons/react/24/outline"; // Có thể làm prop nếu muốn thay icon
-import ConfirmModal from "../modal/confirmModal";
 import toast from "react-hot-toast";
 
 interface GenericDeleteButtonProps {
@@ -61,13 +60,7 @@ export default function GenericDeleteButton({
       >
         <TrashIcon className="w-5 h-5" />
       </button>
-      {showConfirmModal && (
-        <ConfirmModal
-          message={confirmMessage}
-          onConfirm={handleDeleteClick}
-          onClose={handleCloseModal}
-        />
-      )}
+      {showConfirmModal && ""}
     </>
   );
 }

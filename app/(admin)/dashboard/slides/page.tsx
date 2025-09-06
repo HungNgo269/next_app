@@ -1,11 +1,11 @@
 import UserActions from "./userActions";
 import Search from "@/app/ui/share/search/search";
-import { InvoicesTableSkeleton } from "@/app/ui/skeletons";
 import { Metadata } from "next";
 import { Suspense } from "react";
 import { fetchSlidePages } from "@/app/data/admin/slideData";
 import SlideTable from "@/app/ui/admin/slides/slideTable";
 import Pagination from "@/app/ui/share/pagination/pagination";
+import { SlideSkeleton } from "@/app/ui/skeletons";
 export const metadata: Metadata = {
   title: "Slides",
 };
@@ -22,14 +22,14 @@ export default async function Page(props: {
   const totalPages = await fetchSlidePages(query);
 
   return (
-    <div className="max-w-6xl mx-auto p-8">
+    <div className="max-w-7xl mx-auto p-8">
       <div className="mt-3 flex items-center justify-between gap-2 md:mt-6">
         <Search placeholder="Search slides..." />
       </div>
       <div className="mt-4">
-        <UserActions></UserActions>
+        <UserActions name="Slide "></UserActions>
       </div>
-      <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
+      <Suspense key={query + currentPage} fallback={<SlideSkeleton />}>
         <SlideTable query={query} currentPage={currentPage} />
       </Suspense>
       <div className="mt-5 flex w-full justify-center">
