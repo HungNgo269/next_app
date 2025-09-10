@@ -33,15 +33,15 @@ export default function BookCarouselNavigation({
   onNextSlide,
   variant,
 }: SlideNavigationProps) {
-  const s = MAP[variant];
+  const s = MAP[variant ?? "lg"];
   const showPrevButton = currentSlide > 0;
   const showNextButton = currentSlide < totalSlides - 1;
 
   return (
     <div
-      className={`absolute top-0 flex justify-between items-center z-20 pointer-events-none  ${
+      className={`absolute top-0 md:flex justify-between items-center z-20 pointer-events-none hidden   ${
         s.className
-      } ${showPrevButton ? "left-[-17px]" : "right-[-17px]"}`}
+      } ${showPrevButton ? "left-[-18px]" : "right-[-17px]"}`}
     >
       <div className="flex justify-start">
         {showPrevButton && (

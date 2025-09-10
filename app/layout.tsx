@@ -3,7 +3,7 @@ import { inter } from "@/app/ui/fonts";
 import { Metadata } from "next";
 import ClientProviders from "@/components/clientProvider";
 import { auth } from "@/auth";
-import CronInitializer from "./ui/cronIni";
+import CronInitializer from "@/app/ui/cronIni";
 import { getSessionCache } from "@/lib/utils/getSession";
 
 export const metadata: Metadata = {

@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect } from "react";
-import { incrementChapterView } from "./action";
+import { incrementChapterView } from "@/app/book/[bookId]/chapter/[chapterId]/action";
 
 interface ViewIncrementerProps {
-  userId: string;
+  userId?: string;
   chapterId: number;
   bookId: number;
 }

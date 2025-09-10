@@ -1,4 +1,4 @@
-import { UserRole } from "./user";
+import { UserRole } from "@/app/interface/user";
 
 export default interface UserToken {
   id: string;

@@ -1,5 +1,5 @@
 import { useSession } from "next-auth/react";
-import { useAuthStore } from "./useAuthStore";
+import { useAuthStore } from "@/app/store/useAuthStore";
 import { useEffect } from "react";
 
 //Đổ dữ liệu session vào store zustard(useAuthStore)

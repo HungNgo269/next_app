@@ -45,7 +45,7 @@ export default function CategoryFilter({ currentGenre }: CategoryFilterProps) {
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Select a category" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-background">
             <SelectGroup>
               <SelectLabel>Category</SelectLabel>
               {category_OPTIONS.map((option) => (

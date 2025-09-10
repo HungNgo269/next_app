@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import EditModal from "./editModal";
+import EditModal from "@/app/ui/admin/slides/editModal";
 import { PencilIcon } from "@heroicons/react/24/outline";
 
 interface SlideButtonProps {

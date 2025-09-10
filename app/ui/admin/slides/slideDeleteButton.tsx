@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import GenericDeleteButton from "../button/deleteButton";
+import GenericDeleteButton from "@/app/ui/admin/button/deleteButton";
 import { DeleteSlideActions } from "@/app/actions/slideActions";
 interface SlideDeleteButtonProps {
   id: string;

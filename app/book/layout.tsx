@@ -1,6 +1,6 @@
 import Header from "@/app/ui/user/headerCustomer/headerMain";
-import { HeaderWrapper } from "../ui/user/headerCustomer/headerWrapper";
-import ConditionalHeader from "../ui/user/headerCustomer/conditionalHeader";
+import { HeaderWrapper } from "@/app/ui/user/headerCustomer/headerWrapper";
+import ConditionalHeader from "@/app/ui/user/headerCustomer/conditionalHeader";
 
 export default async function BookLayout({
   children,

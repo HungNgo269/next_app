@@ -1,9 +1,9 @@
 import Image from "next/image";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { formatEnDateTime } from "@/lib/utils/formatDate";
-import Status from "../slides/status";
+import Status from "@/app/ui/admin/slides/status";
 import { fetchBooksByPageActions } from "@/app/actions/bookActions";
-import Active from "../slides/active";
+import Active from "@/app/ui/admin/slides/active";
 import { BookTableProps } from "@/app/interface/book";
 
 export default async function BookTable({
@@ -13,10 +13,7 @@ export default async function BookTable({
   query: string;
   currentPage: number;
 }) {
-  const Books: BookTableProps[] = await fetchBooksByPageActions(
-    query,
-    currentPage
-  );
+  const Books = (await fetchBooksByPageActions(query, currentPage)) as unknown as BookTableProps[];
   return (
     <div className="mt-4 flow-root">
       <div className="inline-block min-w-full align-middle">
@@ -99,7 +96,7 @@ export default async function BookTable({
                     <Status status={Book.status}></Status>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3 text-center">
-                    {formatEnDateTime(Book?.created_at)}
+                    {formatEnDateTime(Book?.created_at ?? new Date())}
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">

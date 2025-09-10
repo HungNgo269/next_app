@@ -1,8 +1,8 @@
 "use client";
 import React, { useRef, useState, useEffect } from "react";
 import { Search, X } from "lucide-react";
-import SearchInput from "./searchInput";
-import Dropdown from "./dropDown";
+import SearchInput from "@/app/ui/user/search/searchInput";
+import Dropdown from "@/app/ui/user/search/dropDown";
 
 export default function SearchComponent({
   compact = false,

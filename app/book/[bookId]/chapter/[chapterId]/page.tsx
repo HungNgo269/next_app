@@ -2,12 +2,12 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { Chapter } from "@/app/interface/chapter";
-import ViewIncrementer from "./viewIncrement";
+import ViewIncrementer from "@/app/book/[bookId]/chapter/[chapterId]/viewIncrement";
 import {
   checkNextChapterAction,
   checkPrevChapterAction,
   fetchChapterActions,
-} from "./action";
+} from "@/app/book/[bookId]/chapter/[chapterId]/action";
 import ChapterToolBar from "@/app/ui/user/chapter/chapterToolBar";
 import { getServerReaderSettings, ReaderSettings } from "@/lib/readerSetting";
 import ChapterContent from "@/app/ui/user/chapter/chapterContent";
@@ -26,7 +26,7 @@ export default async function ChapterPage({ params }: PageProps) {
   const user = session?.user;
   const { chapterId, bookId } = await params;
   const [chapterData] = await Promise.all([fetchChapterActions(chapterId)]);
-  const chapter: Chapter = chapterData;
+  const chapter: Chapter = (chapterData as unknown) as Chapter;
   const [idPrevChapter, idNextChapter] = await Promise.all([
     checkPrevChapterAction(chapter.chapter_number),
     checkNextChapterAction(chapter.chapter_number),

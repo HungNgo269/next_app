@@ -23,7 +23,7 @@ export default function RegisterForm() {
   useEffect(() => {
     if (state?.success && state.redirectTo) {
       setTimeout(() => {
-        router.push(state.redirectTo);
+        router.push(state.redirectTo ?? "/");
       }, 1000);
     }
   }, [state, router]);
@@ -160,7 +160,11 @@ export default function RegisterForm() {
           <div className="text-center mt-4">
             <p className="text-muted-foreground text-sm">
               Already have an account?{" "}
-              <Link href="/login" className="text-primary hover:underline">
+              <Link
+                prefetch={true}
+                href="/login"
+                className="text-primary hover:underline"
+              >
                 Log in now
               </Link>
             </p>

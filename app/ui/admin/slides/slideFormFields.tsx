@@ -1,8 +1,17 @@
 "use client";
 
 import { fetchSlideByIdActions } from "@/app/actions/slideActions";
-import { UseSlideFormReturn } from "@/app/hooks/useSlideForm";
-import { Slide } from "@/app/interface/slide";
+// Local type to avoid missing hook import
+type UseSlideFormReturn = {
+  formData: {
+    title: string;
+    order: string | number;
+    desc: string;
+    redirectLink: string;
+  };
+  errors: Record<string, string[]>;
+  setField: (field: string, value: string) => void;
+};
 import React from "react";
 
 interface SlideFormFieldsProps {

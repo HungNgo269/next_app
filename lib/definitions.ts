@@ -11,31 +11,6 @@ export type Customer = {
   updated_at: string;
 };
 
-// Subscription Management
-export type Subscription = {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  discount_percentage: number; // % giảm giá cho subscriber
-  duration_months: number; // thời hạn gói (tháng)
-  features: string[]; // danh sách tính năng
-  is_active: boolean;
-  created_at: string;
-  updated_at: string;
-};
-
-export type UserSubscription = {
-  id: string;
-  user_id: string;
-  subscription_id: string;
-  start_date: string;
-  end_date: string;
-  status: "active" | "expired" | "cancelled";
-  created_at: string;
-  updated_at: string;
-};
-
 // Product Management
 export type Category = {
   id: string;

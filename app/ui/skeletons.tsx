@@ -1,4 +1,8 @@
-const shimmer =
+const toBase64 = (str: string) =>
+  typeof window === "undefined"
+    ? Buffer.from(str).toString("base64")
+    : window.btoa(str);
+export const shimmer =
   "before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/60 before:to-transparent";
 export function SlideSkeleton() {
   return (
@@ -75,6 +79,27 @@ export function BookCardSkeleton({ variant = "lg" }: { variant?: Variant }) {
         <div
           className={`bg-muted/70 animate-pulse rounded ${s.author} w-1/2`}
         />
+      </div>
+    </div>
+  );
+}
+export function PopularBookSkeleton() {
+  return (
+    <div className={`${shimmer}`}>
+      <div className="space-y-3 mt-6">
+        {[...Array(5)].map((_, index) => (
+          <div
+            key={index}
+            className="flex flex-row items-center gap-2 h-[80px]"
+          >
+            <div className="animate-pulse bg-gray-200 w-[60px] h-full rounded"></div>
+            <div className="animate-pulse bg-gray-200 min-w-6 min-h-6 rounded"></div>
+            <div className="flex flex-col justify-center h-full gap-2 flex-1">
+              <div className="animate-pulse bg-gray-200 h-4 w-3/4 rounded"></div>
+              <div className="animate-pulse bg-gray-200 h-3 w-1/2 rounded"></div>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

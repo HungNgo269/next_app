@@ -1,8 +1,8 @@
 export interface Chapter {
-  id: string;
+  id: number;
   title: string;
   content: string;
-  book_id: string;
+  book_id: number;
   chapter_number: number;
   createdAt: string;
   updatedAt: string;
@@ -44,4 +44,10 @@ export interface ChapterUploadProps {
   title: string;
   chapter_number: number;
   content: string;
+}
+export interface ChapterCardProps {
+  id: number;
+  book_id: number; //=>get bookName
+  title: string;
+  chapter_number: number;
 }

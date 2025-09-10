@@ -1,0 +1,10 @@
+{
+  // Prefer non-relative auto-imports so VS Code suggests '@/...'
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "javascript.preferences.importModuleSpecifier": "non-relative",
+
+  // Keep endings concise; works well with Next/TS
+  "typescript.preferences.importModuleSpecifierEnding": "auto",
+  "javascript.preferences.importModuleSpecifierEnding": "auto"
+}
+

@@ -3,8 +3,9 @@ import {
   deleteSlide,
   fetchSlideById,
   fetchSlidesByPage,
-} from "../data/admin/slideData";
+} from "@/app/data/admin/slideData";
 import { revalidatePath } from "next/cache";
+import { fetchAllSlide } from "@/app/data/slideData";
 
 export async function fetchSlidesByPageActions(
   query: string,
@@ -38,5 +39,14 @@ export async function DeleteSlideActions(slideId: string, currentPath: string) {
   } catch (error) {
     console.error("Server Action Error:", error);
     throw new Error("Failed to fetch category books");
+  }
+}
+export async function fetchAllSlideAction() {
+  try {
+    const result = await fetchAllSlide();
+    return result;
+  } catch (error) {
+    console.error("Server Action Error:", error);
+    throw new Error("Failed to  fetchAllSlideAction ");
   }
 }

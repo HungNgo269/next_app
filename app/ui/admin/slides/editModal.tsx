@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import ImageUploadField from "../form/formImageUploadField";
-import FormField from "../form/formField";
+import ImageUploadField from "@/app/ui/admin/form/formImageUploadField";
+import FormField from "@/app/ui/admin/form/formField";
 import { Loader2, Edit, Upload } from "lucide-react";
 import { fetchSlideByIdActions } from "@/app/actions/slideActions";
-import { Slide } from "@/app/interface/slide";
+import { ISlide } from "@/app/interface/slide";
 
 interface EditModalProps {
   id: string;
@@ -32,10 +32,10 @@ export default async function EditModal({
   const [editedImageUrl, setEditedImageUrl] = useState<string>("");
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
-  const [currentSlideData, setCurrentSlideData] = useState<Slide>();
+  const [currentSlideData, setCurrentSlideData] = useState<ISlide | undefined>();
   useEffect(() => {
     const getData = async () => {
-      const currentSlide: Slide = await fetchSlideByIdActions(id);
+      const currentSlide = (await fetchSlideByIdActions(id)) as ISlide;
       setCurrentSlideData(currentSlide);
     };
     getData();

@@ -1,5 +1,4 @@
 import { syncViewsToDatabase } from "@/lib/chapterViewService";
-import { sql } from "@/lib/db";
 import redis from "@/lib/redis";
 import { Client } from "@upstash/qstash";
 import { verifySignature } from "@upstash/qstash/nextjs";
@@ -44,8 +43,8 @@ export async function setupQStashCronJob() {
 }
 
 export async function cleanupOldViewData(): Promise<void> {
-  // daysToKeep: number = 30
-  const pattern = "*:viewed:*";
+  const pattern = "chapter:*:*";
+
   const keys = await redis.keys(pattern);
 
   const batchSize = 100;
@@ -55,31 +54,4 @@ export async function cleanupOldViewData(): Promise<void> {
       await redis.del(...batch);
     }
   }
-}
-
-export async function getViewAnalytics(
-  chapterId: number,
-  dateRange?: { start: Date; end: Date }
-): Promise<any> {
-  let query = `
-    SELECT 
-      DATE(viewed_at) as date,
-      COUNT(*) as total_views,
-      COUNT(DISTINCT user_id) as unique_users,
-      COUNT(DISTINCT ip_address) as unique_ips
-    FROM chapter_views
-    WHERE chapter_id = $1
-  `;
-
-  const params: any[] = [chapterId];
-
-  if (dateRange) {
-    query += ` AND viewed_at BETWEEN $2 AND $3`;
-    params.push(dateRange.start.toISOString(), dateRange.end.toISOString());
-  }
-
-  query += ` GROUP BY DATE(viewed_at) ORDER BY date DESC`;
-
-  const result = await sql`${query}`;
-  return result;
 }

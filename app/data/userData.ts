@@ -1,9 +1,9 @@
 import { sql } from "../../lib/db";
-import User from "../interface/user";
+import User from "@/app/interface/user";
 
 export async function getUser(email: string): Promise<User | undefined> {
   try {
-    const user: User[] = await sql`SELECT * FROM users WHERE email=${email}`;
+    const user = (await sql`SELECT * FROM users WHERE email=${email}`) as unknown as User[];
     return user[0];
   } catch (error) {
     console.error("Database error:", error);
@@ -12,9 +12,8 @@ export async function getUser(email: string): Promise<User | undefined> {
 }
 export async function getUserID(email: string) {
   try {
-    const userId: string[] =
-      await sql`SELECT id FROM users WHERE email=${email}`;
-    return userId;
+    const rows = (await sql`SELECT id FROM users WHERE email=${email}`) as unknown as { id: string }[];
+    return rows.map((r) => r.id);
   } catch (error) {
     console.error("Database error:", error);
     throw new Error("Failed to fetch user.");

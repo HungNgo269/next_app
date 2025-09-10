@@ -1,19 +1,22 @@
 "use server";
 
-import { sql } from "@/lib/db";
 import {
   fetchAllBook,
+  fetchAllBookSort,
   fetchBookByCategorySort,
   fetchBookById,
   fetchBookImage,
   fetchBooksByPage,
   fetchNewBook,
   fetchOurRecommendedBook,
+  fetchPopularBook,
+  fetchTotalBookPage,
   fetchTotalBookPageByCategory,
-} from "../data/bookData";
-import { fetchMostViewedBookByCategory } from "../data/categoryData";
+  fetchTotalChapterInBookById,
+} from "@/app/data/bookData";
+import { fetchMostViewedBookByCategory } from "@/app/data/categoryData";
 
-export async function fetchBookByIdActions(id: string) {
+export async function fetchBookByIdActions(id: number) {
   try {
     return await fetchBookById(id);
   } catch (error) {
@@ -40,7 +43,7 @@ export async function fetchMostViewedBookByCategoryActions(categoryId: number) {
   }
 }
 
-export async function fetchBookImageAction(bookId: string) {
+export async function fetchBookImageAction(bookId: number) {
   try {
     return await fetchBookImage(bookId);
   } catch (error) {
@@ -59,14 +62,20 @@ export async function fetchBooksByPageActions(
     throw new Error("Failed to fetch category books");
   }
 }
-export async function fetchAllBookAction(query: string, currentPage: number) {
+
+export async function fetchAllBookAction(
+  currentPage: number,
+  sort: string,
+  order: string
+) {
   try {
-    return await fetchAllBook(query, currentPage);
+    return await fetchAllBookSort(sort, currentPage, order);
   } catch (error) {
     console.error("Server Action Error:", error);
     throw new Error("Failed to fetch category books");
   }
 }
+
 export async function fetchOurRecommendedBookAction(bookId: number) {
   try {
     return await fetchOurRecommendedBook(bookId);
@@ -94,5 +103,29 @@ export async function fetchTotalBookPageByCategoryAction(categoryId: number) {
   } catch (error) {
     console.error("Server Action Error:", error);
     throw new Error("Failed to fetch category books");
+  }
+}
+export async function fetchPopularBookAction(timeframe: string) {
+  try {
+    return await fetchPopularBook(timeframe);
+  } catch (error) {
+    console.error("Server Action Error:", error);
+    throw new Error("Failed to fetchPopularBookAction");
+  }
+}
+export async function fetchTotalBookPageAction() {
+  try {
+    return await fetchTotalBookPage();
+  } catch (error) {
+    console.error("Server Action Error:", error);
+    throw new Error("Failed to fetchTotalBookPage");
+  }
+}
+export async function fetchTotalChapterInBookByIdAction(id: number) {
+  try {
+    return await fetchTotalChapterInBookById(id);
+  } catch (error) {
+    console.error("Server Action Error:", error);
+    throw new Error("Failed to fetchTotalBookPage");
   }
 }

@@ -2,18 +2,20 @@ import {
   getcategoryIdBySlug,
   getcategoryNameBySlug,
 } from "@/app/constant/categories";
-import CategoryFilter from "../ui/share/genre/categoryFilter";
-import { BookCardProps } from "../interface/book";
-import BookCard from "../ui/user/books/bookCard";
-import MostPopularBook from "../ui/user/ranking/mostPopularBook";
-import CategoryName from "../ui/user/books/bookCategoryName";
-import SortSelection from "../ui/user/books/bookCategorySortSelection";
+import CategoryFilter from "@/app/ui/share/genre/categoryFilter";
+import { BookCardProps } from "@/app/interface/book";
+import BookCard from "@/app/ui/user/books/bookCard";
+import MostPopularBook from "@/app/ui/user/ranking/popularBook";
+import CategoryName from "@/app/ui/user/books/bookCategoryName";
+import SortSelection from "@/app/ui/user/books/bookCategorySortSelection";
 import {
+  fetchAllBookAction,
   fetchBookByCategorySortAction,
   fetchTotalBookPageByCategoryAction,
-} from "../actions/bookActions";
-import Pagination from "../ui/share/pagination/pagination";
-import FooterComponent from "../ui/user/footer/footerComponent";
+} from "@/app/actions/bookActions";
+import Pagination from "@/app/ui/share/pagination/pagination";
+import FooterComponent from "@/app/ui/user/footer/footerComponent";
+import { fetchTotalBookPage } from "@/app/data/bookData";
 
 interface BookPageProps {
   searchParams: Promise<{ tag?: string; sort?: string }>;
@@ -21,19 +23,25 @@ interface BookPageProps {
 
 export default async function BookPage({ searchParams }: BookPageProps) {
   let { tag, sort } = await searchParams;
-  if (sort === undefined) {
-    sort = "popularity";
+  const sortOptions: string = sort ?? "popularity";
+  const categoryId = getcategoryIdBySlug(tag ?? "");
+  let totalPages;
+  if (categoryId) {
+    totalPages = await fetchTotalBookPageByCategoryAction(categoryId);
+  } else {
+    totalPages = await fetchTotalBookPage();
   }
-  const sortOptions: string = sort;
-  const categoryId = getcategoryIdBySlug(tag);
-  const totalPages = await fetchTotalBookPageByCategoryAction(categoryId);
-
-  const books: BookCardProps[] = await fetchBookByCategorySortAction(
-    categoryId,
-    sortOptions,
-    1,
-    "DESC"
-  );
+  let books: BookCardProps[] = [];
+  if (tag) {
+    books = (await fetchBookByCategorySortAction(
+      categoryId,
+      sortOptions,
+      1,
+      "DESC"
+    )) as unknown as BookCardProps[];
+  } else {
+    books = (await fetchAllBookAction(1, sortOptions, "DESC")) as unknown as BookCardProps[];
+  }
 
   console.log("book", books);
 

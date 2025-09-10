@@ -23,6 +23,7 @@ export default function NavLinks() {
         const LinkIcon = link.icon;
         return (
           <Link
+            prefetch={true}
             key={link.name}
             href={link.href}
             className={clsx(
@@ -32,7 +33,7 @@ export default function NavLinks() {
               }
             )}
           >
-            <LinkIcon className="w-6" />
+            <Link prefetch={true} Icon className="w-6" />
             <p className="hidden md:block">{link.name}</p>
           </Link>
         );

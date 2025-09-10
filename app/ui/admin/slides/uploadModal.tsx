@@ -3,10 +3,10 @@
 import type React from "react";
 import { useState, useRef, useEffect, useActionState } from "react";
 import toast from "react-hot-toast";
-import { uploadSlideAction } from "./uploadModalAction";
+import { uploadSlideAction } from "@/app/ui/admin/slides/uploadModalAction";
 import { X, Upload, Loader2 } from "lucide-react";
-import ImageUploadField from "../form/formImageUploadField";
-import FormField from "../form/formField";
+import ImageUploadField from "@/app/ui/admin/form/formImageUploadField";
+import FormField from "@/app/ui/admin/form/formField";
 
 interface UploadModalProps {
   onClose: () => void;

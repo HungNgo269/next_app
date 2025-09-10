@@ -1,6 +1,6 @@
-import Image from "next/image";
 import Link from "next/link";
 import { BookCardProps } from "@/app/interface/book";
+import ImageCard from "@/app/ui/share/image/imageCard";
 
 type Variant = "lg" | "sm";
 // cho 2 component kích thước khác nhau.
@@ -12,7 +12,7 @@ const MAP = {
     author: "text-xs",
   },
   sm: {
-    card: "w-[160px] h-[259px]",
+    card: "w-[160px] h-[280px]",
     imgWrap: "w-[160px] h-[207px]",
     title: "text-[13px]",
     author: "text-[11px]",
@@ -27,25 +27,26 @@ export default function BookCard({
   variant?: Variant;
 }) {
   const s = MAP[variant];
-  const src = book.image_urls?.[0];
-
   return (
     <div className={`flex flex-col p-1 ${s.card}`}>
-      <Link href={`/book/${book.id}`} prefetch={false} aria-label={book.name}>
+      <Link
+        prefetch={true}
+        href={`/book/${book.id}`}
+        prefetch={false}
+        aria-label={book.name}
+      >
         <div
           className={`relative overflow-hidden rounded-[8px] group ${s.imgWrap}`}
         >
-          <Image
-            src={src}
-            alt={book.name}
-            fill
-            className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-            priority={false}
+          <ImageCard
+            bookImage={book.image_urls[0]}
+            bookName={book.name}
+            key={book.id}
           />
         </div>
       </Link>
 
-      <div className="flex flex-col mt-3 h-[43px] justify-between">
+      <div className="flex flex-col mt-3 h-fit justify-between">
         <span
           className={`line-clamp-1 font-semibold cursor-pointer w-fit hover:underline ${s.title}`}
         >
@@ -56,6 +57,15 @@ export default function BookCard({
         >
           {book.author}
         </span>
+        {book?.rating ? (
+          <span
+            className={`line-clamp-1 font-medium text-muted-foreground cursor-pointer w-fit ${s.author}`}
+          >
+            Rating: {book?.rating}
+          </span>
+        ) : (
+          ""
+        )}
       </div>
     </div>
   );

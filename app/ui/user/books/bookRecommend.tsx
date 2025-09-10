@@ -1,17 +1,19 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge, ChevronRight } from "lucide-react";
 import Image from "next/image";
-import ViewMoreBookButton from "./viewMoreBookButton";
+import ViewMoreBookButton from "@/app/ui/user/books/viewMoreBookButton";
 import { fetchOurRecommendedBookAction } from "@/app/actions/bookActions";
 import { RecommendedBookProps } from "@/app/interface/book";
+import Link from "next/link";
 
 export default async function BookRecommend() {
-  //hard code
-  const recommendedBooks: RecommendedBookProps[] = await Promise.all([
-    fetchOurRecommendedBookAction(1),
-    fetchOurRecommendedBookAction(2),
-    fetchOurRecommendedBookAction(3),
-  ]);
+  const recommendedBooks = (
+    await Promise.all([
+      fetchOurRecommendedBookAction(1),
+      fetchOurRecommendedBookAction(2),
+      fetchOurRecommendedBookAction(3),
+    ])
+  ).filter(Boolean) as RecommendedBookProps[];
   console.log("recpm", recommendedBooks);
   return (
     <div className="flex flex-col justify-center items-center gap-4">
@@ -44,9 +46,13 @@ export default async function BookRecommend() {
             <CardContent className="p-4">
               <div className="space-y-3">
                 <div>
-                  <h3 className="font-bold text-lg text-foreground line-clamp-1 hover:underline">
+                  <Link
+                    prefetch={true}
+                    href={`/book/${book.id}`}
+                    className="font-bold text-lg text-foreground line-clamp-1 hover:underline"
+                  >
                     {book.name}
-                  </h3>
+                  </Link>
                   <p className="text-sm text-muted-foreground mt-1 hover:underline">
                     {book.author}
                   </p>

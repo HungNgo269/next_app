@@ -10,6 +10,7 @@ export default function CategoryTabs({
     <div className="flex gap-4">
       {categories.map((category) => (
         <Link
+          prefetch={true}
           key={category.slug}
           href={`/book?genre=${category.slug}`}
           className={activeGenre === category.slug ? "active" : ""}

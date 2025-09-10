@@ -5,7 +5,7 @@ import { fetchSlidePages } from "@/app/data/admin/slideData";
 import Pagination from "@/app/ui/share/pagination/pagination";
 import BookTable from "@/app/ui/admin/books/bookTable";
 import { SlideSkeleton } from "@/app/ui/skeletons";
-import UserActions from "../slides/userActions";
+import UserActions from "@/app/(admin)/dashboard/slides/userActions";
 
 export const metadata: Metadata = {
   title: "Slides",

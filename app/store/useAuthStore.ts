@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { UserRole } from "../interface/user";
+import { UserRole } from "@/app/interface/user";
 
 export type AuthUser = {
   id: string;

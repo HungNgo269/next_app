@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 import { sql } from "@/lib/db";
 import registerSchema from "@/app/schema/registerSchema";
 import { signIn } from "@/auth";
-import { ActionResult } from "../interface/actionResult";
+import { ActionResult } from "@/app/interface/actionResult";
 
 async function checkEmailExists(email: string): Promise<boolean> {
   try {

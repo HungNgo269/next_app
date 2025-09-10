@@ -1,5 +1,5 @@
 import React, { forwardRef } from "react";
-import SearchResultItem from "./searchResultItem";
+import SearchResultItem from "@/app/ui/user/search/searchResultItem";
 
 interface DropdownProps {
   query: string;

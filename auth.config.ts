@@ -4,32 +4,35 @@ import UserToken from "./app/interface/session";
 export const authConfig = {
   pages: {
     signIn: "/login",
+    error: "/auth/error",
   },
-  providers: [
-    // added later in auth.ts since it requires bcrypt which is only compatible with Node.js
-    // while this file is also used in non-Node.js environments
-  ],
+  providers: [],
   callbacks: {
-    // JWT callback - runs whenever JWT is created, updated, or accessed
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger }) {
+      if (trigger === "update") {
+        //f5 nếu cần
+      }
       if (user) {
-        const user1 = user as UserToken;
-        token.id = user1.id;
-        token.email = user1.email;
-        token.name = user1.name;
-        token.role = user1.role;
-        token.image_url = user1?.image_url;
-        token.createdAt = user1.created_at;
-        token.updatedAt = user1.updated_at;
+        const userData = user as UserToken;
+        token.id = userData.id;
+        token.email = userData.email;
+        token.name = userData.name;
+        token.role = userData.role;
+        token.image_url = userData?.image_url;
+        token.createdAt = userData.created_at;
+        token.updatedAt = userData.updated_at;
       }
       return token;
     },
+
     async session({ session, token }) {
-      session.user.id = token.id;
-      session.user.name = token.name;
-      session.user.email = token.email;
-      session.user.role = token.role;
-      session.user.image_url = token.image_url;
+      if (token) {
+        session.user.id = token.id as string;
+        session.user.name = token.name as string;
+        session.user.email = token.email as string;
+        session.user.role = token.role as string;
+        session.user.image_url = token.image_url as string;
+      }
       return session;
     },
   },

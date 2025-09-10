@@ -1,4 +1,4 @@
-import UserActions from "./userActions";
+import UserActions from "@/app/(admin)/dashboard/slides/userActions";
 import Search from "@/app/ui/share/search/search";
 import { Metadata } from "next";
 import { Suspense } from "react";

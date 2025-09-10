@@ -1,24 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
-export interface SlideItem {
-  id: number;
-  image: string;
-  title: string;
-  description?: string;
-  link: string;
-  alt: string;
-}
+import { ISlide } from "@/app/interface/slide";
 
-export interface SlideSlide {
-  id: number;
-  title?: string;
-  subtitle?: string;
-  backgroundColor?: string;
-  items: SlideItem;
-}
 interface SlideContentProps {
-  slides: SlideSlide[];
+  slides: ISlide[];
   currentSlide: number;
 }
 
@@ -34,11 +20,15 @@ export default function SlideContent({
       >
         {slides.map((slide) => (
           <div key={slide.id} className="w-full flex-shrink-0 relative">
-            <Link href={slide.items.link} className="block w-full h-full group">
+            <Link
+              prefetch={true}
+              href={slide.redirect_url}
+              className="block w-full h-full group"
+            >
               <div className="relative w-full h-full">
                 <Image
-                  src={slide.items.image}
-                  alt={slide.items.alt}
+                  src={slide.image_url}
+                  alt={slide?.title || "slide name"}
                   fill
                   className="object-cover transition-transform duration-300 group-hover:scale-105"
                   priority={slide.id === 1}
@@ -47,16 +37,15 @@ export default function SlideContent({
                 <div className="absolute inset-0 flex items-center">
                   <div className="text-white p-8 md:p-12 max-w-2xl">
                     <h2 className="text-2xl md:text-4xl font-bold mb-4 leading-tight">
-                      {slide.items.title}
+                      {slide.title}
                     </h2>
-                    {slide.items.description && (
+                    {slide.description && (
                       <p className="text-lg md:text-xl mb-6 opacity-90">
-                        {slide.items.description}
+                        {slide.description}
                       </p>
                     )}
                     <div className="inline-flex items-center px-6 py-3 bg-primary hover:bg-primary/80 rounded-lg font-semibold transition-colors duration-200 text-primary-foreground">
-                      Shop Now
-                      <ChevronRight className="ml-2 h-4 w-4" />
+                      <ChevronRight className="ml-2 h-4 w-4 " />
                     </div>
                   </div>
                 </div>

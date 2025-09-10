@@ -1,5 +1,5 @@
-import { addView } from "../data/viewData";
-import { ViewProps } from "../interface/view";
+import { addView } from "@/app/data/viewData";
+import { ViewProps } from "@/app/interface/view";
 
 export async function addViewActions({
   id,

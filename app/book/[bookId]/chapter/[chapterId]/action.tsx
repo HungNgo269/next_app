@@ -1,6 +1,6 @@
 "use server";
 
-import { checkNextChapter, checkPrevChapter, fetchChapter } from "./data";
+import { checkNextChapter, checkPrevChapter, fetchChapter } from "@/app/book/[bookId]/chapter/[chapterId]/data";
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { defaultSettings, ReaderSettings } from "@/lib/readerSetting";

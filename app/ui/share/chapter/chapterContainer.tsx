@@ -9,7 +9,7 @@ import { useState } from "react";
 interface ChapterContainerProps {
   title: string;
   isCompleted?: boolean;
-  coverImage: string;
+  // coverImage: string;
   chapters: Chapter[];
   totalChapters?: number;
   showMoreText?: string;
@@ -30,13 +30,11 @@ export function ChapterContainer({
     : chapters.slice(0, initialVisibleChapters);
   const hasMoreChapters = chapters.length > initialVisibleChapters;
   const pathName = usePathname();
-  console.log(pathName);
-
   return (
     <div className="flex flex-row items-center justify-start space-x-3 mb-3 gap-4">
-      <div>
+      {/* <div>
         <Image
-          src="/testbookcover.png"
+          src={v}
           alt="book cover"
           width={0}
           height={0}
@@ -47,7 +45,7 @@ export function ChapterContainer({
             borderRadius: "10px",
           }}
         />
-      </div>
+      </div> */}
       <div className="h-full flex flex-col items-start w-full">
         <div className="border border-gray-200 rounded-lg p-4 bg-white shadow-sm w-full">
           <div className="mb-4">
@@ -73,6 +71,7 @@ export function ChapterContainer({
                       </span>
                     )} */}
                         <Link
+                          prefetch={true}
                           href={`${pathName}/chapter/${chapter.id}`}
                           className="text-primary hover:text-primary/80 hover:underline text-sm truncate"
                         >

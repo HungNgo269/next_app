@@ -64,7 +64,10 @@ export default function ChapterToolBar({
   return (
     <div className="hidden lg:block fixed right-4 top-1/2 -translate-y-1/2 z-50">
       <div className="flex flex-col gap-2 bg-card border rounded-lg shadow-lg items-center ">
-        <Link href={`${process.env.NEXT_PUBLIC_BASE_URL}/book/${bookId}`}>
+        <Link
+          prefetch={true}
+          href={`${process.env.NEXT_PUBLIC_BASE_URL}/book/${bookId}`}
+        >
           <Button
             variant="ghost"
             size="icon"
@@ -260,6 +263,7 @@ export default function ChapterToolBar({
         <div className="w-full h-px bg-border my-1" />
 
         <Link
+          prefetch={true}
           href={
             idPrev != null
               ? `${process.env.NEXT_PUBLIC_BASE_URL}/book/${bookId}/chapter/${idPrev}`
@@ -282,6 +286,7 @@ export default function ChapterToolBar({
           </Button>
         </Link>
         <Link
+          prefetch={true}
           href={
             idNext != null
               ? `${process.env.NEXT_PUBLIC_BASE_URL}/book/${bookId}/chapter/${idNext}`

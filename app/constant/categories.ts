@@ -122,8 +122,6 @@ export type category = (typeof categories)[number];
 export type sortSlug = (typeof sortOptions)[number]["slug"];
 export type sort = (typeof sortOptions)[number];
 
-export type sortTimeName = (typeof sortOptions)[number]["name"];
-
 // Utility functions for category
 export const getcategoryBySlug = (slug: string): category | undefined => {
   return categories.find((category) => category.slug === slug);

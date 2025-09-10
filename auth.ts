@@ -9,7 +9,7 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
   ...authConfig,
   session: {
     strategy: "jwt", //accesstoken
-    maxAge: 15 * 60,
+    maxAge: 60 * 60,
   },
   //rf token
   jwt: {
@@ -39,7 +39,8 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
           const passwordsMatch = await bcrypt.compare(password, user.password);
 
           if (passwordsMatch) {
-            return user;
+            const { password: _, ...userWithoutPassword } = user;
+            return userWithoutPassword;
           } else {
             console.log("Password doesn't match");
             return null;
