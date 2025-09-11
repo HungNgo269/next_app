@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import { z } from "zod";
 import { authConfig } from "./auth.config";
 import { getUser } from "./app/data/userData";
+import { User } from "./app/interface/user";
 
 export const { auth, signIn, signOut, handlers } = NextAuth({
   ...authConfig,
@@ -29,7 +30,7 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
             console.log("Email or password is missing");
             return null;
           }
-          const user = await getUser(email);
+          const user = (await getUser(email)) as User;
           if (!user) return null;
 
           if (!user.password) {

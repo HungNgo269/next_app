@@ -1,3 +1,30 @@
+import { UserRole } from "@/app/interface/user";
+
+// Core Entities
+export type User = {
+  id: string;
+  name?: string | null;
+  email: string;
+  image_url?: string | null;
+  role?: UserRole;
+  created_at?: string;
+  updated_at?: string;
+};
+
+export type Product = {
+  id: string;
+  name: string;
+  description?: string;
+  image_url?: string;
+  price: number;
+  category_id: string;
+  stock_quantity: number;
+  sku: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
 // User Management
 
 export type Customer = {
@@ -17,20 +44,6 @@ export type Category = {
   name: string;
   description?: string;
   image_url?: string;
-  is_active: boolean;
-  created_at: string;
-  updated_at: string;
-};
-
-export type Product = {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  category_id: string;
-  image_urls: string[];
-  stock_quantity: number;
-  sku: string;
   is_active: boolean;
   created_at: string;
   updated_at: string;

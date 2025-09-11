@@ -5,7 +5,6 @@ import { fetchSlidesByPageActions } from "@/app/actions/slideActions";
 import { formatEnDateTime } from "@/lib/utils/formatDate";
 import SlideDeleteButton from "@/app/ui/admin/slides/slideDeleteButton";
 import Active from "@/app/ui/admin/slides/active";
-import { Suspense } from "react";
 import { SlideTableProps } from "@/app/interface/slide";
 export default async function SlideTable({
   query,
@@ -14,7 +13,10 @@ export default async function SlideTable({
   query: string;
   currentPage: number;
 }) {
-  const slides = (await fetchSlidesByPageActions(query, currentPage)) as unknown as SlideTableProps[];
+  const slides = (await fetchSlidesByPageActions(
+    query,
+    currentPage
+  )) as unknown as SlideTableProps[];
   return (
     <div className="mt-4 flow-root">
       <div className="inline-block min-w-full align-middle">

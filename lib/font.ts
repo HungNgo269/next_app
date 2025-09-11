@@ -1,4 +1,10 @@
-import type { ReaderFont } from "@/app/store/useReaderSettings";
+export type ReaderFont =
+  | "serif"
+  | "sans"
+  | "mono"
+  | "inter"
+  | "georgia"
+  | "jetbrains";
 
 export function fontClass(font: ReaderFont) {
   switch (font) {

@@ -32,7 +32,6 @@ export default function BookCard({
       <Link
         prefetch={true}
         href={`/book/${book.id}`}
-        prefetch={false}
         aria-label={book.name}
       >
         <div

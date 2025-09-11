@@ -1,15 +1,16 @@
 "use server";
 
 import Stripe from "stripe";
-import { stripe } from "@/utils/stripe/config";
-import { createClient } from "@/utils/supabase/server";
-import { createOrRetrieveCustomer } from "@/utils/supabase/admin";
-import {
-  getURL,
-  getErrorRedirect,
-  calculateTrialEndUnixTimestamp,
-} from "@/utils/helpers";
+
 import { SubscriptionPrice } from "@/app/interface/subcription";
+import { auth } from "@/auth";
+import { stripe } from "./config";
+import { createOrRetrieveCustomer } from "@/app/data/subscription";
+import {
+  calculateTrialEndUnixTimestamp,
+  getErrorRedirect,
+  getURL,
+} from "../helper";
 
 type CheckoutResponse = {
   errorRedirect?: string;
@@ -22,19 +23,10 @@ export async function checkoutWithStripe(
 ): Promise<CheckoutResponse> {
   try {
     // Get the user from Supabase auth
-    const supabase = createClient();
-    const {
-      error,
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (error || !user) {
-      console.error(error);
-      throw new Error("Could not get user session.");
-    }
-
+    const sessionApp = await auth();
+    const user = sessionApp?.user;
     // Retrieve or create the customer in Stripe
-    let customer: string;
+    let customer;
     try {
       customer = await createOrRetrieveCustomer({
         uuid: user?.id || "",
@@ -80,8 +72,6 @@ export async function checkoutWithStripe(
         mode: "payment",
       };
     }
-
-    // Create a checkout session in Stripe
     let session;
     try {
       session = await stripe.checkout.sessions.create(params);
@@ -90,7 +80,6 @@ export async function checkoutWithStripe(
       throw new Error("Unable to create checkout session.");
     }
 
-    // Instead of returning a Response, just return the data or error.
     if (session) {
       return { sessionId: session.id };
     } else {
@@ -119,23 +108,15 @@ export async function checkoutWithStripe(
 
 export async function createStripePortal(currentPath: string) {
   try {
-    const supabase = createClient();
-    const {
-      error,
-      data: { user },
-    } = await supabase.auth.getUser();
-
+    const session = await auth();
+    const user = session?.user;
     if (!user) {
-      if (error) {
-        console.error(error);
-      }
-      throw new Error("Could not get user session.");
+      throw new Error("Not authenticated");
     }
-
     let customer;
     try {
       customer = await createOrRetrieveCustomer({
-        uuid: user.id || "",
+        uuid: user.id,
         email: user.email || "",
       });
     } catch (err) {

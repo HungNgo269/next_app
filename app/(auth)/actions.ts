@@ -161,7 +161,7 @@ export async function registerUserAction(
     return {
       success: true,
       message: "Registration successful! Redirecting...",
-      redirectTo: "/dashboard",
+      redirectTo: "/",
     };
   } catch (error) {
     console.error("Registration error:", error);

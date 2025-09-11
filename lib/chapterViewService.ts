@@ -38,7 +38,7 @@ export async function incrementViewService(
     const batchKey = VIEW_BATCH_KEY;
     let isNewUniqueView = false;
     let viewerIdentifier: string;
-    const hashedIP = hashIP(ipAddress) ? ipAddress : null;
+    const hashedIP = ipAddress ? hashIP(ipAddress) : null;
 
     if (userId) {
       viewerIdentifier = `user:${userId}`;
@@ -255,7 +255,7 @@ function hashIP(ip: string): string {
   const crypto = require("crypto");
   return crypto
     .createHash("sha256")
-    .update(ip + process.env.IP_SALT || "default-salt")
+    .update(ip + (process.env.IP_SALT || "default-salt"))
     .digest("hex")
     .substring(0, 16); // Use first 16 chars for shorter storage
 }

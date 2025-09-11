@@ -33,7 +33,7 @@ export default function NavLinks() {
               }
             )}
           >
-            <Link prefetch={true} Icon className="w-6" />
+            <LinkIcon className="w-6" />
             <p className="hidden md:block">{link.name}</p>
           </Link>
         );
