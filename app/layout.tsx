@@ -2,7 +2,6 @@ import "@/app/globals.css";
 import { inter } from "@/app/ui/fonts";
 import { Metadata } from "next";
 import ClientProviders from "@/components/clientProvider";
-import { auth } from "@/auth";
 import CronInitializer from "@/app/ui/cronIni";
 import { getSessionCache } from "@/lib/utils/getSession";
 
@@ -21,7 +20,6 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const session = await getSessionCache();
-
   return (
     <html lang="en">
       <body className={`${inter.className} antialiased font-normal `}>

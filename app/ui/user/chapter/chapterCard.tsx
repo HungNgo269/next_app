@@ -18,7 +18,7 @@ export default async function ChapterCard({ ChapterId }: PageProps) {
   )) as unknown as BookImage;
 
   return (
-    <div className="flex flex-row h-[190px] w-[]  ">
+    <div className="flex flex-row h-[190px]   ">
       <Link
         prefetch={true}
         className="relative min-w-[130px] h-[190px] group overflow-hidden rounded-[8px]"

@@ -7,6 +7,7 @@ import {
   fetchBookById,
   fetchBookImage,
   fetchBooksByPage,
+  fetchBooksByQuery,
   fetchNewBook,
   fetchOurRecommendedBook,
   fetchPopularBook,
@@ -62,7 +63,14 @@ export async function fetchBooksByPageActions(
     throw new Error("Failed to fetch category books");
   }
 }
-
+export async function fetchBooksByQueryActions(query: string) {
+  try {
+    return await fetchBooksByQuery(query);
+  } catch (error) {
+    console.error("Server Action Error:", error);
+    throw new Error("Failed to fetch category books");
+  }
+}
 export async function fetchAllBookAction(
   currentPage: number,
   sort: string,

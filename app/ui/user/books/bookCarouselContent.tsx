@@ -2,13 +2,14 @@ import { Book } from "@/app/interface/book";
 import { BookCardSkeleton } from "@/app/ui/skeletons";
 import BookCard from "@/app/ui/user/books/bookCard";
 import { CONFIG, Variant } from "@/app/ui/user/books/bookCarousel";
+import { Suspense } from "react";
 interface props {
   slides?: (Book | null)[][];
   variant?: Variant;
 }
 export default function BookCarouselContent({ slides, variant = "lg" }: props) {
   const cfg = CONFIG[variant];
-  console.log("first", slides);
+  console.log("first", variant);
   return (
     <>
       {slides?.map((page, pageIndex) => (
@@ -22,9 +23,11 @@ export default function BookCarouselContent({ slides, variant = "lg" }: props) {
             return (
               <div key={itemKey}>
                 {book ? (
-                  <BookCard book={book} variant={variant} />
+                  <Suspense fallback={<BookCardSkeleton></BookCardSkeleton>}>
+                    <BookCard book={book} variant={variant} />
+                  </Suspense>
                 ) : (
-                  <BookCardSkeleton variant={variant} />
+                  <BookCardSkeleton variant={variant}></BookCardSkeleton>
                 )}
               </div>
             );

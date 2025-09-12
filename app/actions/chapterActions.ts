@@ -23,9 +23,9 @@ export async function fetchChapterOfBookAction(bookId: number) {
     throw new Error("Failed to fetch chapter");
   }
 }
-export async function fetchNewestChapterAction() {
+export async function fetchNewestChapterAction(currentPage: number) {
   try {
-    return await fetchNewestChapter();
+    return await fetchNewestChapter(currentPage);
   } catch (error) {
     console.error("Server Action Error:", error);
     throw new Error("Failed to fetch chapter");

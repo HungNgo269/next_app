@@ -29,11 +29,7 @@ export default function BookCard({
   const s = MAP[variant];
   return (
     <div className={`flex flex-col p-1 ${s.card}`}>
-      <Link
-        prefetch={true}
-        href={`/book/${book.id}`}
-        aria-label={book.name}
-      >
+      <Link prefetch={true} href={`/book/${book.id}`} aria-label={book.name}>
         <div
           className={`relative overflow-hidden rounded-[8px] group ${s.imgWrap}`}
         >

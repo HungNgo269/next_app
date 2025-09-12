@@ -66,18 +66,20 @@ export function BookCardSkeleton({ variant = "lg" }: { variant?: Variant }) {
   const s = MAP[variant];
 
   return (
-    <div className={`flex flex-col p-1 ${s.card} ${shimmer}`}>
+    <div className={`flex flex-col p-1 ${s.card} ${shimmer} bg-white`}>
       <div
-        className={`relative overflow-hidden rounded-[8px] bg-muted animate-pulse ${s.imgWrap}`}
+        className={`relative overflow-hidden rounded-[8px] bg-slate-200 animate-pulse ${s.imgWrap}`}
       >
-        <div className="w-full h-full bg-gradient-to-br from-muted to-muted/80" />
+        <div className="w-full h-full bg-gradient-to-br from-slate-200 to-slate-500" />
       </div>
 
       <div className="flex flex-col mt-3 h-[43px] justify-between">
-        <div className={`bg-muted animate-pulse rounded ${s.title} w-3/4`} />
+        <div
+          className={`bg-slate-300 animate-pulse rounded ${s.title} w-3/4`}
+        />
 
         <div
-          className={`bg-muted/70 animate-pulse rounded ${s.author} w-1/2`}
+          className={`bg-slate-400 animate-pulse rounded ${s.author} w-1/2`}
         />
       </div>
     </div>

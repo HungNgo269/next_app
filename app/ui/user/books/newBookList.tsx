@@ -1,5 +1,3 @@
-import { sql } from "@/lib/db";
-import BookCard from "@/app/ui/user/books/bookCard";
 import { Book } from "@/app/interface/book";
 import BookCarousel from "@/app/ui/user/books/bookCarousel";
 import ViewMoreBookButton from "@/app/ui/user/books/viewMoreBookButton";

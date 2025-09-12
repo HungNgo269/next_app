@@ -14,7 +14,6 @@ export default async function BookRecommend() {
       fetchOurRecommendedBookAction(3),
     ])
   ).filter(Boolean) as RecommendedBookProps[];
-  console.log("recpm", recommendedBooks);
   return (
     <div className="flex flex-col justify-center items-center gap-4">
       <div className="flex flex-row items-center justify-between w-full gap-2">

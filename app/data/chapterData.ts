@@ -24,13 +24,14 @@ export async function fetchChapterOfBook(bookId: number) {
     throw new Error("Failed to fetch Categories.");
   }
 }
-export async function fetchNewestChapter() {
+export async function fetchNewestChapter(currentPage: number) {
+  const offset = (currentPage - 1) * 8;
   try {
     let res = await sql`
     SELECT c.id, c.title,c.chapter_number ,b.name
     FROM chapters c join books b on c.book_id = b.id
     order by c.created_at desc
-    limit 8 offset 8
+    limit 8 offset ${offset}
     `;
     return res;
   } catch (error) {

@@ -18,7 +18,6 @@ export default function SearchComponent({
   const handleSearch = (searchQuery: string) => {
     const q = (searchQuery ?? "").trim();
     if (!q) return;
-
     setQuery(q);
     setIsOpen(false);
     if (compact) setIsCompactOpen(false);

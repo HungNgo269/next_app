@@ -106,8 +106,7 @@ export default function ChapterToolBar({
               >
                 <option value="system">System Default</option>
                 <option value="serif">Serif</option>
-                <option value="sans">Sans Serif</option>
-                <option value="mono">Monospace</option>
+                <option value="lusitana">Lusitana</option>
                 <option value="georgia">Georgia</option>
                 <option value="inter">Inter</option>
                 <option value="jetbrains">JetBrains Mono</option>
@@ -296,7 +295,7 @@ export default function ChapterToolBar({
           onClick={(e) => idNext == null && e.preventDefault()}
         >
           <Button
-            disabled={!idPrev}
+            disabled={!idNext}
             variant="ghost"
             size="icon"
             className={`w-10 h-10 ${

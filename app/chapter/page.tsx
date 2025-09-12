@@ -1,19 +1,20 @@
-import MostPopularBook from "@/app/ui/user/ranking/popularBook";
-
 import Pagination from "@/app/ui/share/pagination/pagination";
-import FooterComponent from "@/app/ui/user/footer/footerComponent";
 import {
   fetchNewestChapterAction,
   fetchTotalChapterPageAction,
 } from "@/app/actions/chapterActions";
 import { ChapterCardProps } from "@/app/interface/chapter";
 import ChapterCard from "@/app/ui/user/chapter/chapterCard";
-
-export default async function ChapterPage() {
+interface PageProps {
+  searchParams: Promise<{ page: number }>;
+}
+export default async function ChapterPage({ searchParams }: PageProps) {
+  const currentPage = (await searchParams).page;
   const [chapters, totalPages] = await Promise.all([
-    fetchNewestChapterAction(),
+    fetchNewestChapterAction(currentPage),
     fetchTotalChapterPageAction(),
   ]);
+  console.log("check chapters", chapters);
 
   return (
     <div className="w=full">

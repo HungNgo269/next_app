@@ -14,7 +14,7 @@ export default function PopularBookFilter({
 }: PopularBookFilterProps) {
   return (
     <div className="flex items-center gap-3">
-      <div className="relative min-w-[180px] flex flex-row gap-1">
+      <div className="relative min-w-fit flex flex-row gap-1">
         {sort_OPTIONS_time.map((option) => (
           <span
             key={option.id}

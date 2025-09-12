@@ -74,6 +74,23 @@ export async function fetchBooksByPage(query: string, currentPage: number) {
   }
 }
 
+export async function fetchBooksByQuery(query: string) {
+  try {
+    const data = await sql`
+      SELECT id,name,status,image_urls,is_active,author,rating
+      FROM books
+      WHERE 
+    name ILIKE ${`%${query}%`} 
+         order by id asc
+      limit ${ITEMS_PER_PAGE} 
+        `;
+    return data as BookCardProps[];
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch Slides.");
+  }
+}
+
 export async function fetchAllBook(query: string, currentPage: number) {
   const offset = (currentPage - 1) * 30;
   try {

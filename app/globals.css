@@ -23,6 +23,8 @@
   --color-muted: hsl(var(--muted));
   --color-muted-foreground: hsl(var(--muted-foreground));
 
+  --color-skeleton:hsl(var(--color-skeleton))
+
   --color-accent: hsl(var(--accent));
   --color-accent-foreground: hsl(var(--accent-foreground));
 
@@ -91,6 +93,8 @@
     --secondary-foreground: oklch(1 0 0); /* White text on secondary */
     --muted: oklch(0.98 0 0); /* Light gray muted */
     --muted-foreground: oklch(0.35 0 0);
+  --skeleton: oklch(0.577 0.245 27.325);
+
     --accent: oklch(0.9467 0.0297 161.1) /* Purple accent */
     --accent-foreground: oklch(1 0 0);
     --destructive: oklch(0.577 0.245 27.325);

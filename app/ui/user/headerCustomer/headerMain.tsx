@@ -16,17 +16,15 @@ import { getSessionCache } from "@/lib/utils/getSession";
 export default async function Header() {
   const session = await getSessionCache();
   const user = session?.user;
-
   return (
     <div className="w-full">
-      <div className="sm:max-w-xl md:max-w-2xl lg:max-w-7xl mx-auto">
-        <div className="flex items-center justify-between h-16 px-2">
+      <div className="max-w-screen mx-auto w-full">
+        <div className="flex items-center  justify-between h-16 md:px-4 lg:px-8 xl:px-12">
           <div className="flex flex-row items-center">
             {/* Mobile menu */}
-            <Button variant="link" size="sm" className="sm:hidden">
+            {/* <Button variant="link" size="sm" className="sm:hidden">
               <Menu className="h-5 w-5" />
-            </Button>
-
+            </Button> */}
             <Link
               prefetch={true}
               href={process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}

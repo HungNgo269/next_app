@@ -11,6 +11,8 @@ export interface Book {
   updated_at: string;
   author?: string;
   views?: number;
+  rating?: number;
+  popularity: number;
   publish_date?: string | Date;
   status: Status;
 }

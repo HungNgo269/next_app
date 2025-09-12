@@ -61,7 +61,7 @@ export default function BookCarousel({
   };
   console.log("slide", slides);
   return (
-    <div className={`relative ${cfg.container}`}>
+    <div className={`relative lg:${cfg.container} w-full`}>
       <div className="relative overflow-hidden">
         <div
           className="flex transition-transform duration-300 ease-in-out h-fit"

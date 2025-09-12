@@ -39,7 +39,6 @@ export async function incrementViewService(
     let isNewUniqueView = false;
     let viewerIdentifier: string;
     const hashedIP = ipAddress ? hashIP(ipAddress) : null;
-
     if (userId) {
       viewerIdentifier = `user:${userId}`;
       const viewerKey = `${viewerIdentifier}:viewed:${chapterId}`;
@@ -48,7 +47,7 @@ export async function incrementViewService(
         pipeline.set(viewerKey, "1", { ex: UNIQUE_VIEW_TTL });
         isNewUniqueView = true;
       }
-    } else if (ipAddress && ipAddress !== "unknown") {
+    } else if (hashedIP && hashedIP !== "unknown") {
       viewerIdentifier = `ip:${hashedIP}`;
       const viewerKey = `${viewerIdentifier}:viewed:${chapterId}`;
       const hasViewed = await redis.exists(viewerKey);
@@ -56,12 +55,14 @@ export async function incrementViewService(
         pipeline.set(viewerKey, "1", { ex: UNIQUE_VIEW_TTL });
         isNewUniqueView = true;
       }
-    } else {
-      return {
-        success: false,
-        error: `No user ID or valid IP address provided,userId :${userId},hashIP:${hashedIP}`,
-      };
     }
+    //comment dòng dưới trong thực tế
+    // else {
+    //   return {
+    //     success: false,
+    //     error: `No user ID or valid IP address provided,userId :${userId},hashIP:${hashedIP}`,
+    //   };
+    // }
 
     if (isNewUniqueView) {
       pipeline.incr(viewKey);
