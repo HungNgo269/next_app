@@ -1,4 +1,4 @@
-import { setupQStashCronJob } from "@/app/api/cron/sync-views/route";
+import { setupQStashCronJob } from "@/lib/cron";
 
 let isInitialized = false;
 
