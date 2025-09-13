@@ -53,8 +53,12 @@ export async function EditSlideAction(
     appendIfDefined(apiFormData, "desc", parsed.data.desc);
     appendIfDefined(apiFormData, "link", parsed.data.redirectLink);
     appendIfDefined(apiFormData, "order", parsed.data.order);
+    const baseUrl =
+      process.env.NODE_ENV === "production"
+        ? process.env.NEXT_PUBLIC_BASE_URL
+        : "http://localhost:3000";
 
-    const response = await fetch(`http://localhost:3000/api/slides`, {
+    const response = await fetch(`${baseUrl}/api/slides`, {
       method: "PATCH",
       body: apiFormData,
     });

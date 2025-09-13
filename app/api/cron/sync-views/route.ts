@@ -49,8 +49,7 @@ export async function setupQStashCronJob() {
   });
   // Schedule to run every hour
   await client.schedules.create({
-    destination: `http://26.95.123.207:3000/api/cron/sync-views`,
-    // destination: `${process.env.NEXT_PUBLIC_APP_URL }/api/cron/sync-views`,
+    destination: `${process.env.NEXT_PUBLIC_BASE_URL}/api/cron/sync-views`,
 
     cron: "0 * * * *", // Every hour at minute 0
     retries: 3,

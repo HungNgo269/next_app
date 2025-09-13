@@ -15,11 +15,11 @@ interface BookCarouselProps {
 export const CONFIG = {
   lg: {
     container: "w-[1190px]",
-    grid: "grid-cols-5 gap-1",
+    grid: "lg:grid lg:grid-cols-5 gap-1",
   },
   sm: {
     container: "w-[850px]",
-    grid: "grid-cols-5 gap-1",
+    grid: "lg:grid lg:grid-cols-5 gap-1",
   },
 } as const;
 const ITEMS_PER_SLIDE = 5;
