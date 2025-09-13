@@ -1,7 +1,6 @@
 import redis from "./redis";
 import { sql } from "./db";
 
-// 1. Types & Interfaces
 interface ViewMetadata {
   chapterId: number;
   bookId: number;
@@ -23,12 +22,8 @@ interface ChapterViewStats {
   bookId: number;
 }
 
-// 2. Constants
-const UNIQUE_VIEW_TTL = 24 * 60 * 60; // 24 hours in seconds
+const UNIQUE_VIEW_TTL = 24 * 60 * 60;
 const VIEW_BATCH_KEY = "views:batch:pending";
-const VIEW_STATS_KEY_PREFIX = "chapter:stats:";
-
-// 3. Enhanced View Service
 export async function incrementViewService(
   chapterId: number,
   bookId: number,
@@ -38,60 +33,44 @@ export async function incrementViewService(
   try {
     const pipeline = redis.pipeline();
     const timestamp = new Date().toISOString();
-
-    // Keys
     const viewKey = `chapter:${chapterId}:views`;
     const metadataKey = `chapter:${chapterId}:metadata`;
     const batchKey = VIEW_BATCH_KEY;
-
     let isNewUniqueView = false;
     let viewerIdentifier: string;
-
-    // Hash IP for privacy
-    const hashedIP = hashIP(ipAddress) ? ipAddress : null;
-
-    // Check unique view based on userId or IP
+    const hashedIP = ipAddress ? hashIP(ipAddress) : null;
     if (userId) {
       viewerIdentifier = `user:${userId}`;
       const viewerKey = `${viewerIdentifier}:viewed:${chapterId}`;
       const hasViewed = await redis.exists(viewerKey);
-
       if (!hasViewed) {
-        // Mark as viewed
         pipeline.set(viewerKey, "1", { ex: UNIQUE_VIEW_TTL });
         isNewUniqueView = true;
       }
-    } else if (ipAddress && ipAddress !== "unknown") {
+    } else if (hashedIP && hashedIP !== "unknown") {
       viewerIdentifier = `ip:${hashedIP}`;
       const viewerKey = `${viewerIdentifier}:viewed:${chapterId}`;
       const hasViewed = await redis.exists(viewerKey);
-
       if (!hasViewed) {
         pipeline.set(viewerKey, "1", { ex: UNIQUE_VIEW_TTL });
         isNewUniqueView = true;
       }
-    } else {
-      // No identifier, cannot track unique view
-      return {
-        success: false,
-        error: `No user ID or valid IP address provided,userId :${userId},hashIP:${hashedIP}`,
-      };
     }
+    //comment dòng dưới trong thực tế
+    // else {
+    //   return {
+    //     success: false,
+    //     error: `No user ID or valid IP address provided,userId :${userId},hashIP:${hashedIP}`,
+    //   };
+    // }
 
     if (isNewUniqueView) {
-      // Increment view counter
       pipeline.incr(viewKey);
-
-      // Update ranking
       pipeline.zincrby("chapters:ranking:views", 1, chapterId);
-
-      // Store metadata for this view
       pipeline.hset(metadataKey, {
         bookId: bookId.toString(),
         lastViewedAt: timestamp,
       });
-
-      // Track unique users and IPs
       if (userId) {
         pipeline.sadd(`${metadataKey}:users`, userId);
         pipeline.hincrby(`${metadataKey}:user_stats`, userId, 1);
@@ -100,8 +79,6 @@ export async function incrementViewService(
         pipeline.sadd(`${metadataKey}:ips`, hashedIP);
         pipeline.hincrby(`${metadataKey}:ip_stats`, hashedIP, 1);
       }
-
-      // Add to batch for database sync
       const viewData: ViewMetadata = {
         chapterId,
         bookId,
@@ -109,22 +86,17 @@ export async function incrementViewService(
         ipAddress: hashedIP || undefined,
         timestamp,
       };
-
       pipeline.lpush(batchKey, JSON.stringify(viewData));
-
-      // Execute pipeline
       const results = await pipeline.exec();
 
       if (!results) {
         throw new Error("Pipeline execution failed");
       }
-
       return {
         success: true,
         isNewView: true,
       };
     }
-
     return {
       success: true,
       isNewView: false,
@@ -138,7 +110,6 @@ export async function incrementViewService(
   }
 }
 
-// 4. Get Chapter Stats
 export async function getChapterStatsService(
   chapterId: number
 ): Promise<ChapterViewStats | null> {
@@ -173,7 +144,6 @@ export async function getChapterStatsService(
   }
 }
 
-// 5. Batch Sync to Database
 export async function syncViewsToDatabase(): Promise<{
   success: boolean;
   processed: number;
@@ -181,28 +151,19 @@ export async function syncViewsToDatabase(): Promise<{
 }> {
   const errors: string[] = [];
   let processed = 0;
-
   try {
-    // Get all pending views from batch
     const batchKey = VIEW_BATCH_KEY;
-    const batchSize = 100; // Process 100 at a time
-
+    const batchSize = 100;
     let viewsData = await redis.lrange(batchKey, 0, batchSize - 1);
-
     while (viewsData.length > 0) {
       const views: ViewMetadata[] = viewsData.map((v) => JSON.parse(v));
-
-      // Group views by chapter for efficient updates
       const chapterGroups = new Map<number, ViewMetadata[]>();
-
       for (const view of views) {
         if (!chapterGroups.has(view.chapterId)) {
           chapterGroups.set(view.chapterId, []);
         }
         chapterGroups.get(view.chapterId)!.push(view);
       }
-
-      // Process each chapter group
       for (const [chapterId, chapterViews] of Array.from(
         chapterGroups.entries()
       )) {
@@ -213,17 +174,10 @@ export async function syncViewsToDatabase(): Promise<{
           errors.push(`Chapter ${chapterId}: ${error}`);
         }
       }
-
-      // Remove processed items from Redis
       await redis.ltrim(batchKey, batchSize, -1);
-
-      // Get next batch
       viewsData = await redis.lrange(batchKey, 0, batchSize - 1);
     }
-
-    // Update aggregated stats in chapters table
     await updateChapterAggregatedStats();
-
     return {
       success: errors.length === 0,
       processed,
@@ -302,7 +256,7 @@ function hashIP(ip: string): string {
   const crypto = require("crypto");
   return crypto
     .createHash("sha256")
-    .update(ip + process.env.IP_SALT || "default-salt")
+    .update(ip + (process.env.IP_SALT || "default-salt"))
     .digest("hex")
     .substring(0, 16); // Use first 16 chars for shorter storage
 }

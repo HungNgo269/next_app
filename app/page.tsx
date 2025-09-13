@@ -1,37 +1,34 @@
 import { Suspense } from "react";
-
-import { BookOpen, Download, Users } from "lucide-react";
-import Image from "next/image";
-import Header from "./ui/user/headerCustomer/headerMain";
-import BestSellerContainer from "./ui/user/books/bestSellerContainer";
-import NewBookList from "./ui/user/books/newBookList";
-import NewChapterList from "./ui/user/books/newChapterList";
-import BookRecommend from "./ui/user/books/bookRecommend";
-import MostPopularBook from "./ui/user/ranking/mostPopularBook";
-import MostPopularSeries from "./ui/user/ranking/mostPopularSeries";
-import FooterComponent from "./ui/user/footer/footerComponent";
-import SectionComponent from "./ui/user/section/section";
-import Slide from "./ui/admin/slides/slide";
-import { SlideSkeleton } from "./ui/skeletons";
-import { HeaderWrapper } from "./ui/user/headerCustomer/headerWrapper";
-
+import Header from "@/app/ui/user/headerCustomer/headerMain";
+import BestSellerContainer from "@/app/ui/user/books/bestSellerContainer";
+import NewBookList from "@/app/ui/user/books/newBookList";
+import BookRecommend from "@/app/ui/user/books/bookRecommend";
+import MostPopularBook from "@/app/ui/user/ranking/popularBook";
+import FooterComponent from "@/app/ui/user/footer/footerComponent";
+import SectionComponent from "@/app/ui/user/section/section";
+import { HeaderWrapper } from "@/app/ui/user/headerCustomer/headerWrapper";
+import SlideWrapper from "@/app/ui/admin/slides/slideWrapper";
+import NewChapterList from "@/app/ui/user/chapter/newChapterList";
+// sm	40rem (640px)	@media (width >= 40rem) { ... }
+// md	48rem (768px)	@media (width >= 48rem) { ... }
+// lg	64rem (1024px)	@media (width >= 64rem) { ... }
+// xl	80rem (1280px)	@media (width >= 80rem) { ... }
+// 2xl	96rem (1536px)	@media (width >= 96rem) { ... }
 export default function HomePage() {
   return (
-    <>
-      <header className="ml-auto mr-auto  ">
+    <div>
+      <header className="ml-auto mr-auto w-full  ">
         <Suspense>
-          <HeaderWrapper children={<Header></Header>}></HeaderWrapper>
+          <HeaderWrapper children={<Header></Header>}></HeaderWrapper>,
         </Suspense>
       </header>
-      <Suspense fallback={<SlideSkeleton></SlideSkeleton>}>
-        <Slide />
-      </Suspense>
-      <div className="w-full mx-auto mt-10 sm:w-[1190px]">
+      <SlideWrapper />
+      <div className="w-full mx-auto mt-10 md:w-[700px] lg:w-[900px]  xl:w-[1190px] ">
         <Suspense>
           <BestSellerContainer />
         </Suspense>
-        <div className="flex  justify-between mt-10 sm:flex-row ">
-          <div className="w-[850px]   flex flex-col gap-5">
+        <div className="flex  justify-between mt-10 lg:flex-row flex-col">
+          <div className="lg:w-[850px] md:w-[700px]  flex flex-col gap-5">
             <Suspense>
               <NewBookList />
             </Suspense>
@@ -43,24 +40,8 @@ export default function HomePage() {
               <BookRecommend></BookRecommend>
             </Suspense>
           </div>
-          <div className="w-[300px]  flex flex-col gap-5">
-            {/* <Suspense>
-              <MostPopularBook />
-            </Suspense> */}
-            {/* <Suspense>
-              <MostPopularSeries />
-            </Suspense> */}
-            {/* <Suspense>
-              <section className="mb-10">
-                <Image
-                  src="/testwideimg.jpg"
-                  alt="Banner"
-                  width={300}
-                  height={0}
-                  className="h-auto rounded-[8px]"
-                />
-              </section>
-            </Suspense> */}
+          <div className="lg:w-[300px] md:w-[400px] flex flex-col gap-5">
+            <MostPopularBook />
           </div>
         </div>
         <div className="hidden sm:block">
@@ -69,11 +50,11 @@ export default function HomePage() {
           </Suspense>
         </div>
       </div>
-      <div className=" mx-auto mt-10 w-[1190px]">
+      <div className="w-full">
         <Suspense>
           <FooterComponent></FooterComponent>
         </Suspense>
       </div>
-    </>
+    </div>
   );
 }

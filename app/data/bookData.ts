@@ -1,6 +1,8 @@
 import { sql } from "@/lib/db";
-
-export async function fetchBookById(id: string) {
+import { unstable_cache } from "next/cache";
+import { Book, BookCardProps } from "@/app/interface/book";
+import { getStartDate, TimeFrame } from "@/app/data/rankingData";
+export async function fetchBookById(id: number) {
   try {
     let res = await sql`Select * from books  where id=${id}`;
     return res;
@@ -23,7 +25,7 @@ export async function fetchNewBook() {
     throw new Error("Failed to fetch book by id.");
   }
 }
-export async function fetchBookImage(bookId: string) {
+export async function fetchBookImage(bookId: number) {
   try {
     const res = await sql`
     SELECT id,image_urls,description,name
@@ -36,18 +38,7 @@ export async function fetchBookImage(bookId: string) {
     throw new Error("Failed to fetch book image for chapter");
   }
 }
-export async function addViewBook(id: string) {
-  try {
-    let res = await sql`
-UPDATE books
-SET views = views + 1
-WHERE id = ${id}`;
-    return res;
-  } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch Categories.");
-  }
-}
+
 export async function fetchBookRecommended() {
   try {
     const res = await sql`
@@ -83,6 +74,23 @@ export async function fetchBooksByPage(query: string, currentPage: number) {
   }
 }
 
+export async function fetchBooksByQuery(query: string) {
+  try {
+    const data = await sql`
+      SELECT id,name,status,image_urls,is_active,author,rating
+      FROM books
+      WHERE 
+    name ILIKE ${`%${query}%`} 
+         order by id asc
+      limit ${ITEMS_PER_PAGE} 
+        `;
+    return data as BookCardProps[];
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch Slides.");
+  }
+}
+
 export async function fetchAllBook(query: string, currentPage: number) {
   const offset = (currentPage - 1) * 30;
   try {
@@ -104,6 +112,58 @@ export async function fetchAllBook(query: string, currentPage: number) {
     throw new Error("Failed to fetch Slides.");
   }
 }
+
+export async function fetchAllBookSort(
+  sort: string,
+  currentPage: number,
+  order: string
+) {
+  const offset = (currentPage - 1) * 30;
+  const allowedSorts = ["views", "rating", "newest", "popularity"];
+  const allowedOrders = ["ASC", "DESC"];
+  if (!allowedSorts.includes(sort) || !allowedOrders.includes(order)) {
+    throw new Error("Invalid sort parameters");
+  }
+  try {
+    const data = await sql`
+  SELECT b.id, b.name, b.status, b.image_urls, b.rating,b.author
+  FROM books b 
+  ORDER BY 
+    ${
+      sort === "views"
+        ? sql`b.views`
+        : sort === "rating"
+        ? sql`b.rating`
+        : sort === "popularity"
+        ? sql`b.popularity`
+        : sort === "created_at"
+        ? sql`b.created_at`
+        : sql`b.name`
+    }
+    ${order === "DESC" ? sql`DESC` : sql`ASC`}
+  LIMIT 30 OFFSET ${offset}
+`;
+    return data;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch books by category.");
+  }
+}
+
+export async function fetchTotalBookPage() {
+  try {
+    const data = await sql`
+  SELECT COUNT(*) 
+  FROM books
+`;
+    const totalPages = Math.ceil(Number(data[0].count) / 30);
+    return totalPages;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch total book page.");
+  }
+}
+
 export async function fetchOurRecommendedBook(bookId: number) {
   try {
     const res = await sql`
@@ -157,7 +217,7 @@ export async function fetchBookByCategorySort(
 
   try {
     const data = await sql`
-  SELECT b.id, b.name, b.status, b.image_urls, b  .rating
+  SELECT b.id, b.name, b.status, b.image_urls, b.rating,b.author
   FROM books b 
   JOIN books_categories bc ON b.id = bc.book_id
   WHERE bc.category_id = ${categoryId}
@@ -186,13 +246,57 @@ export async function fetchTotalBookPageByCategory(categoryId: number) {
   try {
     const data = await sql`
   SELECT COUNT(*) 
-  FROM books b join books_categories bc on bc.book_id = b.id 
-  WHERE bc.id =${categoryId};
+  FROM books b  join books_categories bc on bc.book_id = b.id 
+  WHERE bc.category_id =${categoryId};
 `;
+    console.log("first", data);
     const totalPages = Math.ceil(Number(data[0].count) / 30);
     return totalPages;
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch Slide page.");
+  }
+}
+
+export async function fetchPopularBook(timeframe: string) {
+  try {
+    const cacheKey = `popular-books-${timeframe}`;
+    const startDate = getStartDate(timeframe as TimeFrame);
+    console.log("startDate", startDate);
+    const books = await unstable_cache(
+      async () => {
+        const result = await sql`SELECT b.id, b.image_urls, b.name, b.author,
+       (b.views + COUNT(cv.id)) as total_views
+          FROM books b
+LEFT JOIN chapters c ON b.id = c.book_id
+LEFT JOIN chapter_views cv ON c.id = cv.chapter_id 
+  AND cv.viewed_at >= ${startDate}
+GROUP BY b.id, b.image_urls, b.name, b.author, b.views
+ORDER BY total_views DESC
+LIMIT 5
+        `;
+        return result as BookCardProps[];
+      },
+      [cacheKey],
+      { revalidate: 3600, tags: ["books", "popular"] }
+    )();
+
+    return books;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetchPopularBook.");
+  }
+}
+export async function fetchTotalChapterInBookById(id: number) {
+  try {
+    const res = await sql`
+    SELECT COUNT(c.chapter_number) 
+    FROM chapters c join books b where  c.bookid=b.id
+    
+  `;
+    return res;
+  } catch (error) {
+    console.error("Server Action Error:", error);
+    throw new Error("Failed to fetch book image for chapter");
   }
 }

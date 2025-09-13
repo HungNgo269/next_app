@@ -14,16 +14,16 @@ function CategorySelector({
   onCategoryChange,
 }: CategorySelectorProps) {
   return (
-    <div className="flex flex-row justify-start items-center gap-1 ">
+    <div className="flex flex-row justify-start items-center gap-1 md:overflow-hidden overflow-x-scroll">
       {categories.map((category: Category) => (
         <div key={category.id}>
           <button
             onClick={() => onCategoryChange(category.id)}
             className={`
-              hover:cursor-pointer${
+              hover:cursor-pointer text-nowrap ${
                 selectedCategory === category.id
                   ? " text-primary"
-                  : " text-foreground"
+                  : " lg:text-base text-foreground"
               }`}
           >
             {category.name}

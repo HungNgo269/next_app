@@ -64,7 +64,10 @@ export default function ChapterToolBar({
   return (
     <div className="hidden lg:block fixed right-4 top-1/2 -translate-y-1/2 z-50">
       <div className="flex flex-col gap-2 bg-card border rounded-lg shadow-lg items-center ">
-        <Link href={`${process.env.NEXT_PUBLIC_BASE_URL}/book/${bookId}`}>
+        <Link
+          prefetch={true}
+          href={`${process.env.NEXT_PUBLIC_BASE_URL}/book/${bookId}`}
+        >
           <Button
             variant="ghost"
             size="icon"
@@ -103,8 +106,7 @@ export default function ChapterToolBar({
               >
                 <option value="system">System Default</option>
                 <option value="serif">Serif</option>
-                <option value="sans">Sans Serif</option>
-                <option value="mono">Monospace</option>
+                <option value="lusitana">Lusitana</option>
                 <option value="georgia">Georgia</option>
                 <option value="inter">Inter</option>
                 <option value="jetbrains">JetBrains Mono</option>
@@ -260,6 +262,7 @@ export default function ChapterToolBar({
         <div className="w-full h-px bg-border my-1" />
 
         <Link
+          prefetch={true}
           href={
             idPrev != null
               ? `${process.env.NEXT_PUBLIC_BASE_URL}/book/${bookId}/chapter/${idPrev}`
@@ -282,6 +285,7 @@ export default function ChapterToolBar({
           </Button>
         </Link>
         <Link
+          prefetch={true}
           href={
             idNext != null
               ? `${process.env.NEXT_PUBLIC_BASE_URL}/book/${bookId}/chapter/${idNext}`
@@ -291,7 +295,7 @@ export default function ChapterToolBar({
           onClick={(e) => idNext == null && e.preventDefault()}
         >
           <Button
-            disabled={!idPrev}
+            disabled={!idNext}
             variant="ghost"
             size="icon"
             className={`w-10 h-10 ${

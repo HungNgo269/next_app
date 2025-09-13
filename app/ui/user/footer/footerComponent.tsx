@@ -17,6 +17,7 @@ export default function FooterComponent() {
             </p>
             <div className="flex items-center gap-3 sm:gap-4">
               <Link
+                prefetch={true}
                 href="https://facebook.com"
                 aria-label="Facebook"
                 target="_blank"
@@ -26,6 +27,7 @@ export default function FooterComponent() {
                 <Facebook className="h-5 w-5" />
               </Link>
               <Link
+                prefetch={true}
                 href="https://twitter.com"
                 aria-label="Twitter"
                 target="_blank"
@@ -34,6 +36,7 @@ export default function FooterComponent() {
                 <Twitter className="h-5 w-5" />
               </Link>
               <Link
+                prefetch={true}
                 href="https://discord.com"
                 aria-label="Discord"
                 target="_blank"
@@ -54,6 +57,7 @@ export default function FooterComponent() {
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
                 <Link
+                  prefetch={true}
                   href="#"
                   className="hover:text-foreground transition-colors"
                 >
@@ -62,6 +66,7 @@ export default function FooterComponent() {
               </li>
               <li>
                 <Link
+                  prefetch={true}
                   href="#"
                   className="hover:text-foreground transition-colors"
                 >
@@ -70,6 +75,7 @@ export default function FooterComponent() {
               </li>
               <li>
                 <Link
+                  prefetch={true}
                   href="#"
                   className="hover:text-foreground transition-colors"
                 >
@@ -78,6 +84,7 @@ export default function FooterComponent() {
               </li>
               <li>
                 <Link
+                  prefetch={true}
                   href="#"
                   className="hover:text-foreground transition-colors"
                 >
@@ -92,6 +99,7 @@ export default function FooterComponent() {
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
                 <Link
+                  prefetch={true}
                   href="#"
                   className="hover:text-foreground transition-colors"
                 >
@@ -100,6 +108,7 @@ export default function FooterComponent() {
               </li>
               <li>
                 <Link
+                  prefetch={true}
                   href="#"
                   className="hover:text-foreground transition-colors"
                 >
@@ -108,6 +117,7 @@ export default function FooterComponent() {
               </li>
               <li>
                 <Link
+                  prefetch={true}
                   href="#"
                   className="hover:text-foreground transition-colors"
                 >
@@ -116,6 +126,7 @@ export default function FooterComponent() {
               </li>
               <li>
                 <Link
+                  prefetch={true}
                   href="#"
                   className="hover:text-foreground transition-colors"
                 >
@@ -130,6 +141,7 @@ export default function FooterComponent() {
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
                 <Link
+                  prefetch={true}
                   href="#"
                   className="hover:text-foreground transition-colors"
                 >
@@ -138,6 +150,7 @@ export default function FooterComponent() {
               </li>
               <li>
                 <Link
+                  prefetch={true}
                   href="#"
                   className="hover:text-foreground transition-colors"
                 >
@@ -146,6 +159,7 @@ export default function FooterComponent() {
               </li>
               <li>
                 <Link
+                  prefetch={true}
                   href="#"
                   className="hover:text-foreground transition-colors"
                 >
@@ -154,6 +168,7 @@ export default function FooterComponent() {
               </li>
               <li>
                 <Link
+                  prefetch={true}
                   href="#"
                   className="hover:text-foreground transition-colors"
                 >

@@ -3,7 +3,7 @@ import { uploadChapterContentAction } from "@/app/(admin)/dashboard/books/chapte
 import { ChapterUploadProps } from "@/app/interface/chapter";
 import dynamic from "next/dynamic";
 import React, { useRef, useState } from "react";
-const RichTextEditor = dynamic(() => import("./richTextEditor"), {
+const RichTextEditor = dynamic(() => import("@/app/ui/admin/text-editor/richTextEditor"), {
   ssr: false,
 });
 

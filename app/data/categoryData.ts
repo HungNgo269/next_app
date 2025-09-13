@@ -37,7 +37,7 @@ export async function fetchMostViewedBookByCategory(id: number) {
   }
 }
 
-export async function fetchCategories() {
+export async function fetchAllCategory() {
   try {
     let res = await sql`Select * from categories order by id asc limit 10`;
     return res;
@@ -47,7 +47,7 @@ export async function fetchCategories() {
   }
 }
 
-export async function fetchCategory(id: string) {
+export async function fetchCategory(id: number) {
   try {
     let res = await sql`Select * from categories where categories.id=${id}`;
     return res;
@@ -56,7 +56,7 @@ export async function fetchCategory(id: string) {
     throw new Error("Failed to fetch Category.");
   }
 }
-export async function fetchCategoryOfBook(id: string) {
+export async function fetchCategoryOfBook(id: number) {
   try {
     let res = await sql`
       SELECT c.id as category_id, c.name, c.url 

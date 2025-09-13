@@ -1,4 +1,3 @@
-import { AuthUser, useAuthStore } from "@/app/store/useAuthStore";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,32 +16,12 @@ import {
   User,
   LogOut,
 } from "lucide-react";
-import { auth, signOut } from "@/auth";
+import { signOut } from "@/auth";
+import { getSessionCache } from "@/lib/utils/getSession";
 
-interface UserButtonProps {
-  user?: AuthUser;
-}
-
-export async function UserButton({ user }: UserButtonProps) {
-  const session = await auth();
-  console.log("session", session);
-  console.log("user", session?.user);
-  const userData = user || {
-    name: "John Doe",
-    email: "john.doe@example.com",
-    avatar:
-      "https://res.cloudinary.com/dm3j1fqob/image/upload/v1751940644/slides/itcybgip34j0yunz4kpv.jpg",
-  };
-
-  const getInitials = (name: string) => {
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
-  };
-
+export async function UserButton() {
+  const session = await getSessionCache();
+  const user = session?.user;
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
@@ -52,14 +31,11 @@ export async function UserButton({ user }: UserButtonProps) {
         >
           <Avatar className="h-10 w-10 md:h-12 md:w-12">
             <AvatarImage
-              src={
-                userData.avatar ||
-                "https://res.cloudinary.com/dm3j1fqob/image/upload/v1751940644/slides/itcybgip34j0yunz4kpv.jpg"
-              }
-              alt={userData.name}
+              src={`${user?.image_url}` || "/jawed.jpg"}
+              alt={user?.name}
             />
             <AvatarFallback className="bg-primary text-primary-foreground">
-              {getInitials(userData.name)}
+              {user?.name}
             </AvatarFallback>
           </Avatar>
         </Button>
@@ -67,9 +43,9 @@ export async function UserButton({ user }: UserButtonProps) {
       <DropdownMenuContent className="w-64 md:w-72" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">{userData.name}</p>
+            <p className="text-sm font-medium leading-none">{user?.name}</p>
             <p className="text-xs leading-none text-muted-foreground">
-              {userData.email}
+              {user?.email}
             </p>
           </div>
         </DropdownMenuLabel>

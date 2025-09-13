@@ -170,7 +170,6 @@ export default function FormField({
         </p>
       )}
 
-      {/* Success indicator when field is valid and touched */}
       {isTouched && !displayError && value.trim() && (
         <p className="text-green-600 text-sm flex items-center gap-1 animate-fadeIn">
           <span className="w-1 h-1 bg-green-600 rounded-full"></span>
