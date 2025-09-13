@@ -4,7 +4,6 @@ import Stripe from "stripe";
 
 import { SubscriptionPrice } from "@/app/interface/subcription";
 import { auth } from "@/auth";
-import { stripe } from "./config";
 import { createOrRetrieveCustomer } from "@/app/data/subscription";
 import {
   calculateTrialEndUnixTimestamp,
@@ -74,6 +73,23 @@ export async function checkoutWithStripe(
     }
     let session;
     try {
+      if (!process.env.STRIPE_SECRET_KEY) {
+        throw new Error("NEXT_PRIVATE_STRIPE_API_KEY is required");
+      }
+      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
+        // https://github.com/stripe/stripe-node#configuration
+        // https://stripe.com/docs/api/versioning
+        // @ts-ignore
+        apiVersion: "2024-06-20", // Register this as an official Stripe plugin.
+        // https://stripe.com/docs/building-plugins#setappinfo
+
+        appInfo: {
+          name: "Next Book",
+          version: "0.0.0",
+          url: process.env.NEXT_PUBLIC_BASE_URL,
+        },
+      });
+
       session = await stripe.checkout.sessions.create(params);
     } catch (err) {
       console.error(err);
@@ -129,6 +145,23 @@ export async function createStripePortal(currentPath: string) {
     }
 
     try {
+      if (!process.env.STRIPE_SECRET_KEY) {
+        throw new Error("NEXT_PRIVATE_STRIPE_API_KEY is required");
+      }
+      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
+        // https://github.com/stripe/stripe-node#configuration
+        // https://stripe.com/docs/api/versioning
+        // @ts-ignore
+        apiVersion: "2024-06-20", // Register this as an official Stripe plugin.
+        // https://stripe.com/docs/building-plugins#setappinfo
+
+        appInfo: {
+          name: "Next Book",
+          version: "0.0.0",
+          url: process.env.NEXT_PUBLIC_BASE_URL,
+        },
+      });
+
       const { url } = await stripe.billingPortal.sessions.create({
         customer,
         return_url: getURL("/account"),

@@ -20,6 +20,8 @@ export async function GET() {
       : "undefined",
     NODE_ENV: process.env.NODE_ENV,
     UPSTASH_URL_VALUE: process.env.UPSTASH_REDIS_REST_URL,
+    STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
+
     UPSTASH_TOKEN_VALUE: process.env.UPSTASH_REDIS_REST_TOKEN
       ? "starts with: " +
         process.env.UPSTASH_REDIS_REST_TOKEN.substring(0, 10) +

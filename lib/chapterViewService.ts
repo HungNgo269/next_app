@@ -1,5 +1,4 @@
 import { sql } from "./db";
-import { redis } from "./redis";
 
 interface ViewMetadata {
   chapterId: number;
@@ -31,6 +30,8 @@ export async function incrementViewService(
   ipAddress?: string
 ): Promise<ViewResult> {
   try {
+    const redisHold = await import("@/lib/redis");
+    const redis = redisHold.redis;
     const pipeline = redis.pipeline();
     const timestamp = new Date().toISOString();
     const viewKey = `chapter:${chapterId}:views`;
@@ -114,6 +115,8 @@ export async function getChapterStatsService(
   chapterId: number
 ): Promise<ChapterViewStats | null> {
   try {
+    const redisHold = await import("@/lib/redis");
+    const redis = redisHold.redis;
     const pipeline = redis.pipeline();
     const viewKey = `chapter:${chapterId}:views`;
     const metadataKey = `chapter:${chapterId}:metadata`;
@@ -149,6 +152,8 @@ export async function syncViewsToDatabase(): Promise<{
   processed: number;
   errors: string[];
 }> {
+  const redisHold = await import("@/lib/redis");
+  const redis = redisHold.redis;
   const errors: string[] = [];
   let processed = 0;
   try {
@@ -229,6 +234,8 @@ async function syncChapterViews(
 }
 
 async function updateChapterAggregatedStats(): Promise<void> {
+  const redisHold = await import("@/lib/redis");
+  const redis = redisHold.redis;
   const pattern = "chapter:*:views";
   const keys = (await redis.keys(pattern)) as unknown as string[];
 

@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { redis } from "@/lib/redis";
 
 export const dynamic = "force-dynamic"; // ensure it runs server-side on each call
 
@@ -7,6 +6,8 @@ export async function GET() {
   try {
     // Minimal roundtrip to verify credentials actually work at runtime
     const key = "debug:ping";
+    const redisHold = await import("@/lib/redis");
+    const redis = redisHold.redis;
     await redis.set(key, "pong", { ex: 30 });
     const value = await redis.get<string>(key);
 
@@ -34,4 +35,3 @@ export async function GET() {
     );
   }
 }
-

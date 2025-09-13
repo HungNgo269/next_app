@@ -1,5 +1,4 @@
 import { Client } from "@upstash/qstash";
-import { redis } from "./redis";
 
 export async function setupQStashCronJob() {
   const client = new Client({
@@ -20,6 +19,8 @@ export async function setupQStashCronJob() {
 }
 
 export async function cleanupOldViewData(): Promise<void> {
+  const redisHold = await import("@/lib/redis");
+  const redis = redisHold.redis;
   const pattern = "chapter:*:*";
   const keys = await redis.keys(pattern);
 

@@ -1,5 +1,5 @@
 import { sql } from "@/lib/db";
-import { stripe } from "@/lib/utils/stripe/config";
+// import { stripe } from "@/lib/utils/stripe/config";
 import Stripe from "stripe";
 import {
   getUserStripe,
@@ -79,6 +79,22 @@ export async function deleteSubscriptionPrice(price: Stripe.Price) {
 
 export const createCustomerInStripe = async (uuid: string, email: string) => {
   const customerData = { metadata: { Id: uuid }, email: email };
+  if (!process.env.STRIPE_SECRET_KEY) {
+    throw new Error("NEXT_PRIVATE_STRIPE_API_KEY is required");
+  }
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
+    // https://github.com/stripe/stripe-node#configuration
+    // https://stripe.com/docs/api/versioning
+    // @ts-ignore
+    apiVersion: "2024-06-20", // Register this as an official Stripe plugin.
+    // https://stripe.com/docs/building-plugins#setappinfo
+
+    appInfo: {
+      name: "Next Book",
+      version: "0.0.0",
+      url: process.env.NEXT_PUBLIC_BASE_URL,
+    },
+  });
   const newCustomer = await stripe.customers.create(customerData);
   if (!newCustomer) throw new Error("Stripe customer creation failed.");
 
@@ -111,6 +127,22 @@ export const createOrRetrieveCustomer = async ({
   const existingUser = await getUserStripe(uuid);
   // Retrieve the Stripe customer ID using the postgres customer ID, with email fallback
   let stripeCustomerId: string | undefined;
+  if (!process.env.STRIPE_SECRET_KEY) {
+    throw new Error("NEXT_PRIVATE_STRIPE_API_KEY is required");
+  }
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
+    // https://github.com/stripe/stripe-node#configuration
+    // https://stripe.com/docs/api/versioning
+    // @ts-ignore
+    apiVersion: "2024-06-20", // Register this as an official Stripe plugin.
+    // https://stripe.com/docs/building-plugins#setappinfo
+
+    appInfo: {
+      name: "Next Book",
+      version: "0.0.0",
+      url: process.env.NEXT_PUBLIC_BASE_URL,
+    },
+  });
   if (existingUser?.stripe_customer_id) {
     const existingStripeUser = await stripe.customers.retrieve(
       existingUser.stripe_customer_id
@@ -177,6 +209,22 @@ export const manageSubscriptionStatusChange = async (
   customerId: string,
   createAction = false
 ) => {
+  if (!process.env.STRIPE_SECRET_KEY) {
+    throw new Error("NEXT_PRIVATE_STRIPE_API_KEY is required");
+  }
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
+    // https://github.com/stripe/stripe-node#configuration
+    // https://stripe.com/docs/api/versioning
+    // @ts-ignore
+    apiVersion: "2024-06-20", // Register this as an official Stripe plugin.
+    // https://stripe.com/docs/building-plugins#setappinfo
+
+    appInfo: {
+      name: "Next Book",
+      version: "0.0.0",
+      url: process.env.NEXT_PUBLIC_BASE_URL,
+    },
+  });
   // Get customer's UUID from mapping table.
   const customerData = await getUserStripeByCustomerId(customerId);
   const uuid = customerData?.id;
@@ -247,7 +295,9 @@ export const manageSubscriptionStatusChange = async (
       trial_end = EXCLUDED.trial_end,
       updated_at = now();
   `;
-  console.log(`Inserted/updated subscription [${subscription.id}] for user [${uuid}]`);
+  console.log(
+    `Inserted/updated subscription [${subscription.id}] for user [${uuid}]`
+  );
 
   // For a new subscription copy the billing details to the customer object.
   // NOTE: This is a costly operation and should happen at the very end.
