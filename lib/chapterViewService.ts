@@ -1,5 +1,5 @@
-import redis from "./redis";
 import { sql } from "./db";
+import { redis } from "./redis";
 
 interface ViewMetadata {
   chapterId: number;
