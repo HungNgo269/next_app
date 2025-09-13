@@ -1,5 +1,5 @@
-import redis from "@/lib/redis";
 import { Client } from "@upstash/qstash";
+import { redis } from "./redis";
 
 export async function setupQStashCronJob() {
   const client = new Client({

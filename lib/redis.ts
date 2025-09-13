@@ -1,13 +1,6 @@
 import { Redis } from "@upstash/redis";
 
-if (!process.env.UPSTASH_REDIS_REST_URL) {
-  throw new Error("UPSTASH_REDIS_REST_URL is not defined");
-}
+// Create a single Redis instance from environment variables.
+// Uses UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN.
+export const redis = Redis.fromEnv();
 
-if (!process.env.UPSTASH_REDIS_REST_TOKEN) {
-  throw new Error("UPSTASH_REDIS_REST_TOKEN is not defined");
-}
-
-const redis = Redis.fromEnv();
-
-export default redis;
