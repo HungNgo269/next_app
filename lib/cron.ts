@@ -10,7 +10,7 @@ export async function setupQStashCronJob() {
   // Schedule to run every hour
   await client.schedules.create({
     destination: `${process.env.NEXT_PUBLIC_BASE_URL}/api/cron/sync-views`,
-    cron: "0 * * * *", // Every hour at minute 0
+    cron: "30 * * * *", // Every 30 at minute 0
     retries: 3,
     headers: {
       "Content-Type": "application/json",
