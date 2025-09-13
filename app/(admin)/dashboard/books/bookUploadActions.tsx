@@ -1,6 +1,6 @@
 "use server";
 
-import { uploadSchema } from "@/app/schema/uploadSchema";
+import { BookSchema } from "@/app/schema/bookSchema";
 
 type ActionState = {
   success: boolean;
@@ -9,19 +9,18 @@ type ActionState = {
   imageUrl?: string;
 } | null;
 
-export async function uploadSlideAction(
+export async function uploadBookAction(
   prevState: ActionState,
   formData: FormData
 ): Promise<ActionState> {
   try {
     const data = {
-      title: formData.get("title") as string,
-      order: formData.get("order") as string,
+      name: formData.get("title") as string,
+      author: formData.get("author") as string,
       desc: formData.get("desc") as string,
-      redirectLink: formData.get("redirectLink") as string,
     };
 
-    const validatedFields = uploadSchema.safeParse(data);
+    const validatedFields = BookSchema.safeParse(data);
 
     if (!validatedFields.success) {
       return {
@@ -56,18 +55,17 @@ export async function uploadSlideAction(
 
     const apiFormData = new FormData();
     apiFormData.append("file", file);
-    apiFormData.append("folderName", "slides");
-    apiFormData.append("title", validatedFields.data.title);
+    apiFormData.append("folderName", "Books");
+    apiFormData.append("name", validatedFields.data.name);
+    apiFormData.append("author", validatedFields.data.author);
     apiFormData.append("desc", validatedFields.data.desc);
-    apiFormData.append("link", validatedFields.data.redirectLink);
-    apiFormData.append("order", validatedFields.data.order);
 
     // const baseUrl =
     //   process.env.NODE_ENV === "production"
     //     ? process.env.NEXT_PUBLIC_BASE_URL
     //     : "http://localhost:3000";
 
-    const response = await fetch(`http://localhost:3000/api/upload/slides`, {
+    const response = await fetch(`http://localhost:3000/api/upload/Books`, {
       method: "POST",
       body: apiFormData,
     });
@@ -79,7 +77,7 @@ export async function uploadSlideAction(
 
     const result = await response.json();
     const responseData = result.data;
-    if (responseData.slide) {
+    if (responseData.Book) {
       return {
         success: true,
         message: "Upload successful!",

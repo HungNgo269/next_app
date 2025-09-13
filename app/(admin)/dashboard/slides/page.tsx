@@ -1,4 +1,3 @@
-import UserActions from "@/app/(admin)/dashboard/slides/userActions";
 import Search from "@/app/ui/share/search/search";
 import { Metadata } from "next";
 import { Suspense } from "react";
@@ -6,6 +5,7 @@ import { fetchSlidePages } from "@/app/data/admin/slideData";
 import SlideTable from "@/app/ui/admin/slides/slideTable";
 import Pagination from "@/app/ui/share/pagination/pagination";
 import { SlideSkeleton } from "@/app/ui/skeletons";
+import UserActions from "@/components/ui/UserAction";
 export const metadata: Metadata = {
   title: "Slides",
 };
@@ -27,7 +27,7 @@ export default async function Page(props: {
         <Search placeholder="Search slides..." />
       </div>
       <div className="mt-4">
-        <UserActions name="Slide "></UserActions>
+        <UserActions name="Slide"></UserActions>
       </div>
       <Suspense key={query + currentPage} fallback={<SlideSkeleton />}>
         <SlideTable query={query} currentPage={currentPage} />

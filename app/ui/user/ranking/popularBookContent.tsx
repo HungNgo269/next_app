@@ -28,7 +28,7 @@ export default function PopularBookContent({ books }: popularBookContentProps) {
             <Link
               prefetch={true}
               href={`book/${book.id}`}
-              className="text-sm font-semibold cursor-pointer truncate hover:underline md:max-w-[200px] max-w-[180px]"
+              className="text-sm font-semibold cursor-pointer truncate hover:underline max-w-[180px]"
             >
               {book.name}
             </Link>

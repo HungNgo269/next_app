@@ -1,37 +1,29 @@
 import Pagination from "@/app/ui/share/pagination/pagination";
-import {
-  fetchNewestChapterAction,
-  fetchTotalChapterPageAction,
-} from "@/app/actions/chapterActions";
-import { ChapterCardProps } from "@/app/interface/chapter";
-import ChapterCard from "@/app/ui/user/chapter/chapterCard";
+import { fetchTotalChapterPageAction } from "@/app/actions/chapterActions";
+import ChapterList from "./chapterlist";
+import { Suspense } from "react";
+import { BookCardSkeleton } from "../ui/skeletons";
 interface PageProps {
   searchParams: Promise<{ page: number }>;
 }
 export default async function ChapterPage({ searchParams }: PageProps) {
-  const currentPage = (await searchParams).page;
-  const [chapters, totalPages] = await Promise.all([
-    fetchNewestChapterAction(currentPage),
-    fetchTotalChapterPageAction(),
-  ]);
-  console.log("check chapters", chapters);
-
+  let currentPage = (await searchParams).page;
+  if (currentPage === null || currentPage === undefined) {
+    currentPage = 1;
+  }
+  const [totalPages] = await Promise.all([fetchTotalChapterPageAction()]);
   return (
-    <div className="w=full">
+    <div className="w-full">
       <span className="font-bold text-2xl text-start whitespace-nowrap">
         Newest Chapter
       </span>
 
-      <div className="grid grid-cols-2 gap-4 mt-5 w-full">
-        {chapters && chapters.length > 0
-          ? (chapters as ChapterCardProps[]).map(
-              (chapter: ChapterCardProps) => (
-                <ChapterCard ChapterId={chapter.id} key={chapter.id} />
-              )
-            )
-          : ""}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-5 w-full mx-auto">
+        <Suspense fallback={<BookCardSkeleton></BookCardSkeleton>}>
+          <ChapterList currentPage={currentPage}></ChapterList>
+        </Suspense>
       </div>
-      <div className="mt-5 flex w-full justify-center">
+      <div className="mt-5 flex w-full justify-center ">
         <Pagination totalPages={totalPages} />
       </div>
     </div>

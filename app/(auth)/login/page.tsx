@@ -6,7 +6,6 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex">
       {/* <LoginCanvas width="half" /> */}
-
       <Suspense>
         <LoginForm />
       </Suspense>

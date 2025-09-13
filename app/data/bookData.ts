@@ -246,9 +246,10 @@ export async function fetchTotalBookPageByCategory(categoryId: number) {
   try {
     const data = await sql`
   SELECT COUNT(*) 
-  FROM books b join books_categories bc on bc.book_id = b.id 
-  WHERE bc.id =${categoryId};
+  FROM books b  join books_categories bc on bc.book_id = b.id 
+  WHERE bc.category_id =${categoryId};
 `;
+    console.log("first", data);
     const totalPages = Math.ceil(Number(data[0].count) / 30);
     return totalPages;
   } catch (error) {

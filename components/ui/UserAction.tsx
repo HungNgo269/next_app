@@ -1,5 +1,7 @@
 "use client";
-import UploadModal from "@/app/ui/admin/slides/uploadModal";
+import BookUploadModal from "@/app/ui/admin/books/bookUploadModal";
+import SlideUploadModal from "@/app/ui/admin/slides/slideUploadModal";
+import UploadModal from "@/app/ui/admin/slides/slideUploadModal";
 import { useState } from "react";
 interface props {
   name: string;
@@ -39,12 +41,17 @@ export default function UserActions({ name }: props) {
               d="M12 6v6m0 0v6m0-6h6m-6 0H6"
             />
           </svg>
-          Upload Slides
+          Upload {name}
         </button>
       </div>
-
-      {showUploadModal && (
-        <UploadModal
+      {showUploadModal && name === "Slide" && (
+        <SlideUploadModal
+          onClose={handleCloseModal}
+          onUploadSuccess={handleUploadSuccess}
+        />
+      )}
+      {showUploadModal && name === "Book" && (
+        <BookUploadModal
           onClose={handleCloseModal}
           onUploadSuccess={handleUploadSuccess}
         />

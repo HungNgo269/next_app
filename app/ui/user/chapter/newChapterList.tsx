@@ -19,7 +19,7 @@ export default async function NewChapterList() {
         </span>
         <ViewMoreBookButton
           context="chapter"
-          url="/chapter"
+          url="/chapter?page=1"
         ></ViewMoreBookButton>
       </div>
       <div className="grid md:grid-cols-2 gap-4 grid-cols-1">

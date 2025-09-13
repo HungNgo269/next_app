@@ -106,3 +106,22 @@ export function PopularBookSkeleton() {
     </div>
   );
 }
+
+import clsx from "clsx";
+export default function PaginationSkeleton() {
+  const skeletonPages = Array.from({ length: 7 });
+  return (
+    <div className="inline-flex animate-pulse gap-2">
+      {skeletonPages.map((_, idx) => (
+        <div
+          key={idx}
+          className={clsx(
+            "h-10 w-10 rounded-[8px] border bg-gray-200",
+            idx === 0 && "mr-2 md:mr-4",
+            idx === skeletonPages.length - 1 && "ml-2 md:ml-4"
+          )}
+        />
+      ))}
+    </div>
+  );
+}

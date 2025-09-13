@@ -3,17 +3,17 @@
 import type React from "react";
 import { useState, useRef, useEffect, useActionState } from "react";
 import toast from "react-hot-toast";
-import { uploadSlideAction } from "@/app/ui/admin/slides/uploadModalAction";
 import { X, Upload, Loader2 } from "lucide-react";
 import ImageUploadField from "@/app/ui/admin/form/formImageUploadField";
 import FormField from "@/app/ui/admin/form/formField";
+import { UploadSlideAction } from "@/app/(admin)/dashboard/slides/uploadSlideAction";
 
 interface UploadModalProps {
   onClose: () => void;
   onUploadSuccess: (imageUrl: string) => void;
 }
 
-export default function UploadModal({
+export default function SlideUploadModal({
   onClose,
   onUploadSuccess,
 }: UploadModalProps) {
@@ -28,7 +28,7 @@ export default function UploadModal({
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const [state, formAction, isPending] = useActionState(
-    uploadSlideAction,
+    UploadSlideAction,
     null
   );
 
@@ -89,7 +89,7 @@ export default function UploadModal({
       <div className="bg-white max-w-3xl w-full max-h-[95vh] overflow-hidden shadow-2xl rounded-lg">
         <div className="flex justify-between items-center p-6 border-b border-gray-100 bg-gradient-to-r from-primary/5 to-accent/5">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">Upload Image</h2>
+            <h2 className="text-2xl font-bold text-gray-900">Upload Slide</h2>
             <p className="text-sm text-gray-600 mt-1">
               Add a new slide to your collection
             </p>

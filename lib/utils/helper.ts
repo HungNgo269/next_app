@@ -112,3 +112,8 @@ export const getErrorRedirect = (
     disableButton,
     arbitraryParams
   );
+export function appendIfDefined(fd: FormData, key: string, value: unknown) {
+  if (value !== undefined && value !== null) {
+    fd.append(key, String(value));
+  }
+}

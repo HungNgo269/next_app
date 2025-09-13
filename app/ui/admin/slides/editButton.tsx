@@ -1,13 +1,13 @@
 "use client";
 import { useState } from "react";
-import EditModal from "@/app/ui/admin/slides/editModal";
+import EditModal from "@/app/ui/admin/slides/editSlideModal";
 import { PencilIcon } from "@heroicons/react/24/outline";
 
 interface SlideButtonProps {
   id: string;
 }
 
-export default async function EditButton({ id }: SlideButtonProps) {
+export default function EditButton({ id }: SlideButtonProps) {
   const [showEditModal, setShowEditModal] = useState(false);
 
   const handleEditClick = (e: React.MouseEvent) => {

@@ -1,6 +1,6 @@
 import z from "zod";
 
-export const uploadSchema = z.object({
+export const SlideSchema = z.object({
   title: z
     .string()
     .min(1, "Title is required")
@@ -23,3 +23,7 @@ export const uploadSchema = z.object({
       return val.startsWith("/") || val.startsWith("http");
     }, "Link must start with '/' or 'http'"),
 });
+export const PatchSlideSchema = SlideSchema.partial().refine(
+  (obj) => Object.keys(obj).length > 0,
+  { message: "At least one field must be provided to update" }
+);
