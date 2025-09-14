@@ -1,7 +1,7 @@
-import { Status } from "./enum";
+import { Status } from "@/app/interface/enum";
 
 export interface Book {
-  id: string;
+  id: number;
   name: string;
   description?: string;
   price: number;
@@ -11,19 +11,21 @@ export interface Book {
   updated_at: string;
   author?: string;
   views?: number;
+  rating?: number;
+  popularity: number;
   publish_date?: string | Date;
   status: Status;
 }
 export interface BookCardProps {
   id: number;
   name: string;
-  author: string;
+  author?: string;
   image_urls: string[];
   status?: Status;
   rating?: number;
 }
 export interface BookImage {
-  id: string;
+  id: number;
   name: string;
   image_urls: string[];
   description?: string;

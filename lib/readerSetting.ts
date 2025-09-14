@@ -15,7 +15,6 @@ export const defaultSettings: ReaderSettings = {
 // Server-side: Get settings from cookies
 export async function getServerReaderSettings() {
   const cookieStore = await cookies();
-
   try {
     const settingsString = cookieStore.get("reader-settings")?.value;
     if (settingsString) {

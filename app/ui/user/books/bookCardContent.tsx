@@ -1,6 +1,6 @@
 import { Book } from "@/app/interface/book";
 import Link from "next/link";
-import ImageCard from "../../share/image/imageCard";
+import ImageCard from "@/app/ui/share/image/imageCard";
 
 interface BookCardContentProps {
   book: Book;
@@ -24,7 +24,7 @@ export default function BookCardContent({
       } `}
     >
       {/* pro  */}
-      <Link href={`/book/${book.id}`}>
+      <Link prefetch={true} href={`/book/${book.id}`}>
         <div className="relative w-[230px] h-[300px]  overflow-hidden rounded-[8px] group">
           <ImageCard
             bookImage={book.image_urls[0]}

@@ -95,7 +95,11 @@ export default function LoginForm() {
           <div className="text-center mt-4">
             <p className="text-muted-foreground text-sm">
               Need an account?{" "}
-              <Link href="/register" className="text-primary hover:underline">
+              <Link
+                prefetch={true}
+                href="/register"
+                className="text-primary hover:underline"
+              >
                 Create one now
               </Link>
             </p>

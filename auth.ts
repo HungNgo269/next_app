@@ -4,12 +4,13 @@ import bcrypt from "bcrypt";
 import { z } from "zod";
 import { authConfig } from "./auth.config";
 import { getUser } from "./app/data/userData";
+import { User } from "./app/interface/user";
 
 export const { auth, signIn, signOut, handlers } = NextAuth({
   ...authConfig,
   session: {
     strategy: "jwt", //accesstoken
-    maxAge: 15 * 60,
+    maxAge: 60 * 60,
   },
   //rf token
   jwt: {
@@ -29,7 +30,7 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
             console.log("Email or password is missing");
             return null;
           }
-          const user = await getUser(email);
+          const user = (await getUser(email)) as User;
           if (!user) return null;
 
           if (!user.password) {
@@ -39,7 +40,8 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
           const passwordsMatch = await bcrypt.compare(password, user.password);
 
           if (passwordsMatch) {
-            return user;
+            const { password: _, ...userWithoutPassword } = user;
+            return userWithoutPassword;
           } else {
             console.log("Password doesn't match");
             return null;

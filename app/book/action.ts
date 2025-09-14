@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { fetchBookByCategory } from "../data/categoryData";
+import { fetchBookByCategory } from "@/app/data/categoryData";
 import { getcategoryIdBySlug } from "@/app/constant/categories";
 
 export async function changeCategoryAction(formData: FormData) {
@@ -38,7 +38,7 @@ export async function updateCategoryAction(categorySlug: string) {
     console.error("❌ updateCategoryAction Error:", error);
     return {
       success: false,
-      error: error.message,
+      error: error instanceof Error ? error.message : "Unknown error",
     };
   }
 }

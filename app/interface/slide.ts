@@ -1,5 +1,5 @@
-export interface Slide {
-  id: string;
+export interface ISlide {
+  id: number;
   title?: string;
   image_url: string;
   redirect_url: string;
@@ -12,8 +12,8 @@ export interface Slide {
 
 export interface SlideResponse {
   success: boolean;
-  images?: Slide[];
-  slide?: Slide;
+  images?: ISlide[];
+  slide?: ISlide;
   error?: string;
   message?: string;
   created_at?: string;

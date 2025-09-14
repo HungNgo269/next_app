@@ -7,27 +7,26 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Heart, Menu, ChevronDown } from "lucide-react";
-import SearchComponent from "../search/searchComponent";
+import SearchComponent from "@/app/ui/user/search/searchComponent";
 import Link from "next/link";
-import { UserButton } from "./headerUserButton";
-import { Logo } from "../../share/Button/logo";
-import { auth } from "@/auth";
+import { UserButton } from "@/app/ui/user/headerCustomer/headerUserButton";
+import { Logo } from "@/app/ui/share/Button/logo";
+import { getSessionCache } from "@/lib/utils/getSession";
 
 export default async function Header() {
-  const session = await auth();
+  const session = await getSessionCache();
   const user = session?.user;
-
   return (
     <div className="w-full">
-      <div className="sm:max-w-xl md:max-w-2xl lg:max-w-7xl mx-auto">
-        <div className="flex items-center justify-between h-16 px-2">
+      <div className="max-w-screen mx-auto w-full">
+        <div className="flex items-center  justify-between h-16 md:px-4 lg:px-8 xl:px-12">
           <div className="flex flex-row items-center">
             {/* Mobile menu */}
-            <Button variant="link" size="sm" className="sm:hidden">
+            {/* <Button variant="link" size="sm" className="sm:hidden">
               <Menu className="h-5 w-5" />
-            </Button>
-
+            </Button> */}
             <Link
+              prefetch={true}
               href={process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}
               className="sm:text-xl md:text-2xl lg:text-3xl"
             >
@@ -47,38 +46,49 @@ export default async function Header() {
             </div>
 
             {/* Desktop extras */}
-            <div className="hidden sm:block">
-              <DropdownMenu modal={false}>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="flex items-center space-x-1"
-                  >
-                    <Heart className="h-4 w-4" />
-                    <span className="hidden md:inline">Watchlist</span>
-                    <ChevronDown className="h-3 w-3" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuItem>
-                    <Link href={"#"}>View watchlist</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Link href={"#"}>Recently viewed</Link>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
+
             {user ? (
-              <UserButton />
+              <div className="flex flex-row gap-3 items-center">
+                <div className="hidden sm:block">
+                  <DropdownMenu modal={false}>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="flex items-center space-x-1"
+                      >
+                        <Heart className="h-4 w-4" />
+                        <span className="hidden md:inline">Watchlist</span>
+                        <ChevronDown className="h-3 w-3" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-48">
+                      <DropdownMenuItem>
+                        <Link prefetch={true} href={"#"}>
+                          View Bookmark
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <Link prefetch={true} href={"#"}>
+                          Recently viewed
+                        </Link>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+                <UserButton />
+              </div>
             ) : (
               <div className="flex flex-row gap-4">
                 <Button className="cursor-pointer">
-                  <Link href={"/register"}>Sign In</Link>
+                  <Link prefetch={true} href={"/register"}>
+                    Sign In
+                  </Link>
                 </Button>
                 <Button className="cursor-pointer" variant={"outline"}>
-                  <Link href={"/login"}>Login</Link>
+                  <Link prefetch={true} href={"/login"}>
+                    Login
+                  </Link>
                 </Button>
               </div>
             )}

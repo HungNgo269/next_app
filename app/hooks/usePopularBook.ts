@@ -1,8 +1,8 @@
 // hooks/usePopularBooks.ts
 import { fetcher } from "@/lib/fetcher";
 import useSWR from "swr";
-import { Book } from "../interface/book";
-import { TimeFrame } from "../data/rankingData";
+import { Book } from "@/app/interface/book";
+import { TimeFrame } from "@/app/data/rankingData";
 
 export const usePopularBooks = (
   timeframe: TimeFrame = "Today",

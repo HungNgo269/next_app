@@ -30,7 +30,7 @@ export default function SortSelection({ currentSort }: Props) {
   };
 
   return (
-    <div className="flex flex-wrap gap-2 sm:gap-3">
+    <div className="md:flex flex-wrap gap-2 sm:gap-3 hidden">
       {sortOptions.map((option) => (
         <Button
           key={option.id}

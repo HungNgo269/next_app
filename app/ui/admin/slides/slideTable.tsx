@@ -1,11 +1,10 @@
 import Image from "next/image";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
-import EditButton from "./editButton";
+import EditButton from "@/app/ui/admin/slides/editButton";
 import { fetchSlidesByPageActions } from "@/app/actions/slideActions";
 import { formatEnDateTime } from "@/lib/utils/formatDate";
-import SlideDeleteButton from "./slideDeleteButton";
-import Active from "./active";
-import { Suspense } from "react";
+import SlideDeleteButton from "@/app/ui/admin/slides/slideDeleteButton";
+import Active from "@/app/ui/admin/slides/active";
 import { SlideTableProps } from "@/app/interface/slide";
 export default async function SlideTable({
   query,
@@ -14,10 +13,10 @@ export default async function SlideTable({
   query: string;
   currentPage: number;
 }) {
-  const slides: SlideTableProps[] = await fetchSlidesByPageActions(
+  const slides = (await fetchSlidesByPageActions(
     query,
     currentPage
-  );
+  )) as unknown as SlideTableProps[];
   return (
     <div className="mt-4 flow-root">
       <div className="inline-block min-w-full align-middle">
@@ -38,7 +37,7 @@ export default async function SlideTable({
                         height={28}
                         alt={`${slide.display_order}'s profile picture`}
                       />
-                      <p>{slide.title}</p>
+                      <span className="">{slide.title}</span>
                     </div>
                     <p className="text-sm text-gray-500">{slide.description}</p>
                   </div>
@@ -84,14 +83,7 @@ export default async function SlideTable({
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">
-                      <Image
-                        src={slide.image_url}
-                        className="mr-2 rounded-full"
-                        width={28}
-                        height={28}
-                        alt={`${slide.display_order}'s profile picture`}
-                      />
-                      <p>{slide.title}</p>
+                      <span className="w-60 truncate">{slide.title}</span>
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
@@ -105,7 +97,7 @@ export default async function SlideTable({
                     <Active status={slide.is_active}></Active>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3 text-center">
-                    {formatEnDateTime(slide?.created_at)}
+                    {formatEnDateTime(slide?.created_at ?? new Date())}
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
