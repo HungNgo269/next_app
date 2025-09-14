@@ -1,8 +1,8 @@
 import { syncViewsToDatabase } from "@/lib/chapterViewService";
 import { Receiver } from "@upstash/qstash";
 import { NextRequest, NextResponse } from "next/server";
-
 export async function POST(req: NextRequest) {
+  //verify the signature
   const receiver = new Receiver({
     currentSigningKey: process.env.QSTASH_CURRENT_SIGNING_KEY!,
     nextSigningKey: process.env.QSTASH_NEXT_SIGNING_KEY!,
@@ -15,6 +15,7 @@ export async function POST(req: NextRequest) {
     await receiver.verify({
       signature: signature!,
       body,
+      url: `${process.env.NEXT_PUBLIC_BASE_URL}/api/cron/sync-views`,
     });
   } catch (error) {
     return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
