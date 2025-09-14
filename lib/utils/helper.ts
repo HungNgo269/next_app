@@ -1,19 +1,10 @@
 export const getURL = (path: string = "") => {
-  let url =
-    process?.env?.NEXT_PUBLIC_BASE_URL &&
-    process.env.NEXT_PUBLIC_BASE_URL.trim() !== ""
-      ? process.env.NEXT_PUBLIC_BASE_URL
-      : // If not set, check for NEXT_PUBLIC_VERCEL_URL, which is automatically set by Vercel.
-      process?.env?.NEXT_PUBLIC_VERCEL_URL &&
-        process.env.NEXT_PUBLIC_VERCEL_URL.trim() !== ""
-      ? process.env.NEXT_PUBLIC_VERCEL_URL
-      : // If neither is set, default to localhost for local development.
-        "http://localhost:3000/";
+  let url = process.env.NEXT_PUBLIC_BASE_URL;
 
   // Trim the URL and remove trailing slash if exists.
-  url = url.replace(/\/+$/, "");
+  url = url?.replace(/\/+$/, "");
   // Make sure to include `https://` when not localhost.
-  url = url.includes("http") ? url : `https://${url}`;
+  url = url?.includes("http") ? url : `https://${url}`;
   // Ensure path starts without a slash to avoid double slashes in the final URL.
   path = path.replace(/^\/+/, "");
 

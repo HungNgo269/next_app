@@ -27,7 +27,7 @@ export default async function Header() {
             </Button> */}
             <Link
               prefetch={true}
-              href={process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}
+              href={"/"}
               className="sm:text-xl md:text-2xl lg:text-3xl"
             >
               <Logo />

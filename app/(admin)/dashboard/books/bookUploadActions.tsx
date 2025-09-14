@@ -60,10 +60,7 @@ export async function uploadBookAction(
     apiFormData.append("author", validatedFields.data.author);
     apiFormData.append("desc", validatedFields.data.desc);
 
-    const baseUrl =
-      process.env.NODE_ENV === "production"
-        ? process.env.NEXT_PUBLIC_BASE_URL
-        : "http://localhost:3000";
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
     const response = await fetch(
       `${baseUrl}

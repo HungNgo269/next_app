@@ -46,7 +46,7 @@ export default async function ChapterPage({ params }: PageProps) {
           {idPrevChapter ? (
             <Link
               className="flex flex-row items-center gap-2"
-              href={`${process.env.NEXT_PUBLIC_BASE_URL}/book/${bookId}/chapter/${idPrevChapter}`}
+              href={`/book/${bookId}/chapter/${idPrevChapter}`}
               aria-disabled={idPrevChapter === null}
             >
               <ChevronLeft className="w-4 h-4" />
@@ -55,7 +55,7 @@ export default async function ChapterPage({ params }: PageProps) {
           ) : (
             <Link
               className="flex flex-row items-center gap-2"
-              href={`${process.env.NEXT_PUBLIC_BASE_URL}/book/${bookId}`}
+              href={`$/book/${bookId}`}
             >
               <ChevronLeft className="w-4 h-4" />
               Home
@@ -64,7 +64,7 @@ export default async function ChapterPage({ params }: PageProps) {
           {idNextChapter ? (
             <Link
               className="flex flex-row items-center gap-2"
-              href={`${process.env.NEXT_PUBLIC_BASE_URL}/book/${bookId}/chapter/${idNextChapter}`}
+              href={`/book/${bookId}/chapter/${idNextChapter}`}
               aria-disabled={idNextChapter == null}
             >
               Next Chapter
@@ -73,7 +73,7 @@ export default async function ChapterPage({ params }: PageProps) {
           ) : (
             <Link
               className="flex flex-row items-center gap-2"
-              href={`${process.env.NEXT_PUBLIC_BASE_URL}/book/${bookId}`}
+              href={`/book/${bookId}`}
             >
               Home
               <ChevronRight className="w-4 h-4" />
