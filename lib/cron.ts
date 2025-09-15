@@ -1,12 +1,14 @@
 import { Client } from "@upstash/qstash";
 
-export async function setupQStashCronJob() {
+export async function setupQStashCronJob(destinationFromRequest?: string) {
   try {
     const client = new Client({
       token: process.env.QSTASH_TOKEN!,
     });
     const existingSchedules = await client.schedules.list();
-    const destination = `${process.env.NEXT_PUBLIC_BASE_URL}/api/cron/sync-views`;
+    const destination =
+      destinationFromRequest ||
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/cron/sync-views`;
 
     const scheduleExists = existingSchedules.some(
       (schedule) => schedule.destination === destination

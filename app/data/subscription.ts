@@ -80,7 +80,7 @@ export async function deleteSubscriptionPrice(price: Stripe.Price) {
 export const createCustomerInStripe = async (uuid: string, email: string) => {
   const customerData = { metadata: { Id: uuid }, email: email };
   if (!process.env.STRIPE_SECRET_KEY) {
-    throw new Error("NEXT_PRIVATE_STRIPE_API_KEY is required");
+    throw new Error("STRIPE_SECRET_KEY is required");
   }
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
     // https://github.com/stripe/stripe-node#configuration
@@ -128,7 +128,7 @@ export const createOrRetrieveCustomer = async ({
   // Retrieve the Stripe customer ID using the postgres customer ID, with email fallback
   let stripeCustomerId: string | undefined;
   if (!process.env.STRIPE_SECRET_KEY) {
-    throw new Error("NEXT_PRIVATE_STRIPE_API_KEY is required");
+    throw new Error("STRIPE_SECRET_KEY is required");
   }
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
     // https://github.com/stripe/stripe-node#configuration
@@ -210,7 +210,7 @@ export const manageSubscriptionStatusChange = async (
   createAction = false
 ) => {
   if (!process.env.STRIPE_SECRET_KEY) {
-    throw new Error("NEXT_PRIVATE_STRIPE_API_KEY is required");
+    throw new Error("STRIPE_SECRET_KEY is required");
   }
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
     // https://github.com/stripe/stripe-node#configuration

@@ -72,7 +72,7 @@ export async function checkoutWithStripe(
     let session;
     try {
       if (!process.env.STRIPE_SECRET_KEY) {
-        throw new Error("NEXT_PRIVATE_STRIPE_API_KEY is required");
+        throw new Error("STRIPE_SECRET_KEY is required");
       }
       const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
         // https://github.com/stripe/stripe-node#configuration
@@ -144,7 +144,7 @@ export async function createStripePortal(currentPath: string) {
 
     try {
       if (!process.env.STRIPE_SECRET_KEY) {
-        throw new Error("NEXT_PRIVATE_STRIPE_API_KEY is required");
+        throw new Error("STRIPE_SECRET_KEY is required");
       }
       const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
         // https://github.com/stripe/stripe-node#configuration

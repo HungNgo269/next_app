@@ -83,9 +83,9 @@ export default function PricingCard({
         throw new Error("No checkout URL received");
       }
     } catch (error: unknown) {
-      let err = error as Error;
+      const err = error as Error;
       console.error("Error:", err);
-      alert("Something went wrong: " + (err || "Please try again."));
+      alert("Something went wrong: " + (err?.message || "Please try again."));
     } finally {
       setLoading(false);
     }
