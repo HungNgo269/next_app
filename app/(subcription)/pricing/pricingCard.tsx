@@ -31,7 +31,7 @@ export default function PricingCard({
   const isCurrentPlan = currentSubscription?.price_id === product.price_id;
 
   const formatPrice = (amount: number) => {
-    return new Intl.NumberFormat("vi-VN", {
+    return new Intl.NumberFormat("us-US", {
       style: "currency",
       currency: product.currency.toUpperCase(),
     }).format(amount / 100);

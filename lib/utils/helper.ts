@@ -1,10 +1,14 @@
 export const getURL = (path: string = "") => {
-  let url = process.env.NEXT_PUBLIC_BASE_URL;
+  // Prefer explicit public base URL; fall back to Vercel-provided URL.
+  // Note: VERCEL_URL does not include a scheme.
+  let url =
+    process.env.NEXT_PUBLIC_BASE_URL ||
+    "https://next-app-hungngo269s-projects.vercel.app/";
 
   // Trim the URL and remove trailing slash if exists.
   url = url?.replace(/\/+$/, "");
   // Make sure to include `https://` when not localhost.
-  url = url?.includes("http") ? url : `https://${url}`;
+  url = url?.includes("http") ? url : url ? `https://${url}` : url;
   // Ensure path starts without a slash to avoid double slashes in the final URL.
   path = path.replace(/^\/+/, "");
 
