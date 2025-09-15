@@ -30,7 +30,7 @@ export default function PricingCard({
   const isCurrentPlan = currentSubscription?.price_id === product.price_id;
 
   const formatPrice = (amount: number) => {
-    return new Intl.NumberFormat("us-US", {
+    return new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: product.currency.toUpperCase(),
     }).format(amount / 100);
@@ -54,37 +54,37 @@ export default function PricingCard({
         }),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to create checkout session");
-      }
-
       const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Failed to create checkout session");
+      }
 
       if (result.sessionId) {
         const stripe = await import("@stripe/stripe-js").then((m) =>
           m.loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
         );
-        //có session => redirect
+
         if (stripe) {
-          console.log("ok", stripe);
           const { error } = await stripe.redirectToCheckout({
             sessionId: result.sessionId,
           });
 
           if (error) {
             console.error("Stripe redirect error:", error);
-            alert("Payment redirect failed. Please try again.");
+            alert("Payment redirect failed: " + error.message);
           }
+        } else {
+          throw new Error("Failed to load Stripe");
         }
-      } // Nếu có errorRedirect, redirect đến trang lỗi
-      else if (result.errorRedirect) {
+      } else if (result.errorRedirect) {
         window.location.href = result.errorRedirect;
       } else {
         throw new Error("No checkout URL received");
       }
     } catch (error) {
       console.error("Error:", error);
-      alert("Something went wrong. Please try again.");
+      alert("Something went wrong: " + (error.message || "Please try again."));
     } finally {
       setLoading(false);
     }

@@ -43,8 +43,10 @@ export async function middleware(req: NextRequest) {
   }
   if (pathname === "/login" && token) {
     const redirectUrl = token?.role === "admin" ? "/dashboard" : "/";
+    console.log("Login redirect:", redirectUrl);
     return NextResponse.redirect(new URL(redirectUrl, req.url));
   }
+
   if (token) {
     response.headers.set("x-user-role", token?.role || "");
     response.headers.set("x-user-id", token?.id?.toString() || "");
