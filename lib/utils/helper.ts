@@ -107,3 +107,9 @@ export function appendIfDefined(fd: FormData, key: string, value: unknown) {
     fd.append(key, String(value));
   }
 }
+export function formatPrice(amount: number, currency: string) {
+  return new Intl.NumberFormat(currency, {
+    style: "currency",
+    currency: currency.toUpperCase(),
+  }).format(amount / 100);
+}

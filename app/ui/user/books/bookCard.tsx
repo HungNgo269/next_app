@@ -42,11 +42,14 @@ export default function BookCard({
       </Link>
 
       <div className="flex flex-col mt-3 h-fit justify-between">
-        <span
-          className={`line-clamp-1 font-semibold cursor-pointer w-fit hover:underline ${s.title}`}
-        >
-          {book.name}
-        </span>
+        <Link prefetch={true} href={`/book/${book.id}`} aria-label={book.name}>
+          <span
+            className={`line-clamp-1 font-semibold cursor-pointer w-fit hover:underline ${s.title}`}
+          >
+            {book.name}
+          </span>
+        </Link>
+
         <span
           className={`line-clamp-1 font-medium text-muted-foreground cursor-pointer w-fit hover:underline ${s.author}`}
         >

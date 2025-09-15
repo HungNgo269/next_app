@@ -29,7 +29,11 @@ export default async function BookRecommend() {
             key={book.id}
             className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer group"
           >
-            <div className="relative">
+            <Link
+              prefetch={true}
+              href={`/book/${book.id}`}
+              className="relative"
+            >
               <Image
                 src={book?.image_urls}
                 alt={`${book.name} cover`}
@@ -40,7 +44,7 @@ export default async function BookRecommend() {
               {/* <Badge className="absolute top-3 left-3 bg-green-500 hover:bg-green-600 text-white">
                 {book.badges[0].icon}
               </Badge> */}
-            </div>
+            </Link>
 
             <CardContent className="p-4">
               <div className="space-y-3">

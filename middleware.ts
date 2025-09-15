@@ -38,6 +38,9 @@ export async function middleware(req: NextRequest) {
 
     return response;
   }
+  if (pathname.includes("/chapter/") && pathname.includes("/book/")) {
+    response.headers.set("x-requires-subscription-check", "true");
+  }
   if (pathname === "/login" && token) {
     const redirectUrl = token?.role === "admin" ? "/dashboard" : "/";
     return NextResponse.redirect(new URL(redirectUrl, req.url));
