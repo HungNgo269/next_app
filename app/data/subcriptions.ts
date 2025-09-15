@@ -112,7 +112,10 @@ export async function checkUserSubscription() {
     return { hasSubscription: false };
   }
 }
-export async function createCheckoutSession(priceId: string) {
+export async function createCheckoutSession(
+  priceId: string,
+  redirectPath: string = "/account"
+) {
   try {
     const session = await auth();
     if (!session?.user) {

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
-import { createPortalSession } from "@/app/actions/subcriptionsActions";
+import { createPortalSession } from "@/app/data/subcriptions";
 
 export async function POST(req: NextRequest) {
   try {

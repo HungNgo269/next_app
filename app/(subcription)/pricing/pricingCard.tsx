@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/card";
 import { Check } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { createCheckoutSession } from "@/app/actions/subcriptionsActions";
 
 interface PricingCardProps {
   product: any;
@@ -45,17 +44,39 @@ export default function PricingCard({
 
     setLoading(true);
     try {
-      const result = await createCheckoutSession(product.price_id);
+      const response = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          priceId: product.price_id,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create checkout session");
+      }
+
+      const result = await response.json();
 
       if (result.sessionId) {
-        // Redirect to Stripe Checkout
         const stripe = await import("@stripe/stripe-js").then((m) =>
           m.loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
         );
 
         if (stripe) {
-          await stripe.redirectToCheckout({ sessionId: result.sessionId });
+          const { error } = await stripe.redirectToCheckout({
+            sessionId: result.sessionId,
+          });
+
+          if (error) {
+            console.error("Stripe redirect error:", error);
+            alert("Payment redirect failed. Please try again.");
+          }
         }
+      } else if (result.url) {
+        window.location.href = result.url;
       }
     } catch (error) {
       console.error("Error:", error);

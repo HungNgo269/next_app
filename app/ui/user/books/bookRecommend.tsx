@@ -20,7 +20,7 @@ export default async function BookRecommend() {
         <span className="font-bold text-2xl text-start flex-1 min-w-0 truncate">
           Our Choice
         </span>
-        <ViewMoreBookButton url="/book"></ViewMoreBookButton>
+        {/* <ViewMoreBookButton url="/book"></ViewMoreBookButton> */}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

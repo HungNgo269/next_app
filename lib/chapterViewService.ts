@@ -4,6 +4,7 @@ interface ViewMetadata {
   chapterId: number;
   bookId: number;
   userId?: string;
+  userAgent?: string;
   ipAddress?: string;
   timestamp: string;
 }
@@ -67,7 +68,7 @@ export async function incrementViewService(
 
     if (isNewUniqueView) {
       pipeline.incr(viewKey);
-      pipeline.zincrby("chapters:ranking:views", 1, chapterId);
+      // pipeline.zincrby("chapters:ranking:views", 1, chapterId);
       pipeline.hset(metadataKey, {
         bookId: bookId.toString(),
         lastViewedAt: timestamp,
@@ -159,6 +160,7 @@ export async function syncViewsToDatabase(): Promise<{
   try {
     const batchKey = VIEW_BATCH_KEY;
     const batchSize = 100;
+    //lrange = key, start,end, trả về danh sách key
     let viewsData = await redis.lrange(batchKey, 0, batchSize - 1);
     while (viewsData.length > 0) {
       const views: ViewMetadata[] = viewsData.map((v) => JSON.parse(v));
@@ -183,6 +185,7 @@ export async function syncViewsToDatabase(): Promise<{
       viewsData = await redis.lrange(batchKey, 0, batchSize - 1);
     }
     await updateChapterAggregatedStats();
+    await updateBooksAggregatedStats();
     return {
       success: errors.length === 0,
       processed,
@@ -215,6 +218,7 @@ async function syncChapterViews(
           book_id, 
           user_id, 
           ip_address, 
+          user_agent,
           viewed_at
         )
         VALUES (
@@ -222,6 +226,8 @@ async function syncChapterViews(
           ${stats.bookId},
           ${view.userId || null},
           ${view.ipAddress || null},
+          ${view.userAgent || null},
+
           ${new Date(view.timestamp)}::timestamp
         )
         ON CONFLICT DO NOTHING;
@@ -243,7 +249,7 @@ async function updateChapterAggregatedStats(): Promise<void> {
     const chapterId = parseInt(String(key).split(":")[1] || "0", 10);
     const raw = (await redis.get(key)) as unknown;
     const count = raw != null ? parseInt(String(raw), 10) : 0;
-
+    //COALESCE(giá trị,...) Nó sẽ trả về giá trị đầu tiên khác null => ít nhất thì trả về 0
     if (Number.isFinite(count) && count > 0) {
       try {
         await sql`
@@ -259,6 +265,23 @@ async function updateChapterAggregatedStats(): Promise<void> {
     }
   }
 }
+
+async function updateBooksAggregatedStats(): Promise<void> {
+  try {
+    await sql`
+    UPDATE books b 
+          SET views = (
+            select COALESCE(SUM(view_count),0)
+            from chapters 
+            where chapters.book_id = books.id
+          )
+        `;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error(`Failed to update view count books`);
+  }
+}
+
 function hashIP(ip: string): string {
   const crypto = require("crypto");
   return crypto

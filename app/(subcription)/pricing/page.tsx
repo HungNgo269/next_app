@@ -1,7 +1,7 @@
 import {
   getCurrentSubscription,
   getSubscriptionProducts,
-} from "@/app/actions/subcriptionsActions";
+} from "@/app/data/subcriptions";
 import { auth } from "@/auth";
 import PricingCard from "./pricingCard";
 

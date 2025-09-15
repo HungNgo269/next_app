@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { formatPrice } from "@/lib/utils/helper";
-import { createPortalSession } from "@/app/actions/subcriptionsActions";
+import { createPortalSession } from "@/app/data/subcriptions";
 
 interface ManageSubscriptionProps {
   subscription: any;

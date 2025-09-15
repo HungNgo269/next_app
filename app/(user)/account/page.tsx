@@ -1,4 +1,4 @@
-import { getCurrentSubscription } from "@/app/actions/subcriptionsActions";
+import { getCurrentSubscription } from "@/app/data/subcriptions";
 import ManageSubscription from "@/app/ui/user/subscription/manageSubcription";
 import { auth } from "@/auth";
 import {
