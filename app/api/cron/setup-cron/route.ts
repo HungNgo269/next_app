@@ -7,7 +7,6 @@ export async function POST(req: Request) {
   const isSetup = await redis.get(setupKey);
   if (!isSetup) {
     try {
-      // Build destination from the current request origin to support preview/prod domains
       const destination = `${origin}/api/cron/sync-views`;
       await setupQStashCronJob(destination);
       await redis.set(setupKey, "true", { ex: 86400 });

@@ -84,8 +84,7 @@ export default function PricingCard({
       }
     } catch (error: unknown) {
       const err = error as Error;
-      console.error("Error:", err);
-      alert("Something went wrong: " + (err?.message || "Please try again."));
+      console.error("Error:", err?.message);
     } finally {
       setLoading(false);
     }
