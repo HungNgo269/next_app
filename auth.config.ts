@@ -2,6 +2,7 @@ import type { NextAuthConfig } from "next-auth";
 import UserToken from "./app/interface/session";
 
 export const authConfig = {
+  trustHost: true,
   pages: {
     signIn: "/login",
     error: "/auth/error",
@@ -34,6 +35,11 @@ export const authConfig = {
         session.user.image_url = token.image_url as string;
       }
       return session;
+    },
+    async redirect({ url, baseUrl }) {
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      else if (new URL(url).origin === baseUrl) return url;
+      return baseUrl;
     },
   },
 } satisfies NextAuthConfig;

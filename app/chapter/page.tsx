@@ -11,6 +11,7 @@ export default async function ChapterPage({ searchParams }: PageProps) {
   if (currentPage === null || currentPage === undefined) {
     currentPage = 1;
   }
+
   const [totalPages] = await Promise.all([fetchTotalChapterPageAction()]);
   return (
     <div className="w-full">

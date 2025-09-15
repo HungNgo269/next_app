@@ -11,7 +11,7 @@ export default async function NewBookList() {
         <span className="font-bold text-2xl text-start flex-1 min-w-0 truncate ">
           New Book
         </span>
-        <ViewMoreBookButton url="/book"></ViewMoreBookButton>
+        <ViewMoreBookButton url="/book?page=1"></ViewMoreBookButton>
       </div>
       <BookCarousel
         variant="sm"

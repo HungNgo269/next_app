@@ -1,19 +1,14 @@
 export const getURL = (path: string = "") => {
+  // Prefer explicit public base URL; fall back to Vercel-provided URL.
+  // Note: VERCEL_URL does not include a scheme.
   let url =
-    process?.env?.NEXT_PUBLIC_BASE_URL &&
-    process.env.NEXT_PUBLIC_BASE_URL.trim() !== ""
-      ? process.env.NEXT_PUBLIC_BASE_URL
-      : // If not set, check for NEXT_PUBLIC_VERCEL_URL, which is automatically set by Vercel.
-      process?.env?.NEXT_PUBLIC_VERCEL_URL &&
-        process.env.NEXT_PUBLIC_VERCEL_URL.trim() !== ""
-      ? process.env.NEXT_PUBLIC_VERCEL_URL
-      : // If neither is set, default to localhost for local development.
-        "http://localhost:3000/";
+    process.env.NEXT_PUBLIC_BASE_URL ||
+    "https://next-app-hungngo269s-projects.vercel.app/";
 
   // Trim the URL and remove trailing slash if exists.
-  url = url.replace(/\/+$/, "");
+  url = url?.replace(/\/+$/, "");
   // Make sure to include `https://` when not localhost.
-  url = url.includes("http") ? url : `https://${url}`;
+  url = url?.includes("http") ? url : url ? `https://${url}` : url;
   // Ensure path starts without a slash to avoid double slashes in the final URL.
   path = path.replace(/^\/+/, "");
 
@@ -115,4 +110,10 @@ export function appendIfDefined(fd: FormData, key: string, value: unknown) {
   if (value !== undefined && value !== null) {
     fd.append(key, String(value));
   }
+}
+export function formatPrice(amount: number, currency: string) {
+  return new Intl.NumberFormat(currency, {
+    style: "currency",
+    currency: currency.toUpperCase(),
+  }).format(amount / 100);
 }

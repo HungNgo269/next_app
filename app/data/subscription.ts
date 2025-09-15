@@ -170,7 +170,7 @@ export const createOrRetrieveCustomer = async ({
     return stripeCustomerId;
   } else {
     console.warn(
-      `Supabase customer record was missing. A new record was created.`
+      `Stripe customer record was missing. A new record was created.`
     );
 
     // If Supabase has no record, create a new record and return Stripe customer ID

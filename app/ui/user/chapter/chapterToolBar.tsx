@@ -64,15 +64,12 @@ export default function ChapterToolBar({
   return (
     <div className="hidden lg:block fixed right-4 top-1/2 -translate-y-1/2 z-50">
       <div className="flex flex-col gap-2 bg-card border rounded-lg shadow-lg items-center ">
-        <Link
-          prefetch={true}
-          href={`${process.env.NEXT_PUBLIC_BASE_URL}/book/${bookId}`}
-        >
+        <Link prefetch={true} href={`/book/${bookId}`}>
           <Button
             variant="ghost"
             size="icon"
             className="w-10 h-10"
-            title="Trang chủ"
+            title="Home Page"
           >
             <Home className="w-5 h-5 " />
           </Button>
@@ -80,7 +77,12 @@ export default function ChapterToolBar({
 
         <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="w-10 h-10 ">
+            <Button
+              variant="ghost"
+              size="icon"
+              title="Font"
+              className="w-10 h-10 "
+            >
               <TypeIcon className="w-5 h-5" />
             </Button>
           </DropdownMenuTrigger>
@@ -117,7 +119,12 @@ export default function ChapterToolBar({
 
         <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="w-10 h-10">
+            <Button
+              variant="ghost"
+              size="icon"
+              title="FontSize"
+              className="w-10 h-10"
+            >
               <ALargeSmall className="w-5 h-5" />
             </Button>
           </DropdownMenuTrigger>
@@ -148,7 +155,7 @@ export default function ChapterToolBar({
                     )
                   }
                   disabled={settings.fontSize <= 12 || isPending}
-                  title="Giảm cỡ chữ"
+                  title="Decrease FontSize"
                 >
                   <Minus className="w-3 h-3" />
                 </Button>
@@ -172,6 +179,7 @@ export default function ChapterToolBar({
                       Math.min(24, settings.fontSize + 1)
                     )
                   }
+                  title="Increase FontSize"
                   disabled={settings.fontSize >= 24 || isPending}
                 >
                   <Plus className="w-3 h-3" />
@@ -198,7 +206,12 @@ export default function ChapterToolBar({
         {/* Theme Toggle */}
         <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="w-10 h-10">
+            <Button
+              variant="ghost"
+              size="icon"
+              title="Theme"
+              className="w-10 h-10"
+            >
               {theme === "dark" ? (
                 <Moon className="w-5 h-5" />
               ) : (
@@ -216,18 +229,21 @@ export default function ChapterToolBar({
             <DropdownMenuItem
               onClick={() => setTheme("light")}
               className="cursor-pointer"
+              title="Light"
             >
               <Sun className="w-4 h-4 mr-2" />
               Light
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => setTheme("dark")}
+              title="Dark"
               className="cursor-pointer"
             >
               <Moon className="w-4 h-4 mr-2" />
               Dark
             </DropdownMenuItem>
             <DropdownMenuItem
+              title="System"
               onClick={() => setTheme("system")}
               className="cursor-pointer"
             >
@@ -241,7 +257,7 @@ export default function ChapterToolBar({
           variant="ghost"
           size="icon"
           className="w-10 h-10"
-          title="Thông tin"
+          title="Report"
         >
           <Info className="w-5 h-5" />
         </Button>
@@ -250,6 +266,7 @@ export default function ChapterToolBar({
           variant="ghost"
           size="icon"
           className="w-10 h-10"
+          title="Book Mark"
           onClick={toggleBookmark}
         >
           {isBookmarked ? (
@@ -265,8 +282,8 @@ export default function ChapterToolBar({
           prefetch={true}
           href={
             idPrev != null
-              ? `${process.env.NEXT_PUBLIC_BASE_URL}/book/${bookId}/chapter/${idPrev}`
-              : `${process.env.NEXT_PUBLIC_BASE_URL}/book/${bookId}`
+              ? `/book/${bookId}/chapter/${idPrev}`
+              : `/book/${bookId}`
           }
           aria-disabled={idPrev == null} // Ngăn điều hướng bằng bàn phím
           onClick={(e) => idPrev == null && e.preventDefault()} // Ngăn click khi không có idNext
@@ -288,8 +305,8 @@ export default function ChapterToolBar({
           prefetch={true}
           href={
             idNext != null
-              ? `${process.env.NEXT_PUBLIC_BASE_URL}/book/${bookId}/chapter/${idNext}`
-              : `${process.env.NEXT_PUBLIC_BASE_URL}/book/${bookId}`
+              ? `/book/${bookId}/chapter/${idNext}`
+              : `/book/${bookId}`
           }
           aria-disabled={idNext == null}
           onClick={(e) => idNext == null && e.preventDefault()}

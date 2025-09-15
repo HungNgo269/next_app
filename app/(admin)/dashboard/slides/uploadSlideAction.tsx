@@ -62,10 +62,7 @@ export async function UploadSlideAction(
     apiFormData.append("link", validatedFields.data.redirectLink);
     apiFormData.append("order", validatedFields.data.order);
 
-    const baseUrl =
-      process.env.NODE_ENV === "production"
-        ? process.env.NEXT_PUBLIC_BASE_URL
-        : "http://localhost:3000";
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
     const response = await fetch(`${baseUrl}/api/slides`, {
       method: "POST",

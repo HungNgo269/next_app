@@ -21,10 +21,8 @@ export async function checkoutWithStripe(
   redirectPath: string = "/account"
 ): Promise<CheckoutResponse> {
   try {
-    // Get the user from Supabase auth
     const sessionApp = await auth();
     const user = sessionApp?.user;
-    // Retrieve or create the customer in Stripe
     let customer;
     try {
       customer = await createOrRetrieveCustomer({

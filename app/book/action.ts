@@ -14,7 +14,7 @@ export async function changeCategoryAction(formData: FormData) {
     const categoryId = getcategoryIdBySlug(selectedCategory);
     await fetchBookByCategory(categoryId);
     revalidatePath("/book");
-    redirect(`/book?tag=${selectedCategory}`);
+    redirect(`/book?tag=${selectedCategory}&page=1`);
   } catch (error) {
     console.error("❌ Server Action Error:", error);
     redirect("/book");
