@@ -164,6 +164,7 @@ export async function syncViewsToDatabase(): Promise<{
     let viewsData = await redis.lrange(batchKey, 0, batchSize - 1);
     while (viewsData.length > 0) {
       const views: ViewMetadata[] = viewsData.map((v) => JSON.parse(v));
+      console.log("views", views);
       const chapterGroups = new Map<number, ViewMetadata[]>();
       for (const view of views) {
         if (!chapterGroups.has(view.chapterId)) {

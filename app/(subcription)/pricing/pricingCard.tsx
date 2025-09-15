@@ -64,8 +64,9 @@ export default function PricingCard({
         const stripe = await import("@stripe/stripe-js").then((m) =>
           m.loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
         );
-
+        //có session => redirect
         if (stripe) {
+          console.log("ok", stripe);
           const { error } = await stripe.redirectToCheckout({
             sessionId: result.sessionId,
           });
@@ -75,8 +76,11 @@ export default function PricingCard({
             alert("Payment redirect failed. Please try again.");
           }
         }
-      } else if (result.url) {
-        window.location.href = result.url;
+      } // Nếu có errorRedirect, redirect đến trang lỗi
+      else if (result.errorRedirect) {
+        window.location.href = result.errorRedirect;
+      } else {
+        throw new Error("No checkout URL received");
       }
     } catch (error) {
       console.error("Error:", error);
