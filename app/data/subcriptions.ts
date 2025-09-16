@@ -119,10 +119,9 @@ export async function createCheckoutSession(
   try {
     const session = await auth();
     if (!session?.user) {
-      redirect("/login");
+      throw new Error("Authentication required");
     }
 
-    // Get the price details
     const price = await sql`
       SELECT * FROM subscription_prices WHERE id = ${priceId}
     `;
@@ -133,14 +132,13 @@ export async function createCheckoutSession(
 
     const result = await checkoutWithStripe(
       price[0] as SubscriptionPrice,
-      "/account"
+      redirectPath
     );
-
     if (result.errorRedirect) {
-      redirect(result.errorRedirect);
+      return { error: result.errorRedirect };
     }
 
-    return result;
+    return { sessionId: result.sessionId };
   } catch (error) {
     console.error("Error creating checkout session:", error);
     throw error;

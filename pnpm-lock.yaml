@@ -32,6 +32,9 @@ importers:
       '@stripe/stripe-js':
         specifier: ^7.9.0
         version: 7.9.0
+      '@types/stripe':
+        specifier: ^8.0.417
+        version: 8.0.417(@types/node@22.10.7)
       '@upstash/qstash':
         specifier: ^2.8.2
         version: 2.8.2
@@ -867,6 +870,10 @@ packages:
 
   '@types/react@19.0.7':
     resolution: {integrity: sha512-MoFsEJKkAtZCrC1r6CM8U22GzhG7u2Wir8ons/aCKH6MBdD1ibV24zOSSkdZVUKqN5i396zG5VKLYZ3yaUZdLA==}
+
+  '@types/stripe@8.0.417':
+    resolution: {integrity: sha512-PTuqskh9YKNENnOHGVJBm4sM0zE8B1jZw1JIskuGAPkMB+OH236QeN8scclhYGPA4nG6zTtPXgwpXdp+HPDTVw==}
+    deprecated: This is a stub types definition. stripe provides its own type definitions, so you do not need this installed.
 
   '@upstash/qstash@2.8.2':
     resolution: {integrity: sha512-gQMCs2YXmRJWGh28t3fsWuPTzGgVFVRBd4o5QeWM9l3HW8TMNwt1qzv5wtzzSlG7hv1ylEy/PQCznkxGcAwTfw==}
@@ -2353,6 +2360,12 @@ snapshots:
   '@types/react@19.0.7':
     dependencies:
       csstype: 3.1.3
+
+  '@types/stripe@8.0.417(@types/node@22.10.7)':
+    dependencies:
+      stripe: 18.5.0(@types/node@22.10.7)
+    transitivePeerDependencies:
+      - '@types/node'
 
   '@upstash/qstash@2.8.2':
     dependencies:

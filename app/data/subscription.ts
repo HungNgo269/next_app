@@ -212,36 +212,48 @@ export const manageSubscriptionStatusChange = async (
   if (!process.env.STRIPE_SECRET_KEY) {
     throw new Error("STRIPE_SECRET_KEY is required");
   }
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-    // https://github.com/stripe/stripe-node#configuration
-    // https://stripe.com/docs/api/versioning
-    // @ts-ignore
-    apiVersion: "2024-06-20", // Register this as an official Stripe plugin.
-    // https://stripe.com/docs/building-plugins#setappinfo
 
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
+    apiVersion: "2025-08-27.basil",
     appInfo: {
       name: "Next Book",
       version: "0.0.0",
       url: process.env.NEXT_PUBLIC_BASE_URL,
     },
   });
-  // Get customer's UUID from mapping table.
+
+  console.log(
+    `Processing subscription [${subscriptionId}] for customer [${customerId}]`
+  );
+
+  // Get customer's UUID from mapping table
   const customerData = await getUserStripeByCustomerId(customerId);
   const uuid = customerData?.id;
 
+  if (!uuid) {
+    console.error(`No user found for Stripe customer ID: ${customerId}`);
+    throw new Error(`User not found for customer ID: ${customerId}`);
+  }
+
+  // Retrieve subscription from Stripe
   const subscription = await stripe.subscriptions.retrieve(subscriptionId, {
     expand: ["default_payment_method"],
   });
-  // Upsert the latest status of the subscription object.
+
+  // Get subscription item details
+  const subscriptionItem = subscription.items.data[0];
+  if (!subscriptionItem) {
+    throw new Error(
+      `No subscription items found for subscription: ${subscriptionId}`
+    );
+  }
+
   const subscriptionData: Subscription = {
     id: subscription.id,
-    user_id: uuid as string,
-    metadata: subscription.metadata,
+    user_id: uuid,
     status: subscription.status,
-    price_id: subscription.items.data[0].price.id,
-    //TODO check quantity on subscription
-    // @ts-ignore
-    quantity: subscription.quantity,
+    price_id: subscriptionItem.price.id,
+    quantity: subscriptionItem.quantity || 1,
     cancel_at_period_end: subscription.cancel_at_period_end,
     cancel_at: subscription.cancel_at
       ? toDateTime(subscription.cancel_at).toISOString()
@@ -261,50 +273,70 @@ export const manageSubscriptionStatusChange = async (
       : null,
   };
 
-  await sql`
-    INSERT INTO subscriptions (
-      id, user_id, status, price_id, quantity,
-      cancel_at_period_end, cancel_at, canceled_at,
-      created, ended_at, trial_start, trial_end, updated_at
-    ) VALUES (
-      ${subscriptionData.id},
-      ${subscriptionData.user_id},
-      ${subscriptionData.status},
-      ${subscriptionData.price_id},
-      ${subscriptionData.quantity},
-      ${subscriptionData.cancel_at_period_end},
-      ${subscriptionData.cancel_at},
-      ${subscriptionData.canceled_at},
-      ${subscriptionData.created},
-      ${subscriptionData.ended_at},
-      ${subscriptionData.trial_start},
-      ${subscriptionData.trial_end},
-      now()
-    )
-    ON CONFLICT (id) DO UPDATE SET
-      user_id = EXCLUDED.user_id,
-      status = EXCLUDED.status,
-      price_id = EXCLUDED.price_id,
-      quantity = EXCLUDED.quantity,
-      cancel_at_period_end = EXCLUDED.cancel_at_period_end,
-      cancel_at = EXCLUDED.cancel_at,
-      canceled_at = EXCLUDED.canceled_at,
-      created = EXCLUDED.created,
-      ended_at = EXCLUDED.ended_at,
-      trial_start = EXCLUDED.trial_start,
-      trial_end = EXCLUDED.trial_end,
-      updated_at = now();
-  `;
-  console.log(
-    `Inserted/updated subscription [${subscription.id}] for user [${uuid}]`
-  );
+  console.log("Subscription data to insert:", {
+    id: subscriptionData.id,
+    user_id: subscriptionData.user_id,
+    status: subscriptionData.status,
+    price_id: subscriptionData.price_id,
+    quantity: subscriptionData.quantity,
+  });
+  try {
+    await sql`
+      INSERT INTO subscriptions (
+        id, user_id, status, price_id, quantity,
+        cancel_at_period_end, cancel_at, canceled_at,
+        created, ended_at, trial_start, trial_end,
+       updated_at
+      ) VALUES (
+        ${subscriptionData.id},
+        ${subscriptionData.user_id},
+        ${subscriptionData.status},
+        ${subscriptionData.price_id},
+        ${subscriptionData.quantity},
+        ${subscriptionData.cancel_at_period_end},
+        ${subscriptionData.cancel_at},
+        ${subscriptionData.canceled_at},
+        ${subscriptionData.created},
+        ${subscriptionData.ended_at},
+        ${subscriptionData.trial_start},
+        ${subscriptionData.trial_end},
 
-  // For a new subscription copy the billing details to the customer object.
-  // NOTE: This is a costly operation and should happen at the very end.
-  if (createAction && subscription.default_payment_method && uuid)
-    //@ts-ignore
-    await copyBillingDetailsToCustomer(
-      uuid,
-      subscription.default_payment_method as Stripe.PaymentMethod
+        now()
+      )
+      ON CONFLICT (id) DO UPDATE SET
+        user_id = EXCLUDED.user_id,
+        status = EXCLUDED.status,
+        price_id = EXCLUDED.price_id,
+        quantity = EXCLUDED.quantity,
+        cancel_at_period_end = EXCLUDED.cancel_at_period_end,
+        cancel_at = EXCLUDED.cancel_at,
+        canceled_at = EXCLUDED.canceled_at,
+        created = EXCLUDED.created,
+        ended_at = EXCLUDED.ended_at,
+        trial_start = EXCLUDED.trial_start,
+        trial_end = EXCLUDED.trial_end,
+        updated_at = now();
+    `;
+
+    console.log(
+      `✅ Successfully inserted/updated subscription [${subscription.id}] for user [${uuid}]`
     );
+  } catch (dbError) {
+    console.error("Database error when inserting subscription:", dbError);
+    throw new Error(`Failed to save subscription to database: ${dbError}`);
+  }
+
+  // Copy billing details for new subscriptions
+  if (createAction && subscription.default_payment_method && uuid) {
+    try {
+      await copyBillingDetailsToCustomer(
+        uuid,
+        subscription.default_payment_method as Stripe.PaymentMethod
+      );
+      console.log(`✅ Billing details copied for user [${uuid}]`);
+    } catch (billingError) {
+      console.error("Error copying billing details:", billingError);
+      // Don't throw error here, subscription creation is more important
+    }
+  }
 };

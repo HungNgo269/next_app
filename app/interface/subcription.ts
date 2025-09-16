@@ -1,19 +1,18 @@
+import { UUID } from "crypto";
+
 export interface Subscription {
   id: string;
-  user_id: string;
-  status: subscriptionStatus;
-  metadata?: Record<string, any>;
+  user_id: UUID;
+  status: string;
   price_id: string;
   quantity: number;
   cancel_at_period_end: boolean;
-  created?: string;
-  ended_at?: string | null;
-  cancel_at?: string | null;
-  canceled_at?: string | null;
-  trial_start?: string | null;
-  trial_end?: string | null;
-  created_at?: string;
-  updated_at?: string;
+  cancel_at: string | null;
+  canceled_at: string | null;
+  created: string;
+  ended_at: string | null;
+  trial_start: string | null;
+  trial_end: string | null;
 }
 
 export interface SubscriptionProduct {

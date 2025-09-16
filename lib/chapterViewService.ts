@@ -1,3 +1,4 @@
+import { unknown } from "zod";
 import { sql } from "./db";
 
 interface ViewMetadata {
@@ -154,8 +155,6 @@ async function syncChapterViews(
   chapterId: number,
   views: ViewMetadata[]
 ): Promise<void> {
-  const stats = await getChapterStatsService(chapterId);
-  if (!stats) return;
   for (const view of views) {
     try {
       await sql`
@@ -169,7 +168,7 @@ async function syncChapterViews(
         )
         VALUES (
           ${chapterId},
-          ${stats.bookId},
+          ${view.bookId},
           ${view.userId || null},
           ${view.ipAddress || null},
           ${view.userAgent || null},
@@ -178,9 +177,9 @@ async function syncChapterViews(
         )
         ON CONFLICT DO NOTHING;
       `;
-    } catch (error) {
-      console.error(`Database Error for chapter ${chapterId}:`, error);
-      throw new Error(`Failed to sync view for chapter ${chapterId}`);
+    } catch (error: unknown) {
+      const err = error as Error;
+      console.error(`Database Error for chapter ${chapterId}:`, err.message);
     }
   }
 }
@@ -190,13 +189,15 @@ async function updateChapterAggregatedStats(): Promise<void> {
   const redis = redisHold.redis;
 
   try {
-    // ✅ Sử dụng SCAN thay vì KEYS cho performance tốt hơn
     const pattern = "chapter:*:views";
     const keys: string[] = [];
     let cursor = "0";
 
     do {
-      const result = await redis.scan(cursor, "MATCH", pattern, "COUNT", 100);
+      const result = await redis.scan(cursor, {
+        match: pattern,
+        count: 100,
+      });
       cursor = result[0];
       keys.push(...(result[1] as string[]));
     } while (cursor !== "0");
@@ -208,67 +209,139 @@ async function updateChapterAggregatedStats(): Promise<void> {
       return;
     }
 
-    // ✅ Process in batches để tránh overwhelm database
+    // Process trong batches để tránh overwhelm
     const batchSize = 50;
+    let totalProcessed = 0;
+    let totalErrors = 0;
+
     for (let i = 0; i < keys.length; i += batchSize) {
       const batch = keys.slice(i, i + batchSize);
-      const pipeline = redis.pipeline();
 
-      // Get all counts in one pipeline
-      for (const key of batch) {
-        pipeline.get(key);
-      }
-
-      const results = await pipeline.exec();
-
-      if (!results) continue;
-
-      // Update database và xóa Redis keys
-      for (let j = 0; j < batch.length; j++) {
-        const key = batch[j];
-        const chapterId = parseInt(key.split(":")[1] || "0", 10);
-        const result = results[j];
-
-        if (result[0] !== null) {
-          // Redis error
-          console.error(`Redis error for key ${key}:`, result[0]);
-          continue;
-        }
-
-        const raw = result[1];
-        const count = raw != null ? parseInt(String(raw), 10) : 0;
-
-        if (Number.isFinite(count) && count > 0) {
-          try {
-            // ✅ Cộng view count vào database
-            await sql`
-              UPDATE chapters
-              SET view_count = COALESCE(view_count, 0) + ${count},
-                  updated_at = CURRENT_TIMESTAMP
-              WHERE id = ${chapterId};
-            `;
-
-            console.log(`Updated chapter ${chapterId} with ${count} views`);
-
-            // ✅ QUAN TRỌNG: Xóa key sau khi đã sync thành công
-            await redis.del(key);
-          } catch (error) {
-            console.error(`Database Error for chapter ${chapterId}:`, error);
-            throw new Error(
-              `Failed to update view count for chapter ${chapterId}`
-            );
-          }
-        } else {
-          // Nếu count = 0, vẫn xóa key
-          await redis.del(key);
-        }
+      try {
+        await processBatch(redis, batch);
+        totalProcessed += batch.length;
+        console.log(
+          `Processed batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(
+            keys.length / batchSize
+          )} (${batch.length} keys)`
+        );
+      } catch (error) {
+        totalErrors += batch.length;
+        console.error(`Failed to process batch starting at index ${i}:`, error);
+        // Continue với batch tiếp theo thay vì throw
       }
     }
 
-    console.log("Chapter aggregated stats updated successfully");
+    console.log(
+      `Chapter aggregated stats completed. Processed: ${totalProcessed}, Errors: ${totalErrors}`
+    );
   } catch (error) {
     console.error("Error in updateChapterAggregatedStats:", error);
     throw error;
+  }
+}
+
+async function processBatch(redis: any, batch: string[]): Promise<void> {
+  // Lấy tất cả values trong một pipeline
+  const pipeline = redis.pipeline();
+  for (const key of batch) {
+    pipeline.get(key);
+  }
+
+  const results = await pipeline.exec();
+  if (!results) {
+    throw new Error("Pipeline execution failed");
+  }
+
+  // Prepare data cho database update
+  const dbUpdates: Array<{ chapterId: number; count: number; key: string }> =
+    [];
+  const keysToDelete: string[] = [];
+
+  for (let j = 0; j < batch.length; j++) {
+    const key = batch[j];
+    const result = results[j];
+
+    if (result[0] !== null) {
+      console.error(`Redis error for key ${key}:`, result[0]);
+      continue;
+    }
+
+    // Parse chapterId từ key (format: "chapter:123:views")
+    const keyParts = key.split(":");
+    if (
+      keyParts.length !== 3 ||
+      keyParts[0] !== "chapter" ||
+      keyParts[2] !== "views"
+    ) {
+      console.warn(`Invalid key format: ${key}`);
+      keysToDelete.push(key); // Xóa key có format sai
+      continue;
+    }
+
+    const chapterId = parseInt(keyParts[1], 10);
+    if (!Number.isFinite(chapterId) || chapterId <= 0) {
+      console.warn(`Invalid chapter ID in key: ${key}`);
+      keysToDelete.push(key);
+      continue;
+    }
+
+    const raw = result[1];
+    const count = raw != null ? parseInt(String(raw), 10) : 0;
+
+    if (Number.isFinite(count) && count > 0) {
+      dbUpdates.push({ chapterId, count, key });
+    } else {
+      // Count = 0 hoặc invalid, chỉ cần xóa key
+      keysToDelete.push(key);
+    }
+  }
+
+  // Batch database updates
+  if (dbUpdates.length > 0) {
+    try {
+      // Có thể tối ưu hơn bằng cách dùng transaction hoặc bulk update
+      const updatePromises = dbUpdates.map(
+        async ({ chapterId, count, key }) => {
+          try {
+            await sql`
+            UPDATE chapters
+            SET view_count = COALESCE(view_count, 0) + ${count},
+                updated_at = CURRENT_TIMESTAMP
+            WHERE id = ${chapterId};
+          `;
+
+            console.log(`Updated chapter ${chapterId} with ${count} views`);
+            return key; // Return key để xóa sau
+          } catch (error) {
+            console.error(`Database error for chapter ${chapterId}:`, error);
+            throw error; // Không xóa key nếu DB update fail
+          }
+        }
+      );
+
+      const successfulKeys = await Promise.all(updatePromises);
+      keysToDelete.push(...successfulKeys);
+    } catch (error) {
+      // Nếu có lỗi DB, không xóa bất kỳ key nào
+      throw new Error(`Database update failed: ${error}`);
+    }
+  }
+
+  // Xóa tất cả keys thành công trong một pipeline
+  if (keysToDelete.length > 0) {
+    const deletePipeline = redis.pipeline();
+    for (const key of keysToDelete) {
+      deletePipeline.del(key);
+    }
+
+    try {
+      await deletePipeline.exec();
+      console.log(`Deleted ${keysToDelete.length} Redis keys`);
+    } catch (error) {
+      console.error("Error deleting Redis keys:", error);
+      // Không throw vì DB đã update thành công
+    }
   }
 }
 
@@ -285,46 +358,12 @@ async function updateBooksAggregatedStats(): Promise<void> {
         WHERE c.book_id = books.id
       ),
       updated_at = CURRENT_TIMESTAMP
+      returning *
     `;
 
-    console.log(`Updated ${result.count} books with aggregated view counts`);
+    console.log(`Updated ${result.length} books with aggregated view counts`);
   } catch (error) {
     console.error("Database Error in updateBooksAggregatedStats:", error);
-    throw new Error(
-      `Failed to update view count for books: ${
-        error instanceof Error ? error.message : "Unknown error"
-      }`
-    );
-  }
-}
-
-// ✅ Alternative: Update chỉ books có thay đổi (performance tốt hơn)
-async function updateBooksAggregatedStatsOptimized(): Promise<void> {
-  try {
-    console.log("Updating book aggregated stats (optimized)...");
-
-    // Chỉ update books có chapters được cập nhật gần đây
-    const result = await sql`
-      UPDATE books 
-      SET views = (
-        SELECT COALESCE(SUM(c.view_count), 0)
-        FROM chapters c 
-        WHERE c.book_id = books.id
-      ),
-      updated_at = CURRENT_TIMESTAMP
-      WHERE id IN (
-        SELECT DISTINCT c.book_id 
-        FROM chapters c 
-        WHERE c.updated_at > NOW() - INTERVAL '1 hour'
-      )
-    `;
-
-    console.log(`Updated ${result.length} books with recent chapter changes`);
-  } catch (error) {
-    console.error(
-      "Database Error in updateBooksAggregatedStatsOptimized:",
-      error
-    );
     throw new Error(
       `Failed to update view count for books: ${
         error instanceof Error ? error.message : "Unknown error"
@@ -419,12 +458,27 @@ export async function syncViewsToDatabase(): Promise<{
       viewsData = await redis.lrange(batchKey, 0, batchSize - 1);
     }
 
-    // ✅ Update aggregated stats sau khi sync xong individual views
-    console.log("Updating aggregated stats...");
-    await updateChapterAggregatedStats();
+    console.log(`Synced ${processed} individual views to database`);
 
-    // Có thể chọn 1 trong 2 cách update books
-    await updateBooksAggregatedStats(); // Hoặc updateBooksAggregatedStatsOptimized()
+    if (processed > 0) {
+      console.log("Updating aggregated stats...");
+
+      try {
+        await updateChapterAggregatedStats();
+        console.log("Chapter aggregated stats updated successfully");
+      } catch (error) {
+        console.error("Error updating chapter aggregated stats:", error);
+        errors.push(`Failed to update chapter aggregated stats: ${error}`);
+      }
+
+      try {
+        await updateBooksAggregatedStats();
+        console.log("Book aggregated stats updated successfully");
+      } catch (error) {
+        console.error("Error updating book aggregated stats:", error);
+        errors.push(`Failed to update book aggregated stats: ${error}`);
+      }
+    }
 
     return {
       success: errors.length === 0,

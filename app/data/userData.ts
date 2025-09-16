@@ -53,10 +53,10 @@ export async function updateUserStripe(
 
 export async function getUserStripeByCustomerId(
   stripe_customer_id: string
-): Promise<UserStripe | undefined> {
+): Promise<UserStripe> {
   try {
     const user =
-      (await sql`SELECT * FROM userstripe WHERE stripe_customer_id=${stripe_customer_id}`) as unknown as UserStripe[];
+      (await sql`SELECT * FROM userstripe WHERE stripe_customer_id=${stripe_customer_id}`) as UserStripe[];
     return user[0];
   } catch (error) {
     console.error("Database error:", error);
