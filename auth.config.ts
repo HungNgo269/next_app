@@ -1,5 +1,6 @@
 import type { NextAuthConfig } from "next-auth";
 import UserToken from "./app/interface/session";
+import { getUser, upsertUserOAuth } from "./app/data/userData";
 
 export const authConfig = {
   trustHost: true,
@@ -9,20 +10,47 @@ export const authConfig = {
   },
   providers: [],
   callbacks: {
-    async jwt({ token, user, trigger }) {
-      if (trigger === "update") {
-        //f5 nếu cần
+    async signIn({ user, account, profile }) {
+      // Xử lý khi user sign in với Google
+      if (account?.provider === "google") {
+        try {
+          let dbUser = await getUser(user.email!);
+
+          // Nếu user chưa tồn tại, tạo mới
+          if (!dbUser) {
+            dbUser = await upsertUserOAuth({
+              email: user.email!,
+              name: user.name!,
+              google_id: user.id || account.providerAccountId,
+              image_url: user.image || "",
+            });
+          }
+
+          return true; // Cho phép sign in
+        } catch (error) {
+          console.error("Error during Google sign in:", error);
+          return false; // Từ chối sign in
+        }
       }
+
+      return true; // Cho phép sign in với các provider khác
+    },
+
+    async jwt({ token, user, account, profile }) {
+      // Chỉ chạy lần đầu khi user sign in
       if (user) {
-        const userData = user as UserToken;
-        token.id = userData.id;
-        token.email = userData.email;
-        token.name = userData.name;
-        token.role = userData.role;
-        token.image_url = userData?.image_url;
-        token.createdAt = userData.created_at;
-        token.updatedAt = userData.updated_at;
+        const dbUser = await getUser(user.email!);
+        if (dbUser) {
+          token.id = dbUser.id;
+          token.email = dbUser.email;
+          token.name = dbUser.name;
+          token.role = dbUser.role || "user";
+          token.image_url = dbUser.image_url || user.image || "";
+          token.createdAt = dbUser.created_at;
+          token.updatedAt = dbUser.updated_at;
+        }
       }
+
       return token;
     },
 

@@ -12,18 +12,8 @@ export default function Active({ status }: { status: boolean }) {
         }
       )}
     >
-      {status === false ? (
-        <>
-          Not Active
-          <ClockIcon className="ml-1 w-4 text-gray-500" />
-        </>
-      ) : null}
-      {status === true ? (
-        <>
-          Active
-          <CheckIcon className="ml-1 w-4 text-white" />
-        </>
-      ) : null}
+      {status === false ? <>Not Active</> : null}
+      {status === true ? <>Active</> : null}
     </span>
   );
 }

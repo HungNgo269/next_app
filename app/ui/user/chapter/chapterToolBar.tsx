@@ -48,13 +48,8 @@ export default function ChapterToolBar({
     setIsBookmarked(!isBookmarked);
   };
 
-  const [mounted, setMounted] = React.useState(false);
-  React.useEffect(() => setMounted(true), []);
-
-  if (!mounted) return null;
-
   const handleSettingChange = (key: keyof ReaderSettings, value: any) => {
-    const newSettings = { ...settings, [key]: value };
+    const newSettings = { ...settings, [key]: value }; //fontsize :16(etc)
     setSettings(newSettings);
 
     startTransition(async () => {

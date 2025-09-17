@@ -13,7 +13,10 @@ export default async function BookTable({
   query: string;
   currentPage: number;
 }) {
-  const Books = (await fetchBooksByPageActions(query, currentPage)) as unknown as BookTableProps[];
+  const Books = (await fetchBooksByPageActions(
+    query,
+    currentPage
+  )) as unknown as BookTableProps[];
   return (
     <div className="mt-4 flow-root">
       <div className="inline-block min-w-full align-middle">
@@ -56,7 +59,7 @@ export default async function BookTable({
                   Book
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium ">
-                  Active ?
+                  Active
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Status

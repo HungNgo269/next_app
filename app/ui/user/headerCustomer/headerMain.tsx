@@ -6,7 +6,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Heart, Menu, ChevronDown } from "lucide-react";
+import { Heart, Menu, ChevronDown, BookMarked } from "lucide-react";
 import SearchComponent from "@/app/ui/user/search/searchComponent";
 import Link from "next/link";
 import { UserButton } from "@/app/ui/user/headerCustomer/headerUserButton";
@@ -57,12 +57,17 @@ export default async function Header() {
                         size="sm"
                         className="flex items-center space-x-1"
                       >
-                        <Heart className="h-4 w-4" />
-                        <span className="hidden md:inline">Watchlist</span>
+                        <BookMarked className="h-4 w-4" />
+                        <span className="hidden md:inline">Book Shelf</span>
                         <ChevronDown className="h-3 w-3" />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-48">
+                      <DropdownMenuItem>
+                        <Link prefetch={true} href={"#"}>
+                          Your Book Shelf
+                        </Link>
+                      </DropdownMenuItem>
                       <DropdownMenuItem>
                         <Link prefetch={true} href={"#"}>
                           View Bookmark

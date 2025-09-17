@@ -1,5 +1,3 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,21 +5,29 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent,
 } from "@/components/ui/dropdown-menu";
-import {
-  Settings,
-  CreditCard,
-  Bell,
-  HelpCircle,
-  User,
-  LogOut,
-} from "lucide-react";
+import { Info, LogOut, CreditCard, Edit } from "lucide-react";
+import Link from "next/link";
 import { signOut } from "@/auth";
 import { getSessionCache } from "@/lib/utils/getSession";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 
 export async function UserButton() {
   const session = await getSessionCache();
   const user = session?.user;
+
+  const initials =
+    user?.name
+      ?.split(" ")
+      .map((s: string) => s[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase() ?? "U";
+
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
@@ -31,15 +37,16 @@ export async function UserButton() {
         >
           <Avatar className="h-10 w-10 md:h-12 md:w-12">
             <AvatarImage
-              src={`${user?.image_url}` || "/jawed.jpg"}
-              alt={user?.name}
+              src={user?.image_url || "/jawed.jpg"}
+              alt={user?.name || "User"}
             />
             <AvatarFallback className="bg-primary text-primary-foreground">
-              {user?.name}
+              {initials}
             </AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
+
       <DropdownMenuContent className="w-64 md:w-72" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
@@ -49,29 +56,41 @@ export async function UserButton() {
             </p>
           </div>
         </DropdownMenuLabel>
+
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="cursor-pointer">
-          <User className="mr-2 h-4 w-4" />
-          <span>Profile</span>
+
+        <DropdownMenuItem className="cursor-pointer" asChild>
+          <Link href="/account" className="flex items-center">
+            <CreditCard className="mr-2 h-4 w-4" />
+            <span>Profile</span>
+          </Link>
         </DropdownMenuItem>
-        <DropdownMenuItem className="cursor-pointer">
-          <CreditCard className="mr-2 h-4 w-4" />
-          <span>Billing</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem className="cursor-pointer">
-          <Settings className="mr-2 h-4 w-4" />
-          <span>Settings</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem className="cursor-pointer">
-          <Bell className="mr-2 h-4 w-4" />
-          <span>Notifications</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem className="cursor-pointer">
-          <HelpCircle className="mr-2 h-4 w-4" />
-          <span>Help & Support</span>
-        </DropdownMenuItem>
+
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger className="cursor-pointer">
+            <Info className="mr-2 h-4 w-4" />
+            <span>Learn More</span>
+          </DropdownMenuSubTrigger>
+          <DropdownMenuSubContent
+            sideOffset={5}
+            alignOffset={0}
+            avoidCollisions
+            collisionPadding={8}
+          >
+            <DropdownMenuItem className="cursor-pointer">
+              <Info className="w-4 h-4 mr-2" />
+              Advertiser
+            </DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">
+              <Edit className="w-4 h-4 mr-2" />
+              Become Editor
+            </DropdownMenuItem>
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
+
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="cursor-pointer">
+
+        <DropdownMenuItem className="cursor-pointer p-0">
           <form
             action={async () => {
               "use server";

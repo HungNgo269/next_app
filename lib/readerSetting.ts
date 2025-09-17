@@ -12,7 +12,6 @@ export const defaultSettings: ReaderSettings = {
   lineHeight: 1.6,
 };
 
-// Server-side: Get settings from cookies
 export async function getServerReaderSettings() {
   const cookieStore = await cookies();
   try {

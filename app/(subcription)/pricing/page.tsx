@@ -3,7 +3,7 @@ import {
   getSubscriptionProducts,
 } from "@/app/data/subcriptions";
 import { auth } from "@/auth";
-import PricingCard from "./pricingCard";
+import PricingCard from "../../ui/user/subscription/pricingCard";
 
 export default async function PricingPage() {
   const session = await auth();

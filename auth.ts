@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
 import bcrypt from "bcrypt";
 import { z } from "zod";
 import { authConfig } from "./auth.config";
@@ -9,12 +10,11 @@ import { User } from "./app/interface/user";
 export const { auth, signIn, signOut, handlers } = NextAuth({
   ...authConfig,
   session: {
-    strategy: "jwt", //accesstoken
-    maxAge: 60 * 60,
+    strategy: "jwt",
+    maxAge: 60 * 60, // 1 hour
   },
-  //rf token
   jwt: {
-    maxAge: 7 * 24 * 60 * 60,
+    maxAge: 7 * 24 * 60 * 60, // 7 days
   },
   providers: [
     Credentials({
@@ -30,6 +30,7 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
             console.log("Email or password is missing");
             return null;
           }
+
           const user = (await getUser(email)) as User;
           if (!user) return null;
 
@@ -37,6 +38,7 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
             console.log("User password is not set in database");
             return null;
           }
+
           const passwordsMatch = await bcrypt.compare(password, user.password);
 
           if (passwordsMatch) {
@@ -52,6 +54,9 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
         return null;
       },
     }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
   ],
 });
-export const { GET, POST } = handlers;

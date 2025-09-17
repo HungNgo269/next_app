@@ -1,13 +1,16 @@
 "use client";
 
 import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
-import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import { useActionState } from "react";
 import { authenticate } from "@/app/(auth)/login/actions";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { GoogleButton } from "@/app/ui/share/Button/GoogleButton";
+import { signIn } from "@/auth";
+import GoogleSignIn from "./login-google";
+// import { googleSignIn } from "@/app/(auth)/login/google-auth";
 
 export default function LoginForm() {
   const searchParams = useSearchParams();
@@ -54,8 +57,7 @@ export default function LoginForm() {
                 minLength={6}
               />
             </div>
-
-            {/* Remember me + Forgot password */}
+            {/* Forgot password */}
             <div className="flex items-center justify-center">
               <Button
                 variant="link"
@@ -88,6 +90,8 @@ export default function LoginForm() {
               )}
             </Button>
           </form>
+          <GoogleSignIn></GoogleSignIn>
+
           <div className="pt-4"></div>
           <hr className="border-0.5 border-border " />
           {/* Footer */}
@@ -103,7 +107,6 @@ export default function LoginForm() {
               </Link>
             </p>
           </div>
-
           <div className="mt-6 text-center">
             <p className="text-xs text-muted-foreground">
               By continuing, you agree to our{" "}

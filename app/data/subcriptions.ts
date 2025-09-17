@@ -3,6 +3,7 @@
 import { sql } from "@/lib/db";
 import { auth } from "@/auth";
 import {
+  subcriptionsInfo,
   SubscriptionPrice,
   SubscriptionProduct,
 } from "@/app/interface/subcription";
@@ -61,7 +62,7 @@ export async function getCurrentSubscription() {
       LIMIT 1
     `;
 
-    return subscription[0] || null;
+    return (subscription[0] as subcriptionsInfo) || null;
   } catch (error) {
     console.error("Error fetching subscription:", error);
     return null;
