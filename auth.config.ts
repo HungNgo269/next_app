@@ -1,42 +1,49 @@
 import type { NextAuthConfig } from "next-auth";
 import { getUser, upsertUserOAuth } from "./app/data/userData";
+import { getURL } from "./lib/utils/helper";
 
 export const authConfig = {
   trustHost: true,
   pages: {
     signIn: "/login",
     error: "/auth/error",
+    signOut: "/",
   },
   providers: [],
   callbacks: {
     async signIn({ user, account, profile }) {
       if (account?.provider === "google") {
         try {
-          let dbUser: any = await getUser(user.email!);
+          let dbUser: any = await getUser(user?.email || "");
+          console.log("Existing user:", dbUser);
 
-          if (!dbUser) {
-            dbUser = await upsertUserOAuth({
-              email: user.email!,
-              name: user.name!,
-              google_id: user.id || account.providerAccountId,
-              image_url: user.image || "",
-            });
-          }
+          dbUser = await upsertUserOAuth({
+            email: user?.email || "",
+            name: user?.name,
+            google_id: user.id || account.providerAccountId,
+            image_url: user.image || "",
+          });
 
-          return true; // Cho phép sign in
+          // console.log("Upserted user:", dbUser);
+
+          // if (!dbUser) {
+          //   console.error("Failed to upsert user");
+          //   return false;
+          // }
+
+          return true;
         } catch (error) {
           console.error("Error during Google sign in:", error);
-          return false; // Từ chối sign in
+          return false;
         }
       }
 
-      return true; // Cho phép sign in với các provider khác
+      return true;
     },
 
     async jwt({ token, user, account, profile }) {
-      // Chỉ chạy lần đầu khi user sign in
       if (user) {
-        const dbUser = await getUser(user.email!);
+        const dbUser = await getUser(user?.email || "");
         if (dbUser) {
           token.id = dbUser.id;
           token.email = dbUser.email;
@@ -60,6 +67,9 @@ export const authConfig = {
         session.user.image_url = token.image_url as string;
       }
       return session;
+    },
+    async redirect({ url }) {
+      return `${url}`;
     },
   },
 } satisfies NextAuthConfig;

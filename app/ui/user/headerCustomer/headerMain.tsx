@@ -86,16 +86,14 @@ export default async function Header() {
               </div>
             ) : (
               <div className="flex flex-row gap-4">
-                <Button className="cursor-pointer">
-                  <Link prefetch={true} href={"/register"}>
-                    Sign In
-                  </Link>
-                </Button>
-                <Button className="cursor-pointer" variant={"outline"}>
-                  <Link prefetch={true} href={"/login"}>
+                <Link prefetch={true} href={"/register"}>
+                  <Button className="cursor-pointer">Sign In</Button>
+                </Link>
+                <Link prefetch={true} href={"/login"}>
+                  <Button className="cursor-pointer" variant={"outline"}>
                     Login
-                  </Link>
-                </Button>
+                  </Button>
+                </Link>
               </div>
             )}
           </div>

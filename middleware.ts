@@ -7,13 +7,17 @@ export async function middleware(req: NextRequest) {
   const response = NextResponse.next();
   response.headers.set("x-pathname", pathname);
   const publicPaths = [
-    "/api",
+    "/api/auth",
+    "/api/public",
     "/_next",
     "/favicon.ico",
     "/images",
     "/icons",
     "/manifest.json",
+    "/login",
+    "/register",
   ];
+
   const isPublicPath = publicPaths.some((path) => pathname.startsWith(path));
   if (isPublicPath) {
     return response;
@@ -27,31 +31,28 @@ export async function middleware(req: NextRequest) {
       return NextResponse.redirect(new URL("/login", req.url));
     }
     if (token?.role !== "admin") {
+      return NextResponse.redirect(new URL("/login", req.url));
+    }
+    return response;
+  }
+  if (pathname === "/login") {
+    if (token?.role === "admin") {
+      return NextResponse.redirect(new URL("/dashboard", req.url));
+    }
+    if (token?.role !== "admin") {
       return NextResponse.redirect(new URL("/", req.url));
     }
     return response;
   }
-  if (pathname.startsWith("/user/")) {
-    if (!token) {
-      return NextResponse.redirect(new URL("/login", req.url));
-    }
 
-    return response;
-  }
   if (pathname.includes("/chapter/") && pathname.includes("/book/")) {
     response.headers.set("x-requires-subscription-check", "true");
-  }
-  if (pathname === "/login" && token) {
-    const redirectUrl = token?.role === "admin" ? "/dashboard" : "/";
-    console.log("Login redirect:", redirectUrl);
-    return NextResponse.redirect(new URL(redirectUrl, req.url));
   }
 
   if (token) {
     response.headers.set("x-user-role", token?.role || "");
     response.headers.set("x-user-id", token?.id?.toString() || "");
   }
-
   return response;
 }
 export const config = {

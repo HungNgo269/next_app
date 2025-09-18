@@ -12,7 +12,7 @@ export function GoogleButton({ disabled, className }: GoogleButtonProps) {
     <Button
       variant="outline"
       disabled={disabled}
-      className={`w-full max-w-sm h-12 bg-white hover:bg-gray-50 border border-gray-300 text-gray-700 font-medium text-sm flex items-center justify-center gap-3 transition-colors ${className}`}
+      className={`w-full  h-12 bg-white hover:bg-gray-50 border border-gray-300 text-gray-700 font-medium text-sm flex items-center justify-center gap-3 transition-colors ${className}`}
     >
       <svg width="18" height="18" viewBox="0 0 24 24" className="flex-shrink-0">
         <path

@@ -162,9 +162,9 @@ export async function upsertUserOAuth({
       DO UPDATE SET 
         name = EXCLUDED.name,
         google_id = EXCLUDED.google_id,
-        avatar_url = EXCLUDED.avatar_url,
+        image_url = EXCLUDED.image_url,
         updated_at = NOW()
-      RETURNING id, email, name, avatar_url, created_at
+      RETURNING id, email, name, role, image_url, created_at, updated_at
     `;
 
     return result[0];

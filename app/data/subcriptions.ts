@@ -152,13 +152,10 @@ export async function createPortalSession() {
     if (!session?.user) {
       redirect("/login");
     }
-
     const url = await createStripePortal("/account");
-
     if (typeof url === "string" && url.startsWith("http")) {
       redirect(url);
     }
-
     return { error: "Failed to create portal session" };
   } catch (error) {
     console.error("Error creating portal session:", error);
