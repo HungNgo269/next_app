@@ -2,6 +2,7 @@ import { sql } from "@/lib/db";
 import { User, UserProfile } from "@/app/interface/user";
 import { UserStripe } from "@/app/interface/userStripe";
 import { auth } from "@/auth";
+import { UUID } from "crypto";
 
 export async function getUser(email: string): Promise<User | undefined> {
   try {
@@ -144,25 +145,24 @@ export async function fetchCurrentUserProfile(): Promise<UserProfile | null> {
   }
 }
 export async function upsertUserOAuth({
+  id,
   email,
   name,
   google_id,
-  image_url,
 }: {
+  id: string;
   email: string;
   name?: string | null;
   google_id?: string | null;
-  image_url?: string | null;
 }) {
   try {
     const result = await sql`
-      INSERT INTO users (email, name, google_id, image_url) 
-      VALUES (${email}, ${name}, ${google_id}, ${image_url})
+      INSERT INTO users (id,email, name, google_id) 
+      VALUES (${id},${email}, ${name}, ${google_id})
       ON CONFLICT (email) 
       DO UPDATE SET 
         name = EXCLUDED.name,
         google_id = EXCLUDED.google_id,
-        image_url = EXCLUDED.image_url,
         updated_at = NOW()
       RETURNING id, email, name, role, image_url, created_at, updated_at
     `;

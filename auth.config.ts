@@ -15,13 +15,12 @@ export const authConfig = {
       if (account?.provider === "google") {
         try {
           let dbUser: any = await getUser(user?.email || "");
-          console.log("Existing user:", dbUser);
 
           dbUser = await upsertUserOAuth({
+            id: crypto.randomUUID(),
             email: user?.email || "",
             name: user?.name,
             google_id: user.id || account.providerAccountId,
-            image_url: user.image || "",
           });
 
           // console.log("Upserted user:", dbUser);
@@ -69,7 +68,7 @@ export const authConfig = {
       return session;
     },
     async redirect({ url }) {
-      return `${url}`;
+      return `${"/"}`;
     },
   },
 } satisfies NextAuthConfig;

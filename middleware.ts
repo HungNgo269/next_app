@@ -6,6 +6,7 @@ export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const response = NextResponse.next();
   response.headers.set("x-pathname", pathname);
+
   const publicPaths = [
     "/api/auth",
     "/api/public",
@@ -14,18 +15,21 @@ export async function middleware(req: NextRequest) {
     "/images",
     "/icons",
     "/manifest.json",
-    "/login",
-    "/register",
+    "/.well-known", //  Chrome DevTools and other browser tools
+    "/robots.txt",
+    "/sitemap.xml",
   ];
 
   const isPublicPath = publicPaths.some((path) => pathname.startsWith(path));
   if (isPublicPath) {
     return response;
   }
+
   const token = await getToken({
     req: req,
     secret: process.env.AUTH_SECRET,
   });
+
   if (pathname.startsWith("/dashboard")) {
     if (!token) {
       return NextResponse.redirect(new URL("/login", req.url));
@@ -35,11 +39,15 @@ export async function middleware(req: NextRequest) {
     }
     return response;
   }
+
+  console.log("pathname", pathname);
+  console.log("token", token);
+
   if (pathname === "/login") {
     if (token?.role === "admin") {
       return NextResponse.redirect(new URL("/dashboard", req.url));
     }
-    if (token?.role !== "admin") {
+    if (token?.role === "user" || token?.role === "subUser") {
       return NextResponse.redirect(new URL("/", req.url));
     }
     return response;
@@ -53,8 +61,10 @@ export async function middleware(req: NextRequest) {
     response.headers.set("x-user-role", token?.role || "");
     response.headers.set("x-user-id", token?.id?.toString() || "");
   }
+
   return response;
 }
+
 export const config = {
   matcher: ["/((?!api|_next/static|_next/image|.*\\.png$).*)"],
 };
