@@ -1,30 +1,35 @@
 "use client";
 import { useState } from "react";
 
-export default function BookDesc({ content }: { content: string }) {
+type BookDescProps = {
+  content?: string | null;
+};
+
+export default function BookDesc({ content }: BookDescProps) {
+  const safeContent = content ?? "";
   const [show, setShow] = useState(false);
   const handleShow = () => {
     setShow(!show);
   };
 
   return (
-    <span className="text-gray-700 leading-relaxed text-sm sm:text-base">
+    <span className=" text-secondary-foreground leading-relaxed text-sm sm:text-base">
       {show ? (
         <>
-          {content}
+          {safeContent}
           <span
             onClick={handleShow}
-            className="text-blue-500 hover:underline cursor-pointer ml-1"
+            className="text-info hover:underline cursor-pointer ml-1"
           >
             show less
           </span>
         </>
       ) : (
         <>
-          <span className="line-clamp-3">{content}</span>
+          <span className="line-clamp-3">{safeContent}</span>
           <span
             onClick={handleShow}
-            className="text-blue-500 hover:underline cursor-pointer ml-1"
+            className="text-info hover:underline cursor-pointer ml-1"
           >
             show more
           </span>

@@ -6,12 +6,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Heart, Menu, ChevronDown, BookMarked } from "lucide-react";
+import { ChevronDown, BookMarked } from "lucide-react";
 import SearchComponent from "@/app/ui/user/search/searchComponent";
 import Link from "next/link";
 import { UserButton } from "@/app/ui/user/headerCustomer/headerUserButton";
 import { Logo } from "@/app/ui/share/Button/logo";
 import { getSessionCache } from "@/lib/utils/getSession";
+import HeaderClientColor from "./headerClientColor";
 
 export default async function Header() {
   const session = await getSessionCache();
@@ -49,17 +50,16 @@ export default async function Header() {
 
             {user ? (
               <div className="flex flex-row gap-3 items-center">
-                <div className="hidden sm:block">
+                <div className="hidden sm:flex flex-row justify-center">
                   <DropdownMenu modal={false}>
                     <DropdownMenuTrigger asChild>
                       <Button
                         variant="ghost"
-                        size="sm"
-                        className="flex items-center space-x-1"
+                        className="flex flex-row items-center h-10 justify-center"
                       >
-                        <BookMarked className="h-4 w-4" />
-                        <span className="hidden md:inline">Book Shelf</span>
-                        <ChevronDown className="h-3 w-3" />
+                        <BookMarked className="h-5 w-5" />
+                        <span className="hidden md:inline ">Book Shelf</span>
+                        <ChevronDown className="h-5 w-5" />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-48">
@@ -80,6 +80,7 @@ export default async function Header() {
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
+                  <HeaderClientColor></HeaderClientColor>
                 </div>
                 <UserButton />
               </div>

@@ -265,7 +265,7 @@ export default function ChapterToolBar({
           onClick={toggleBookmark}
         >
           {isBookmarked ? (
-            <BookmarkCheck className="w-5 h-5 fill-current text-yellow-500" />
+            <BookmarkCheck className="w-5 h-5 fill-current text-warning" />
           ) : (
             <Bookmark className="w-5 h-5" />
           )}

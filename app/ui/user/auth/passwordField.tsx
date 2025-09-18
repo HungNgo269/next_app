@@ -31,7 +31,7 @@ export default function PasswordField({
       </label>
       <div className="relative">
         <input
-          className="w-full h-12 px-4 bg-gray-800/50 backdrop-blur-sm border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all peer"
+          className="w-full h-12 px-4 bg-gray-800/50 backdrop-blur-sm border border-gray-600 rounded-lg text-primary-foreground placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all peer"
           id={id}
           type={showPassword ? "text" : "password"}
           name={name}
@@ -41,7 +41,7 @@ export default function PasswordField({
         <button
           type="button"
           onClick={() => setShowPassword((prev) => !prev)}
-          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-primary-foreground transition-colors"
         >
           {showPassword ? (
             <EyeSlashIcon className="w-5 h-5" />

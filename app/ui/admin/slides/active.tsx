@@ -8,7 +8,7 @@ export default function Active({ status }: { status: boolean }) {
         "inline-flex items-center rounded-full px-2 py-1 text-xs",
         {
           "bg-gray-100 text-gray-500": status === false,
-          "bg-green-500 text-white": status === true,
+          "bg-success text-success-foreground": status === true,
         }
       )}
     >

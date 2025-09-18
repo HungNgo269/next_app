@@ -1,5 +1,4 @@
 import type { NextAuthConfig } from "next-auth";
-import UserToken from "./app/interface/session";
 import { getUser, upsertUserOAuth } from "./app/data/userData";
 
 export const authConfig = {
@@ -11,12 +10,10 @@ export const authConfig = {
   providers: [],
   callbacks: {
     async signIn({ user, account, profile }) {
-      // Xử lý khi user sign in với Google
       if (account?.provider === "google") {
         try {
-          let dbUser = await getUser(user.email!);
+          let dbUser: any = await getUser(user.email!);
 
-          // Nếu user chưa tồn tại, tạo mới
           if (!dbUser) {
             dbUser = await upsertUserOAuth({
               email: user.email!,

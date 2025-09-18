@@ -35,7 +35,7 @@ const ManageSubscription = ({
         <div className="inline-flex items-center justify-center w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-full mb-4">
           <Package className="h-8 w-8 text-slate-400" />
         </div>
-        <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
+        <h3 className="text-lg font-semibold text-slate-900 dark:text-primary-foreground mb-2">
           No Active Subscription
         </h3>
         <p className="text-slate-600 dark:text-slate-300 mb-6">
@@ -62,12 +62,12 @@ const ManageSubscription = ({
 
     const colors: Record<string, string> = {
       active:
-        "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
+        "bg-success/15 text-success dark:bg-success/30 dark:text-success/80",
       trialing:
-        "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400",
-      canceled: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400",
+        "bg-info/15 text-info dark:bg-info/25 dark:text-info/80",
+      canceled: "bg-destructive/10 text-destructive dark:bg-destructive/25 dark:text-destructive/80",
       past_due:
-        "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400",
+        "bg-warning/15 text-warning dark:bg-warning/25 dark:text-warning/80",
     };
 
     return (
@@ -90,7 +90,7 @@ const ManageSubscription = ({
             Current Plan
           </div>
           <div className="space-y-1">
-            <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
+            <h3 className="text-2xl font-bold text-slate-900 dark:text-primary-foreground">
               {subscription.product_name}
             </h3>
             <div className="flex items-center gap-2">
@@ -105,7 +105,7 @@ const ManageSubscription = ({
             Billing Amount
           </div>
           <div className="space-y-1">
-            <p className="text-2xl font-bold text-slate-900 dark:text-white">
+            <p className="text-2xl font-bold text-slate-900 dark:text-primary-foreground">
               {formatPrice(subscription.unit_amount, subscription.currency)}
               <span className="text-base font-normal text-slate-500 dark:text-slate-400">
                 /{subscription.interval}
@@ -119,13 +119,13 @@ const ManageSubscription = ({
       {(subscription.trial_end || subscription.cancel_at_period_end) && (
         <div className="space-y-4">
           {subscription.trial_end && (
-            <div className="flex items-start gap-3 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
-              <Calendar className="h-5 w-5 text-blue-600 dark:text-blue-400 mt-0.5" />
+            <div className="flex items-start gap-3 p-4 bg-info/10 dark:bg-info/20 rounded-xl border border-info/20 dark:border-info/30">
+              <Calendar className="h-5 w-5 text-info dark:text-info/80 mt-0.5" />
               <div>
-                <p className="font-medium text-blue-900 dark:text-blue-100">
+                <p className="font-medium text-info dark:text-info/90">
                   Trial Period Active
                 </p>
-                <p className="text-sm text-blue-700 dark:text-blue-300">
+                <p className="text-sm text-info dark:text-info/70">
                   Your trial ends on{" "}
                   {new Date(subscription.trial_end).toLocaleDateString()}
                 </p>
@@ -134,13 +134,13 @@ const ManageSubscription = ({
           )}
 
           {subscription.cancel_at_period_end && (
-            <div className="flex items-start gap-3 p-4 bg-orange-50 dark:bg-orange-900/20 rounded-xl border border-orange-200 dark:border-orange-800">
-              <AlertTriangle className="h-5 w-5 text-orange-600 dark:text-orange-400 mt-0.5" />
+            <div className="flex items-start gap-3 p-4 bg-warning/10 dark:bg-warning/25 rounded-xl border border-warning/20 dark:border-warning/30">
+              <AlertTriangle className="h-5 w-5 text-warning dark:text-warning/80 mt-0.5" />
               <div>
-                <p className="font-medium text-orange-900 dark:text-orange-100">
+                <p className="font-medium text-warning dark:text-warning/90">
                   Subscription Ending
                 </p>
-                <p className="text-sm text-orange-700 dark:text-orange-300">
+                <p className="text-sm text-warning dark:text-warning/70">
                   Your subscription will be canceled at the end of the billing
                   period
                 </p>

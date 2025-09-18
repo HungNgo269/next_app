@@ -119,7 +119,7 @@ export default function FormField({
 
   const inputClassName = `w-full px-4 py-3 border-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all disabled:bg-gray-50 disabled:text-gray-500 rounded-lg ${
     displayError
-      ? "border-red-300 bg-red-50"
+      ? "border-destructive/30 bg-destructive/10"
       : "border-gray-200 hover:border-gray-300 focus:border-primary"
   }`;
 
@@ -128,7 +128,7 @@ export default function FormField({
   return (
     <div className={`space-y-2 ${className}`}>
       <label htmlFor={id} className="block text-sm font-semibold text-gray-700">
-        {label} {required && <span className="text-red-500">*</span>}
+        {label} {required && <span className="text-destructive">*</span>}
       </label>
 
       {type === "textarea" ? (
@@ -164,15 +164,15 @@ export default function FormField({
       )}
 
       {displayError && (
-        <p className="text-red-600 text-sm flex items-center gap-1 animate-fadeIn">
-          <span className="w-1 h-1 bg-red-600 rounded-full"></span>
+        <p className="text-destructive text-sm flex items-center gap-1 animate-fadeIn">
+          <span className="w-1 h-1 bg-destructive rounded-full"></span>
           {displayError}
         </p>
       )}
 
       {isTouched && !displayError && value.trim() && (
-        <p className="text-green-600 text-sm flex items-center gap-1 animate-fadeIn">
-          <span className="w-1 h-1 bg-green-600 rounded-full"></span>
+        <p className="text-success text-sm flex items-center gap-1 animate-fadeIn">
+          <span className="w-1 h-1 bg-success rounded-full"></span>
           Looks good!
         </p>
       )}

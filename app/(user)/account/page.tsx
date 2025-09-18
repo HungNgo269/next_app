@@ -40,19 +40,19 @@ export default async function ProfilePage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="relative mb-8">
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 via-purple-600/10 to-pink-600/10 rounded-3xl blur-3xl"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-info/10 via-accent/10 to-primary/10 rounded-3xl blur-3xl"></div>
           <div className="relative">
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
               <Avatar className="h-20 w-20 ring-4 ring-white dark:ring-slate-800 shadow-lg">
                 <AvatarImage src={avatarSrc} alt={displayName} />
-                <AvatarFallback className="text-xl font-semibold bg-gradient-to-br from-blue-500 to-purple-600 text-white">
+                <AvatarFallback className="text-xl font-semibold bg-gradient-to-br from-info to-accent text-primary-foreground">
                   {initials || "U"}
                 </AvatarFallback>
               </Avatar>
 
               <div className="flex-1 space-y-2">
                 <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-                  <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
+                  <h1 className="text-3xl font-bold text-slate-900 dark:text-primary-foreground">
                     {displayName}
                   </h1>
                   <Badge variant="secondary" className="w-fit">

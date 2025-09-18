@@ -17,7 +17,7 @@ interface props {
 export default function UserNavLink({ active, onClick }: props) {
   return (
     <div className="lg:flex-3">
-      <h2 className="font-semibold text-slate-900 dark:text-white mb-4">
+      <h2 className="font-semibold text-slate-900 dark:text-primary-foreground mb-4">
         Account Settings
       </h2>
       <nav className="space-y-2">
@@ -45,7 +45,7 @@ export default function UserNavLink({ active, onClick }: props) {
 
         <Button
           variant="ghost"
-          className="hidden md:flex w-full justify-start gap-3 text-left text-red-600 hover:text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/20"
+          className="hidden md:flex w-full justify-start gap-3 text-left text-destructive hover:text-destructive/90 hover:bg-destructive/10 dark:text-destructive/80 dark:hover:bg-destructive/20"
         >
           <LogOut className="h-4 w-4" />
           Sign Out

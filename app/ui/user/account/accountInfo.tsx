@@ -193,8 +193,8 @@ export default function AccountInfo({ user }: AccountInfoProps) {
         <div
           className={`flex items-start gap-3 rounded-lg border p-4 text-sm ${
             feedback.type === "success"
-              ? "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900/40 dark:bg-emerald-950/20 dark:text-emerald-300"
-              : "border-red-200 bg-red-50 text-red-700 dark:border-red-900/40 dark:bg-red-950/20 dark:text-red-300"
+              ? "border-success/25 bg-success/10 text-success dark:border-success/40 dark:bg-success/20 dark:text-success/80"
+              : "border-destructive/20 bg-destructive/10 text-destructive dark:border-destructive/35 dark:bg-destructive/20 dark:text-destructive/80"
           }`}
         >
           {feedback.type === "success" ? (
