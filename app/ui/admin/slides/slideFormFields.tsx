@@ -41,7 +41,7 @@ export default async function SlideFormFields({
             htmlFor="title"
             className="block text-sm font-semibold text-gray-700"
           >
-            Title <span className="text-red-500">*</span>
+            Title <span className="text-destructive">*</span>
           </label>
           <input
             type="text"
@@ -54,13 +54,13 @@ export default async function SlideFormFields({
             disabled={disabled}
             className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all disabled:bg-gray-50 disabled:text-gray-500 ${
               getFieldError("title")
-                ? "border-red-300 bg-red-50"
+                ? "border-destructive/30 bg-destructive/10"
                 : "border-gray-200 hover:border-gray-300"
             }`}
           />
           {getFieldError("title") && (
-            <p className="text-red-600 text-sm flex items-center gap-1">
-              <span className="w-1 h-1 bg-red-600 rounded-full"></span>
+            <p className="text-destructive text-sm flex items-center gap-1">
+              <span className="w-1 h-1 bg-destructive rounded-full"></span>
               {getFieldError("title")}
             </p>
           )}
@@ -72,7 +72,7 @@ export default async function SlideFormFields({
             htmlFor="order"
             className="block text-sm font-semibold text-gray-700"
           >
-            Display Order <span className="text-red-500">*</span>
+            Display Order <span className="text-destructive">*</span>
           </label>
           <input
             type="number"
@@ -87,13 +87,13 @@ export default async function SlideFormFields({
             disabled={disabled}
             className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all disabled:bg-gray-50 disabled:text-gray-500 ${
               getFieldError("order")
-                ? "border-red-300 bg-red-50"
+                ? "border-destructive/30 bg-destructive/10"
                 : "border-gray-200 hover:border-gray-300"
             }`}
           />
           {getFieldError("order") && (
-            <p className="text-red-600 text-sm flex items-center gap-1">
-              <span className="w-1 h-1 bg-red-600 rounded-full"></span>
+            <p className="text-destructive text-sm flex items-center gap-1">
+              <span className="w-1 h-1 bg-destructive rounded-full"></span>
               {getFieldError("order")}
             </p>
           )}
@@ -106,7 +106,7 @@ export default async function SlideFormFields({
           htmlFor="desc"
           className="block text-sm font-semibold text-gray-700"
         >
-          Description <span className="text-red-500">*</span>
+          Description <span className="text-destructive">*</span>
         </label>
         <textarea
           id="desc"
@@ -119,13 +119,13 @@ export default async function SlideFormFields({
           disabled={disabled}
           className={`w-full px-4 py-3 border-2 rounded-lg resize-y focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all disabled:bg-gray-50 disabled:text-gray-500 ${
             getFieldError("desc")
-              ? "border-red-300 bg-red-50"
+              ? "border-destructive/30 bg-destructive/10"
               : "border-gray-200 hover:border-gray-300"
           }`}
         />
         {getFieldError("desc") && (
-          <p className="text-red-600 text-sm flex items-center gap-1">
-            <span className="w-1 h-1 bg-red-600 rounded-full"></span>
+          <p className="text-destructive text-sm flex items-center gap-1">
+            <span className="w-1 h-1 bg-destructive rounded-full"></span>
             {getFieldError("desc")}
           </p>
         )}
@@ -137,7 +137,7 @@ export default async function SlideFormFields({
           htmlFor="redirectLink"
           className="block text-sm font-semibold text-gray-700"
         >
-          Page Link <span className="text-red-500">*</span>
+          Page Link <span className="text-destructive">*</span>
         </label>
         <input
           type="text"
@@ -150,13 +150,13 @@ export default async function SlideFormFields({
           disabled={disabled}
           className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all disabled:bg-gray-50 disabled:text-gray-500 ${
             getFieldError("redirectLink")
-              ? "border-red-300 bg-red-50"
+              ? "border-destructive/30 bg-destructive/10"
               : "border-gray-200 hover:border-gray-300"
           }`}
         />
         {getFieldError("redirectLink") && (
-          <p className="text-red-600 text-sm flex items-center gap-1">
-            <span className="w-1 h-1 bg-red-600 rounded-full"></span>
+          <p className="text-destructive text-sm flex items-center gap-1">
+            <span className="w-1 h-1 bg-destructive rounded-full"></span>
             {getFieldError("redirectLink")}
           </p>
         )}

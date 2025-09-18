@@ -221,7 +221,7 @@ export default function EditSlideModal({
                 type="button"
                 className={`px-8 py-3 font-semibold transition-all flex items-center justify-center gap-2 rounded-lg ${
                   isFormValid
-                    ? "bg-gradient-to-r from-green-600 to-green-700 text-white hover:from-green-700 hover:to-green-800 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                    ? "bg-gradient-to-r from-success to-success/90 text-primary-foreground hover:from-success/90 hover:to-success/80 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                     : "bg-gray-200 text-gray-400 cursor-not-allowed"
                 }`}
               >
@@ -262,8 +262,8 @@ export default function EditSlideModal({
           </div>
 
           {!isFormValid && !isPending && (
-            <div className="text-center p-4 bg-amber-50 border border-amber-200 rounded-lg">
-              <p className="text-sm text-amber-700">
+            <div className="text-center p-4 bg-warning/15 border border-warning/20 rounded-lg">
+              <p className="text-sm text-warning">
                 Please fill all required fields and select an image to enable
                 upload
               </p>
@@ -271,8 +271,8 @@ export default function EditSlideModal({
           )}
 
           {state && !state.success && !state.errors && (
-            <div className="text-center p-4 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-sm text-red-700">{state.message}</p>
+            <div className="text-center p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
+              <p className="text-sm text-destructive">{state.message}</p>
             </div>
           )}
         </div>

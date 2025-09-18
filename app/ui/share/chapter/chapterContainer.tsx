@@ -47,11 +47,11 @@ export function ChapterContainer({
         />
       </div> */}
       <div className="h-full flex flex-col items-start w-full">
-        <div className="border border-gray-200 rounded-lg p-4 bg-white shadow-sm w-full">
+        <div className="rounded-lg p-4 bg-card shadow-sm w-full">
           <div className="mb-4">
             <h2 className="text-lg font-medium text-gray-900">
               {title}
-              <span className="text-red-500">*</span>
+              <span className="text-destructive">*</span>
             </h2>
           </div>
 
@@ -66,7 +66,7 @@ export function ChapterContainer({
                     >
                       <div className="flex items-center gap-2 min-w-0 flex-1">
                         {/* {isNewChapter(chapter.createdAt, 7) && (
-                      <span className="text-red-500 text-sm font-medium flex-shrink-0">
+                      <span className="text-destructive text-sm font-medium flex-shrink-0">
                         Mới
                       </span>
                     )} */}

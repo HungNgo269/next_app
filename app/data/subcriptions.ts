@@ -3,6 +3,7 @@
 import { sql } from "@/lib/db";
 import { auth } from "@/auth";
 import {
+  subcriptionsInfo,
   SubscriptionPrice,
   SubscriptionProduct,
 } from "@/app/interface/subcription";
@@ -61,7 +62,7 @@ export async function getCurrentSubscription() {
       LIMIT 1
     `;
 
-    return subscription[0] || null;
+    return (subscription[0] as subcriptionsInfo) || null;
   } catch (error) {
     console.error("Error fetching subscription:", error);
     return null;
@@ -119,10 +120,9 @@ export async function createCheckoutSession(
   try {
     const session = await auth();
     if (!session?.user) {
-      redirect("/login");
+      throw new Error("Authentication required");
     }
 
-    // Get the price details
     const price = await sql`
       SELECT * FROM subscription_prices WHERE id = ${priceId}
     `;
@@ -133,14 +133,13 @@ export async function createCheckoutSession(
 
     const result = await checkoutWithStripe(
       price[0] as SubscriptionPrice,
-      "/account"
+      redirectPath
     );
-
     if (result.errorRedirect) {
-      redirect(result.errorRedirect);
+      return { error: result.errorRedirect };
     }
 
-    return result;
+    return { sessionId: result.sessionId };
   } catch (error) {
     console.error("Error creating checkout session:", error);
     throw error;
@@ -153,13 +152,10 @@ export async function createPortalSession() {
     if (!session?.user) {
       redirect("/login");
     }
-
     const url = await createStripePortal("/account");
-
     if (typeof url === "string" && url.startsWith("http")) {
       redirect(url);
     }
-
     return { error: "Failed to create portal session" };
   } catch (error) {
     console.error("Error creating portal session:", error);

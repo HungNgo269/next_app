@@ -11,7 +11,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Check } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { getErrorRedirect } from "@/lib/utils/helper";
 
 interface PricingCardProps {
   product: any;
@@ -26,11 +27,11 @@ export default function PricingCard({
 }: PricingCardProps) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-
+  const currentPath = usePathname();
   const isCurrentPlan = currentSubscription?.price_id === product.price_id;
 
   const formatPrice = (amount: number) => {
-    return new Intl.NumberFormat("us-US", {
+    return new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: product.currency.toUpperCase(),
     }).format(amount / 100);
@@ -55,36 +56,44 @@ export default function PricingCard({
       });
 
       if (!response.ok) {
-        throw new Error("Failed to create checkout session");
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const result = await response.json();
+      const { sessionId, error } = await response.json();
 
-      if (result.sessionId) {
+      if (error) {
+        throw new Error(error);
+      }
+
+      if (sessionId) {
         const stripe = await import("@stripe/stripe-js").then((m) =>
           m.loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
         );
-        //có session => redirect
-        if (stripe) {
-          console.log("ok", stripe);
-          const { error } = await stripe.redirectToCheckout({
-            sessionId: result.sessionId,
-          });
 
-          if (error) {
-            console.error("Stripe redirect error:", error);
-            alert("Payment redirect failed. Please try again.");
-          }
+        if (!stripe) {
+          throw new Error("Failed to load Stripe");
         }
-      } // Nếu có errorRedirect, redirect đến trang lỗi
-      else if (result.errorRedirect) {
-        window.location.href = result.errorRedirect;
+
+        const { error: redirectError } = await stripe.redirectToCheckout({
+          sessionId: sessionId,
+        });
+
+        if (redirectError) {
+          console.error("Stripe redirect error:", redirectError);
+          throw new Error("Payment redirect failed: " + redirectError.message);
+        }
       } else {
-        throw new Error("No checkout URL received");
+        throw new Error("No session ID received from server");
       }
-    } catch (error) {
-      console.error("Error:", error);
-      alert("Something went wrong. Please try again.");
+    } catch (error: unknown) {
+      const err = error as Error;
+      console.error("Subscription error:", err.message);
+      const redirectUrl = getErrorRedirect(
+        currentPath,
+        err.message,
+        "Please try again later or contact support."
+      );
+      router.push(redirectUrl);
     } finally {
       setLoading(false);
     }

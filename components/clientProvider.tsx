@@ -13,15 +13,15 @@ export default function ClientProvider({
 }) {
   return (
     <SessionProvider session={session}>
-      {/* <ThemeProvider
+      <ThemeProvider
         attribute="class"
         defaultTheme="light"
         enableSystem
         disableTransitionOnChange
       >
         {children}
-      </ThemeProvider> */}
-      {children}
+      </ThemeProvider>
+      {/* {children} */}
     </SessionProvider>
   );
 }

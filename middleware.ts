@@ -6,45 +6,57 @@ export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const response = NextResponse.next();
   response.headers.set("x-pathname", pathname);
+
   const publicPaths = [
-    "/api",
+    "/api/auth",
+    "/api/public",
     "/_next",
     "/favicon.ico",
     "/images",
     "/icons",
     "/manifest.json",
+    "/.well-known", //  Chrome DevTools and other browser tools
+    "/robots.txt",
+    "/sitemap.xml",
   ];
+
   const isPublicPath = publicPaths.some((path) => pathname.startsWith(path));
   if (isPublicPath) {
     return response;
   }
+
   const token = await getToken({
     req: req,
     secret: process.env.AUTH_SECRET,
   });
+
   if (pathname.startsWith("/dashboard")) {
     if (!token) {
       return NextResponse.redirect(new URL("/login", req.url));
     }
     if (token?.role !== "admin") {
+      return NextResponse.redirect(new URL("/login", req.url));
+    }
+    return response;
+  }
+
+  console.log("pathname", pathname);
+  console.log("token", token);
+
+  if (pathname === "/login") {
+    if (token?.role === "admin") {
+      return NextResponse.redirect(new URL("/dashboard", req.url));
+    }
+    if (token?.role === "user" || token?.role === "subUser") {
       return NextResponse.redirect(new URL("/", req.url));
     }
     return response;
   }
-  if (pathname.startsWith("/user/")) {
-    if (!token) {
-      return NextResponse.redirect(new URL("/login", req.url));
-    }
 
-    return response;
-  }
   if (pathname.includes("/chapter/") && pathname.includes("/book/")) {
     response.headers.set("x-requires-subscription-check", "true");
   }
-  if (pathname === "/login" && token) {
-    const redirectUrl = token?.role === "admin" ? "/dashboard" : "/";
-    return NextResponse.redirect(new URL(redirectUrl, req.url));
-  }
+
   if (token) {
     response.headers.set("x-user-role", token?.role || "");
     response.headers.set("x-user-id", token?.id?.toString() || "");
@@ -52,6 +64,7 @@ export async function middleware(req: NextRequest) {
 
   return response;
 }
+
 export const config = {
   matcher: ["/((?!api|_next/static|_next/image|.*\\.png$).*)"],
 };

@@ -1,3 +1,4 @@
+import { unknown } from "zod";
 import { sql } from "./db";
 
 interface ViewMetadata {
@@ -41,6 +42,7 @@ export async function incrementViewService(
     let isNewUniqueView = false;
     let viewerIdentifier: string;
     const hashedIP = ipAddress ? hashIP(ipAddress) : null;
+
     if (userId) {
       viewerIdentifier = `user:${userId}`;
       const viewerKey = `${viewerIdentifier}:viewed:${chapterId}`;
@@ -58,29 +60,24 @@ export async function incrementViewService(
         isNewUniqueView = true;
       }
     }
-    //comment dòng dưới trong thực tế
-    // else {
-    //   return {
-    //     success: false,
-    //     error: `No user ID or valid IP address provided,userId :${userId},hashIP:${hashedIP}`,
-    //   };
-    // }
 
     if (isNewUniqueView) {
       pipeline.incr(viewKey);
-      // pipeline.zincrby("chapters:ranking:views", 1, chapterId);
       pipeline.hset(metadataKey, {
         bookId: bookId.toString(),
         lastViewedAt: timestamp,
       });
+
       if (userId) {
         pipeline.sadd(`${metadataKey}:users`, userId);
         pipeline.hincrby(`${metadataKey}:user_stats`, userId, 1);
       }
+
       if (hashedIP) {
         pipeline.sadd(`${metadataKey}:ips`, hashedIP);
         pipeline.hincrby(`${metadataKey}:ip_stats`, hashedIP, 1);
       }
+
       const viewData: ViewMetadata = {
         chapterId,
         bookId,
@@ -88,17 +85,23 @@ export async function incrementViewService(
         ipAddress: hashedIP || undefined,
         timestamp,
       };
-      pipeline.lpush(batchKey, JSON.stringify(viewData));
+
+      // ✅ Đảm bảo stringify object thành JSON string
+      const viewDataString = JSON.stringify(viewData);
+      pipeline.lpush(batchKey, viewDataString);
+
       const results = await pipeline.exec();
 
       if (!results) {
         throw new Error("Pipeline execution failed");
       }
+
       return {
         success: true,
         isNewView: true,
       };
     }
+
     return {
       success: true,
       isNewView: false,
@@ -148,6 +151,226 @@ export async function getChapterStatsService(
   }
 }
 
+async function syncChapterViews(
+  chapterId: number,
+  views: ViewMetadata[]
+): Promise<void> {
+  for (const view of views) {
+    try {
+      await sql`
+        INSERT INTO chapter_views (
+          chapter_id, 
+          book_id, 
+          user_id, 
+          ip_address, 
+          user_agent,
+          viewed_at
+        )
+        VALUES (
+          ${chapterId},
+          ${view.bookId},
+          ${view.userId || null},
+          ${view.ipAddress || null},
+          ${view.userAgent || null},
+
+          ${new Date(view.timestamp)}::timestamp
+        )
+        ON CONFLICT DO NOTHING;
+      `;
+    } catch (error: unknown) {
+      const err = error as Error;
+      console.error(`Database Error for chapter ${chapterId}:`, err.message);
+    }
+  }
+}
+
+async function updateChapterAggregatedStats(): Promise<void> {
+  const redisHold = await import("@/lib/redis");
+  const redis = redisHold.redis;
+
+  try {
+    const pattern = "chapter:*:views";
+    const keys: string[] = [];
+    let cursor = "0";
+
+    do {
+      const result = await redis.scan(cursor, {
+        match: pattern,
+        count: 100,
+      });
+      cursor = result[0];
+      keys.push(...(result[1] as string[]));
+    } while (cursor !== "0");
+
+    console.log(`Found ${keys.length} chapter view keys to process`);
+
+    if (keys.length === 0) {
+      console.log("No chapter view keys found");
+      return;
+    }
+
+    // Process trong batches để tránh overwhelm
+    const batchSize = 50;
+    let totalProcessed = 0;
+    let totalErrors = 0;
+
+    for (let i = 0; i < keys.length; i += batchSize) {
+      const batch = keys.slice(i, i + batchSize);
+
+      try {
+        await processBatch(redis, batch);
+        totalProcessed += batch.length;
+        console.log(
+          `Processed batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(
+            keys.length / batchSize
+          )} (${batch.length} keys)`
+        );
+      } catch (error) {
+        totalErrors += batch.length;
+        console.error(`Failed to process batch starting at index ${i}:`, error);
+        // Continue với batch tiếp theo thay vì throw
+      }
+    }
+
+    console.log(
+      `Chapter aggregated stats completed. Processed: ${totalProcessed}, Errors: ${totalErrors}`
+    );
+  } catch (error) {
+    console.error("Error in updateChapterAggregatedStats:", error);
+    throw error;
+  }
+}
+
+async function processBatch(redis: any, batch: string[]): Promise<void> {
+  // Lấy tất cả values trong một pipeline
+  const pipeline = redis.pipeline();
+  for (const key of batch) {
+    pipeline.get(key);
+  }
+
+  const results = await pipeline.exec();
+  if (!results) {
+    throw new Error("Pipeline execution failed");
+  }
+
+  // Prepare data cho database update
+  const dbUpdates: Array<{ chapterId: number; count: number; key: string }> =
+    [];
+  const keysToDelete: string[] = [];
+
+  for (let j = 0; j < batch.length; j++) {
+    const key = batch[j];
+    const result = results[j];
+
+    if (result[0] !== null) {
+      console.error(`Redis error for key ${key}:`, result[0]);
+      continue;
+    }
+
+    // Parse chapterId từ key (format: "chapter:123:views")
+    const keyParts = key.split(":");
+    if (
+      keyParts.length !== 3 ||
+      keyParts[0] !== "chapter" ||
+      keyParts[2] !== "views"
+    ) {
+      console.warn(`Invalid key format: ${key}`);
+      keysToDelete.push(key); // Xóa key có format sai
+      continue;
+    }
+
+    const chapterId = parseInt(keyParts[1], 10);
+    if (!Number.isFinite(chapterId) || chapterId <= 0) {
+      console.warn(`Invalid chapter ID in key: ${key}`);
+      keysToDelete.push(key);
+      continue;
+    }
+
+    const raw = result[1];
+    const count = raw != null ? parseInt(String(raw), 10) : 0;
+
+    if (Number.isFinite(count) && count > 0) {
+      dbUpdates.push({ chapterId, count, key });
+    } else {
+      // Count = 0 hoặc invalid, chỉ cần xóa key
+      keysToDelete.push(key);
+    }
+  }
+
+  // Batch database updates
+  if (dbUpdates.length > 0) {
+    try {
+      // Có thể tối ưu hơn bằng cách dùng transaction hoặc bulk update
+      const updatePromises = dbUpdates.map(
+        async ({ chapterId, count, key }) => {
+          try {
+            await sql`
+            UPDATE chapters
+            SET view_count = COALESCE(view_count, 0) + ${count},
+                updated_at = CURRENT_TIMESTAMP
+            WHERE id = ${chapterId};
+          `;
+
+            console.log(`Updated chapter ${chapterId} with ${count} views`);
+            return key; // Return key để xóa sau
+          } catch (error) {
+            console.error(`Database error for chapter ${chapterId}:`, error);
+            throw error; // Không xóa key nếu DB update fail
+          }
+        }
+      );
+
+      const successfulKeys = await Promise.all(updatePromises);
+      keysToDelete.push(...successfulKeys);
+    } catch (error) {
+      // Nếu có lỗi DB, không xóa bất kỳ key nào
+      throw new Error(`Database update failed: ${error}`);
+    }
+  }
+
+  // Xóa tất cả keys thành công trong một pipeline
+  if (keysToDelete.length > 0) {
+    const deletePipeline = redis.pipeline();
+    for (const key of keysToDelete) {
+      deletePipeline.del(key);
+    }
+
+    try {
+      await deletePipeline.exec();
+      console.log(`Deleted ${keysToDelete.length} Redis keys`);
+    } catch (error) {
+      console.error("Error deleting Redis keys:", error);
+      // Không throw vì DB đã update thành công
+    }
+  }
+}
+
+async function updateBooksAggregatedStats(): Promise<void> {
+  try {
+    console.log("Updating book aggregated stats...");
+
+    // ✅ Fixed SQL syntax với proper alias
+    const result = await sql`
+      UPDATE books 
+      SET views = (
+        SELECT COALESCE(SUM(c.view_count), 0)
+        FROM chapters c 
+        WHERE c.book_id = books.id
+      ),
+      updated_at = CURRENT_TIMESTAMP
+      returning *
+    `;
+
+    console.log(`Updated ${result.length} books with aggregated view counts`);
+  } catch (error) {
+    console.error("Database Error in updateBooksAggregatedStats:", error);
+    throw new Error(
+      `Failed to update view count for books: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }`
+    );
+  }
+}
 export async function syncViewsToDatabase(): Promise<{
   success: boolean;
   processed: number;
@@ -157,14 +380,61 @@ export async function syncViewsToDatabase(): Promise<{
   const redis = redisHold.redis;
   const errors: string[] = [];
   let processed = 0;
+
   try {
     const batchKey = VIEW_BATCH_KEY;
     const batchSize = 100;
-    //lrange = key, start,end, trả về danh sách key
+
     let viewsData = await redis.lrange(batchKey, 0, batchSize - 1);
+
     while (viewsData.length > 0) {
-      const views: ViewMetadata[] = viewsData.map((v) => JSON.parse(v));
-      console.log("views", views);
+      const views: ViewMetadata[] = [];
+
+      for (const rawView of viewsData) {
+        try {
+          let parsedView: any;
+
+          if (typeof rawView === "string") {
+            parsedView = JSON.parse(rawView);
+          } else if (typeof rawView === "object" && rawView !== null) {
+            parsedView = rawView;
+          } else {
+            console.error("Invalid view data format:", rawView);
+            continue;
+          }
+
+          const validatedView: ViewMetadata = {
+            chapterId: Number(parsedView.chapterId),
+            bookId: Number(parsedView.bookId),
+            userId: parsedView.userId,
+            ipAddress: parsedView.ipAddress,
+            timestamp: parsedView.timestamp,
+          };
+
+          if (isNaN(validatedView.chapterId) || isNaN(validatedView.bookId)) {
+            console.error("Invalid chapterId or bookId:", parsedView);
+            errors.push(`Invalid chapterId or bookId in view data`);
+            continue;
+          }
+
+          views.push(validatedView);
+        } catch (parseError) {
+          console.error(
+            "Error parsing view data:",
+            parseError,
+            "Raw data:",
+            rawView
+          );
+          errors.push(`Failed to parse view data: ${parseError}`);
+        }
+      }
+
+      if (views.length === 0) {
+        await redis.ltrim(batchKey, batchSize, -1);
+        viewsData = await redis.lrange(batchKey, 0, batchSize - 1);
+        continue;
+      }
+
       const chapterGroups = new Map<number, ViewMetadata[]>();
       for (const view of views) {
         if (!chapterGroups.has(view.chapterId)) {
@@ -172,6 +442,7 @@ export async function syncViewsToDatabase(): Promise<{
         }
         chapterGroups.get(view.chapterId)!.push(view);
       }
+
       for (const [chapterId, chapterViews] of Array.from(
         chapterGroups.entries()
       )) {
@@ -182,11 +453,33 @@ export async function syncViewsToDatabase(): Promise<{
           errors.push(`Chapter ${chapterId}: ${error}`);
         }
       }
+
       await redis.ltrim(batchKey, batchSize, -1);
       viewsData = await redis.lrange(batchKey, 0, batchSize - 1);
     }
-    await updateChapterAggregatedStats();
-    await updateBooksAggregatedStats();
+
+    console.log(`Synced ${processed} individual views to database`);
+
+    if (processed > 0) {
+      console.log("Updating aggregated stats...");
+
+      try {
+        await updateChapterAggregatedStats();
+        console.log("Chapter aggregated stats updated successfully");
+      } catch (error) {
+        console.error("Error updating chapter aggregated stats:", error);
+        errors.push(`Failed to update chapter aggregated stats: ${error}`);
+      }
+
+      try {
+        await updateBooksAggregatedStats();
+        console.log("Book aggregated stats updated successfully");
+      } catch (error) {
+        console.error("Error updating book aggregated stats:", error);
+        errors.push(`Failed to update book aggregated stats: ${error}`);
+      }
+    }
+
     return {
       success: errors.length === 0,
       processed,
@@ -202,84 +495,6 @@ export async function syncViewsToDatabase(): Promise<{
         error instanceof Error ? error.message : "Unknown error",
       ],
     };
-  }
-}
-
-async function syncChapterViews(
-  chapterId: number,
-  views: ViewMetadata[]
-): Promise<void> {
-  const stats = await getChapterStatsService(chapterId);
-  if (!stats) return;
-  for (const view of views) {
-    try {
-      await sql`
-        INSERT INTO chapter_views (
-          chapter_id, 
-          book_id, 
-          user_id, 
-          ip_address, 
-          user_agent,
-          viewed_at
-        )
-        VALUES (
-          ${chapterId},
-          ${stats.bookId},
-          ${view.userId || null},
-          ${view.ipAddress || null},
-          ${view.userAgent || null},
-
-          ${new Date(view.timestamp)}::timestamp
-        )
-        ON CONFLICT DO NOTHING;
-      `;
-    } catch (error) {
-      console.error(`Database Error for chapter ${chapterId}:`, error);
-      throw new Error(`Failed to sync view for chapter ${chapterId}`);
-    }
-  }
-}
-
-async function updateChapterAggregatedStats(): Promise<void> {
-  const redisHold = await import("@/lib/redis");
-  const redis = redisHold.redis;
-  const pattern = "chapter:*:views";
-  const keys = (await redis.keys(pattern)) as unknown as string[];
-
-  for (const key of keys) {
-    const chapterId = parseInt(String(key).split(":")[1] || "0", 10);
-    const raw = (await redis.get(key)) as unknown;
-    const count = raw != null ? parseInt(String(raw), 10) : 0;
-    //COALESCE(giá trị,...) Nó sẽ trả về giá trị đầu tiên khác null => ít nhất thì trả về 0
-    if (Number.isFinite(count) && count > 0) {
-      try {
-        await sql`
-          UPDATE chapters
-          SET view_count = COALESCE(view_count, 0) + ${count},
-              updated_at = CURRENT_TIMESTAMP
-          WHERE id = ${chapterId};
-        `;
-      } catch (error) {
-        console.error("Database Error:", error);
-        throw new Error(`Failed to update view count for chapter ${chapterId}`);
-      }
-    }
-  }
-}
-
-async function updateBooksAggregatedStats(): Promise<void> {
-  try {
-    await sql`
-    UPDATE books b 
-          SET views = (
-            select COALESCE(SUM(view_count),0)
-            from chapters 
-            where chapters.book_id = books.id
-          )
-        `;
-  } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error(`Failed to update view count books`);
   }
 }
 

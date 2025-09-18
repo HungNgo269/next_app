@@ -170,21 +170,21 @@ export default function ImageUploadField({
 
   // Determine border and background colors based on state
   const getBorderColors = () => {
-    if (displayError) return "border-red-300 bg-red-50";
+    if (displayError) return "border-destructive/30 bg-destructive/10";
     if (isDragOver) return "border-primary/60 bg-primary/10";
-    if (isValidFile) return "border-green-300 bg-green-50";
+    if (isValidFile) return "border-success/30 bg-success/10";
     return "border-gray-300 hover:border-gray-400 hover:bg-gray-50";
   };
 
   return (
     <div className={`space-y-2 ${className}`}>
       <label className="block text-sm font-semibold text-gray-700">
-        Image {required && <span className="text-red-500">*</span>}
+        Image {required && <span className="text-destructive">*</span>}
         {isValidFile && (
-          <CheckCircle className="inline w-4 h-4 text-green-600 ml-1" />
+          <CheckCircle className="inline w-4 h-4 text-success ml-1" />
         )}
         {displayError && (
-          <AlertCircle className="inline w-4 h-4 text-red-600 ml-1" />
+          <AlertCircle className="inline w-4 h-4 text-destructive ml-1" />
         )}
       </label>
 
@@ -217,13 +217,13 @@ export default function ImageUploadField({
             />
             {/* Success indicator overlay */}
             {isValidFile && (
-              <div className="absolute top-2 right-2 bg-green-500 text-white p-1 rounded-full">
+              <div className="absolute top-2 right-2 bg-success text-primary-foreground p-1 rounded-full">
                 <CheckCircle className="w-4 h-4" />
               </div>
             )}
             {/* Hover overlay with image info and action button */}
             <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
-              <div className="opacity-0 hover:opacity-100 transition-opacity duration-300 text-center text-white">
+              <div className="opacity-0 hover:opacity-100 transition-opacity duration-300 text-center text-primary-foreground">
                 <div className="space-y-2">
                   <p className="font-medium">{selectedFile?.name}</p>
                   <p className="text-sm">
@@ -251,12 +251,12 @@ export default function ImageUploadField({
             <div className="flex flex-col items-center space-y-2">
               <div
                 className={`p-3 rounded-lg ${
-                  isValidFile ? "bg-green-100" : "bg-primary/10"
+                  isValidFile ? "bg-success/15" : "bg-primary/10"
                 }`}
               >
                 <Upload
                   className={`w-8 h-8 ${
-                    isValidFile ? "text-green-600" : "text-primary"
+                    isValidFile ? "text-success" : "text-primary"
                   }`}
                 />
               </div>
@@ -304,7 +304,7 @@ export default function ImageUploadField({
 
       {/* Error Message */}
       {displayError && (
-        <p className="text-red-600 text-sm flex items-center gap-1 animate-fadeIn">
+        <p className="text-destructive text-sm flex items-center gap-1 animate-fadeIn">
           <AlertCircle className="w-4 h-4" />
           {displayError}
         </p>
@@ -312,7 +312,7 @@ export default function ImageUploadField({
 
       {/* Success Message */}
       {isTouched && !displayError && selectedFile && isValidFile && (
-        <p className="text-green-600 text-sm flex items-center gap-1 animate-fadeIn">
+        <p className="text-success text-sm flex items-center gap-1 animate-fadeIn">
           <CheckCircle className="w-4 h-4" />
           Image is valid and ready for upload
         </p>

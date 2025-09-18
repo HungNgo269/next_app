@@ -16,7 +16,10 @@ import NewChapterList from "@/app/ui/user/chapter/newChapterList";
 // 2xl	96rem (1536px)	@media (width >= 96rem) { ... }
 export default function HomePage() {
   return (
-    <div>
+    <div
+      className="bg-gradient-to-br from-slate-50 via-white to-slate-50
+     dark:from-slate-950 dark:via-slate-900 dark:to-slate-950"
+    >
       <header className="ml-auto mr-auto w-full  ">
         <Suspense>
           <HeaderWrapper children={<Header></Header>}></HeaderWrapper>,

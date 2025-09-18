@@ -1,8 +1,52 @@
+import type { Metadata } from "next";
 import Pagination from "@/app/ui/share/pagination/pagination";
 import { fetchTotalChapterPageAction } from "@/app/actions/chapterActions";
 import ChapterList from "./chapterlist";
 import { Suspense } from "react";
 import { BookCardSkeleton } from "../ui/skeletons";
+import { getURL } from "@/lib/utils/helper";
+const CHAPTER_PAGE_TITLE = "Latest Chapter Updates | NextBook";
+const CHAPTER_PAGE_DESCRIPTION =
+  "Stay caught up with the newest chapters released across the NextBook library.";
+const CHAPTER_PAGE_URL = getURL("chapter");
+const CHAPTER_PAGE_IMAGE = getURL("hero-desktop.png");
+
+export const metadata: Metadata = {
+  title: { absolute: CHAPTER_PAGE_TITLE },
+  description: CHAPTER_PAGE_DESCRIPTION,
+  keywords: [
+    "NextBook chapters",
+    "latest updates",
+    "web novel releases",
+    "chapter updates",
+    "online fiction",
+  ],
+  alternates: {
+    canonical: CHAPTER_PAGE_URL,
+  },
+  openGraph: {
+    url: CHAPTER_PAGE_URL,
+    title: CHAPTER_PAGE_TITLE,
+    description: CHAPTER_PAGE_DESCRIPTION,
+    type: "website",
+    images: [
+      {
+        url: CHAPTER_PAGE_IMAGE,
+        width: 1200,
+        height: 630,
+        alt: "Read the newest chapters on NextBook",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: CHAPTER_PAGE_TITLE,
+    description: CHAPTER_PAGE_DESCRIPTION,
+    images: [CHAPTER_PAGE_IMAGE],
+  },
+  robots: { index: true, follow: true },
+};
+
 interface PageProps {
   searchParams: Promise<{ page: number }>;
 }

@@ -12,10 +12,11 @@ export async function POST(req: NextRequest) {
   const body = await req.text();
 
   try {
+    // Verify against the exact requested URL to avoid env/base URL mismatches
     await receiver.verify({
       signature: signature!,
       body,
-      url: `${process.env.NEXT_PUBLIC_BASE_URL}/api/cron/sync-views`,
+      url: req.url,
     });
   } catch (error) {
     return NextResponse.json({ error: "Invalid signature" }, { status: 401 });

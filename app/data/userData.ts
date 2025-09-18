@@ -1,6 +1,8 @@
-import { User } from "next-auth";
-import { sql } from "../../lib/db";
-import { UserStripe } from "../interface/userStripe";
+import { sql } from "@/lib/db";
+import { User, UserProfile } from "@/app/interface/user";
+import { UserStripe } from "@/app/interface/userStripe";
+import { auth } from "@/auth";
+import { UUID } from "crypto";
 
 export async function getUser(email: string): Promise<User | undefined> {
   try {
@@ -12,6 +14,7 @@ export async function getUser(email: string): Promise<User | undefined> {
     throw new Error("Failed to fetch user.");
   }
 }
+
 export async function getUserID(email: string) {
   try {
     const rows =
@@ -24,6 +27,7 @@ export async function getUserID(email: string) {
     throw new Error("Failed to fetch user.");
   }
 }
+
 export async function getUserStripe(
   id: string
 ): Promise<UserStripe | undefined> {
@@ -36,14 +40,14 @@ export async function getUserStripe(
     throw new Error("Failed to fetch user.");
   }
 }
+
 export async function updateUserStripe(
   id: string,
   stripe_customer_id: string
 ): Promise<UserStripe | undefined> {
   try {
     const user =
-      (await sql`update userstripe set stripe_customer_id=${stripe_customer_id} WHERE id=${id}
-        `) as UserStripe[];
+      (await sql`update userstripe set stripe_customer_id=${stripe_customer_id} WHERE id=${id}`) as UserStripe[];
     return user[0];
   } catch (error) {
     console.error("Database error:", error);
@@ -53,13 +57,119 @@ export async function updateUserStripe(
 
 export async function getUserStripeByCustomerId(
   stripe_customer_id: string
-): Promise<UserStripe | undefined> {
+): Promise<UserStripe> {
   try {
     const user =
-      (await sql`SELECT * FROM userstripe WHERE stripe_customer_id=${stripe_customer_id}`) as unknown as UserStripe[];
+      (await sql`SELECT * FROM userstripe WHERE stripe_customer_id=${stripe_customer_id}`) as UserStripe[];
     return user[0];
   } catch (error) {
     console.error("Database error:", error);
     throw new Error("Failed to fetch user.");
+  }
+}
+
+export async function getUserProfile(id: string): Promise<UserProfile | null> {
+  try {
+    const rows = (await sql`
+        SELECT
+          id,
+          name,
+          email,
+          role,
+          phone,
+          image_url,
+          address,
+          created_at,
+          updated_at
+        FROM users
+        WHERE id = ${id}
+        LIMIT 1
+      `) as unknown as UserProfile[];
+    return rows[0] ?? null;
+  } catch (error) {
+    console.error("Database error:", error);
+    throw new Error("Failed to fetch user profile.");
+  }
+}
+
+export async function updateUserProfile(
+  id: string,
+  updates: {
+    name: string;
+    phone?: string | null;
+    address?: string | null;
+  }
+): Promise<UserProfile> {
+  try {
+    const rows = (await sql`
+        UPDATE users
+        SET
+          name = ${updates.name},
+          phone = ${updates.phone ?? null},
+          address = ${updates.address ?? null},
+          updated_at = now()
+        WHERE id = ${id}
+        RETURNING
+          id,
+          name,
+          email,
+          role,
+          phone,
+          image_url,
+          address,
+          created_at,
+          updated_at
+      `) as unknown as UserProfile[];
+
+    if (!rows[0]) {
+      throw new Error("User not found");
+    }
+
+    return rows[0];
+  } catch (error) {
+    console.error("Database error:", error);
+    throw new Error("Failed to update user profile.");
+  }
+}
+export async function fetchCurrentUserProfile(): Promise<UserProfile | null> {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return null;
+    }
+
+    return await getUserProfile(session.user.id);
+  } catch (error) {
+    console.error("Failed to fetch current user profile:", error);
+    return null;
+  }
+}
+export async function upsertUserOAuth({
+  id,
+  email,
+  name,
+  google_id,
+}: {
+  id: string;
+  email: string;
+  name?: string | null;
+  google_id?: string | null;
+}) {
+  try {
+    const result = await sql`
+      INSERT INTO users (id,email, name, google_id) 
+      VALUES (${id},${email}, ${name}, ${google_id})
+      ON CONFLICT (email) 
+      DO UPDATE SET 
+        name = EXCLUDED.name,
+        google_id = EXCLUDED.google_id,
+        updated_at = NOW()
+      RETURNING id, email, name, role, image_url, created_at, updated_at
+    `;
+
+    return result[0];
+  } catch (error) {
+    console.error("Failed to upsert user OAuth:", error);
+    return null;
   }
 }

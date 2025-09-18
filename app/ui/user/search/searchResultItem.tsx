@@ -40,7 +40,7 @@ export default function SearchResultItem({ query }: Props) {
     return <div className="p-4 text-sm text-gray-500">Searching…</div>;
   if (error)
     return (
-      <div className="p-4 text-sm text-red-600" role="alert">
+      <div className="p-4 text-sm text-destructive" role="alert">
         Failed to load results
       </div>
     );
@@ -58,7 +58,7 @@ export default function SearchResultItem({ query }: Props) {
           href={`/book/${book.id}`}
           className="block"
         >
-          <div className="flex flex-row gap-4 p-4 hover:bg-background  border-b-gray-100 border-1 border ">
+          <div className="flex flex-row gap-4 p-4 hover:bg-background bg-background  border-b-gray-100 border-1  ">
             <div className="min-h-18 min-w-14 relative rounded-[8px] overflow-hidden">
               <ImageCard bookName={book.name} bookImage={book.image_urls[0]} />
             </div>

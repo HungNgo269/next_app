@@ -1,13 +1,13 @@
 "use client";
 
 import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
-import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import { useActionState } from "react";
 import { authenticate } from "@/app/(auth)/login/actions";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import GoogleSignIn from "./login-google";
 
 export default function LoginForm() {
   const searchParams = useSearchParams();
@@ -21,7 +21,6 @@ export default function LoginForm() {
   return (
     <div className="flex-1 flex items-center justify-center p-8 bg-background">
       <div className="w-full max-w-md    p-6">
-        {/* Header */}
         <header className="space-y-1 text-center">
           <h2 className="text-2xl font-bold">Login To NextBook</h2>
           <p className="text-muted-foreground">
@@ -29,7 +28,6 @@ export default function LoginForm() {
           </p>
         </header>
 
-        {/* Content */}
         <div className="mt-6">
           <form action={formAction} className="space-y-4">
             <div className="space-y-2 ">
@@ -54,8 +52,7 @@ export default function LoginForm() {
                 minLength={6}
               />
             </div>
-
-            {/* Remember me + Forgot password */}
+            {/* Forgot password */}
             <div className="flex items-center justify-center">
               <Button
                 variant="link"
@@ -88,9 +85,10 @@ export default function LoginForm() {
               )}
             </Button>
           </form>
+          <GoogleSignIn></GoogleSignIn>
+
           <div className="pt-4"></div>
           <hr className="border-0.5 border-border " />
-          {/* Footer */}
           <div className="text-center mt-4">
             <p className="text-muted-foreground text-sm">
               Need an account?{" "}
@@ -103,7 +101,6 @@ export default function LoginForm() {
               </Link>
             </p>
           </div>
-
           <div className="mt-6 text-center">
             <p className="text-xs text-muted-foreground">
               By continuing, you agree to our{" "}

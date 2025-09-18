@@ -1,6 +1,10 @@
 "use server";
 
-import { checkNextChapter, checkPrevChapter, fetchChapter } from "@/app/book/[bookId]/chapter/[chapterId]/data";
+import {
+  checkNextChapter,
+  checkPrevChapter,
+  fetchChapter,
+} from "@/app/book/[bookId]/chapter/[chapterId]/data";
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { defaultSettings, ReaderSettings } from "@/lib/readerSetting";
@@ -77,31 +81,20 @@ export async function fetchChapterActions(chapterId: number) {
 
 export async function updateReaderSettings(settings: Partial<ReaderSettings>) {
   const cookieStore = await cookies();
-
-  // Get current settings
   const currentSettingsString = cookieStore.get("reader-settings")?.value;
   const currentSettings = currentSettingsString
     ? JSON.parse(currentSettingsString)
     : defaultSettings;
-
   const newSettings = { ...currentSettings, ...settings };
-  console.log("newSettings", newSettings);
+
   cookieStore.set("reader-settings", JSON.stringify(newSettings), {
     httpOnly: false, // thông tin cùi chắc là ko cần bảo mật
     secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    sameSite: "lax", //strict >lax:samesite request top-level navigation , X dif domain>none
     path: "/",
   });
-
-  // Optional: Sync to database for logged users
-  // const session = await auth();
-  // if (session?.user?.id) {
-  //   await saveUserSettingsToDb(session.user.id, newSettings);
-  // }
-
   revalidatePath("/");
 }
-// Navigation functions
 export async function checkPrevChapterAction(currentChapterNumber: number) {
   try {
     return await checkPrevChapter(currentChapterNumber);

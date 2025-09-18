@@ -35,7 +35,7 @@ export default function SlideContent({
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent" />
                 <div className="absolute inset-0 flex items-center">
-                  <div className="text-white p-8 md:p-12 max-w-2xl">
+                  <div className="text-primary-foreground p-8 md:p-12 max-w-2xl">
                     <h2 className="text-2xl md:text-4xl font-bold mb-4 leading-tight">
                       {slide.title}
                     </h2>

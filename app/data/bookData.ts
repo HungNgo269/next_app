@@ -300,3 +300,25 @@ export async function fetchTotalChapterInBookById(id: number) {
     throw new Error("Failed to fetch book image for chapter");
   }
 }
+export async function AddBookToBookShelf(userId: string, bookId: number) {
+  try {
+    const res = await sql`
+    insert into book_shelf  (id,book_id) values (${userId},${bookId})
+  `;
+    return res;
+  } catch (error) {
+    console.error("Server Action Error:", error);
+    throw new Error("Failed to fetch book image for chapter");
+  }
+}
+export async function RemoveFromBookShelf(bookId: number) {
+  try {
+    const res = await sql`
+    DELETE FROM book_shelf  where book_id=${bookId};
+  `;
+    return res;
+  } catch (error) {
+    console.error("Server Action Error:", error);
+    throw new Error("Failed to fetch book image for chapter");
+  }
+}

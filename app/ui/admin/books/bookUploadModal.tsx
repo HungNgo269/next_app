@@ -218,7 +218,7 @@ export default function BookUploadModal({
                 <button
                   onClick={resetUpload}
                   type="button"
-                  className="px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white font-semibold hover:from-green-700 hover:to-green-800 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center gap-2 rounded-lg"
+                  className="px-6 py-3 bg-gradient-to-r from-success to-success/90 text-primary-foreground font-semibold hover:from-success/90 hover:to-success/80 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center gap-2 rounded-lg"
                   disabled={isPending}
                 >
                   <Upload className="w-4 h-4" />
@@ -238,8 +238,8 @@ export default function BookUploadModal({
 
             {/* Form Status Messages */}
             {!isFormValid && !isPending && (
-              <div className="text-center p-4 bg-amber-50 border border-amber-200 rounded-lg">
-                <p className="text-sm text-amber-700">
+              <div className="text-center p-4 bg-warning/15 border border-warning/20 rounded-lg">
+                <p className="text-sm text-warning">
                   Please fill all required fields and select an image to enable
                   upload
                 </p>
@@ -247,8 +247,8 @@ export default function BookUploadModal({
             )}
 
             {state && !state.success && !state.errors && (
-              <div className="text-center p-4 bg-red-50 border border-red-200 rounded-lg">
-                <p className="text-sm text-red-700">{state.message}</p>
+              <div className="text-center p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
+                <p className="text-sm text-destructive">{state.message}</p>
               </div>
             )}
           </form>

@@ -1,28 +1,59 @@
 import type { NextAuthConfig } from "next-auth";
-import UserToken from "./app/interface/session";
+import { getUser, upsertUserOAuth } from "./app/data/userData";
+import { getURL } from "./lib/utils/helper";
 
 export const authConfig = {
   trustHost: true,
   pages: {
     signIn: "/login",
     error: "/auth/error",
+    signOut: "/",
   },
   providers: [],
   callbacks: {
-    async jwt({ token, user, trigger }) {
-      if (trigger === "update") {
-        //f5 nếu cần
+    async signIn({ user, account, profile }) {
+      if (account?.provider === "google") {
+        try {
+          let dbUser: any = await getUser(user?.email || "");
+
+          dbUser = await upsertUserOAuth({
+            id: crypto.randomUUID(),
+            email: user?.email || "",
+            name: user?.name,
+            google_id: user.id || account.providerAccountId,
+          });
+
+          // console.log("Upserted user:", dbUser);
+
+          // if (!dbUser) {
+          //   console.error("Failed to upsert user");
+          //   return false;
+          // }
+
+          return true;
+        } catch (error) {
+          console.error("Error during Google sign in:", error);
+          return false;
+        }
       }
+
+      return true;
+    },
+
+    async jwt({ token, user, account, profile }) {
       if (user) {
-        const userData = user as UserToken;
-        token.id = userData.id;
-        token.email = userData.email;
-        token.name = userData.name;
-        token.role = userData.role;
-        token.image_url = userData?.image_url;
-        token.createdAt = userData.created_at;
-        token.updatedAt = userData.updated_at;
+        const dbUser = await getUser(user?.email || "");
+        if (dbUser) {
+          token.id = dbUser.id;
+          token.email = dbUser.email;
+          token.name = dbUser.name;
+          token.role = dbUser.role || "user";
+          token.image_url = dbUser.image_url || user.image || "";
+          token.createdAt = dbUser.created_at;
+          token.updatedAt = dbUser.updated_at;
+        }
       }
+
       return token;
     },
 
@@ -36,10 +67,8 @@ export const authConfig = {
       }
       return session;
     },
-    async redirect({ url, baseUrl }) {
-      if (url.startsWith("/")) return `${baseUrl}${url}`;
-      else if (new URL(url).origin === baseUrl) return url;
-      return baseUrl;
+    async redirect({ url }) {
+      return `${"/"}`;
     },
   },
 } satisfies NextAuthConfig;

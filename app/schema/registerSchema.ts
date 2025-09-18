@@ -11,8 +11,8 @@ const registerSchema = z.object({
     .max(128, {
       message: "A valid user name should be at most 128 characters",
     })
-    .regex(/^[a-zA-Z ,]+$/, {
-      message: "Name can only contain letters (a-z, A-Z), spaces, and commas",
+    .regex(/^[a-zA-Z ]+$/, {
+      message: "Name can only contain letters (a-z, A-Z), spaces",
     }),
   userName: z
     .string({

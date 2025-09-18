@@ -41,7 +41,7 @@ export default async function BookRecommend() {
                 height={300}
                 className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
               />
-              {/* <Badge className="absolute top-3 left-3 bg-green-500 hover:bg-green-600 text-white">
+              {/* <Badge className="absolute top-3 left-3 bg-success hover:bg-success/90 text-primary-foreground">
                 {book.badges[0].icon}
               </Badge> */}
             </Link>

@@ -48,13 +48,8 @@ export default function ChapterToolBar({
     setIsBookmarked(!isBookmarked);
   };
 
-  const [mounted, setMounted] = React.useState(false);
-  React.useEffect(() => setMounted(true), []);
-
-  if (!mounted) return null;
-
   const handleSettingChange = (key: keyof ReaderSettings, value: any) => {
-    const newSettings = { ...settings, [key]: value };
+    const newSettings = { ...settings, [key]: value }; //fontsize :16(etc)
     setSettings(newSettings);
 
     startTransition(async () => {
@@ -270,7 +265,7 @@ export default function ChapterToolBar({
           onClick={toggleBookmark}
         >
           {isBookmarked ? (
-            <BookmarkCheck className="w-5 h-5 fill-current text-yellow-500" />
+            <BookmarkCheck className="w-5 h-5 fill-current text-warning" />
           ) : (
             <Bookmark className="w-5 h-5" />
           )}

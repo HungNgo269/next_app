@@ -116,9 +116,9 @@ export default function RegisterForm() {
 
             {/* Success Message */}
             {state?.success && (
-              <div className="flex items-center space-x-2 p-3 bg-green-50 border border-green-200 rounded-lg">
-                <div className="h-5 w-5 text-green-600">✓</div>
-                <p className="text-sm text-green-800">{state.message}</p>
+              <div className="flex items-center space-x-2 p-3 bg-success/10 border border-success/20 rounded-lg">
+                <div className="h-5 w-5 text-success">✓</div>
+                <p className="text-sm text-success">{state.message}</p>
               </div>
             )}
 

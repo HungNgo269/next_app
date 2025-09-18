@@ -13,10 +13,10 @@ export default function StatusLabel({ status }: { status: Status }) {
       className={clsx(
         "inline-flex items-center rounded-full px-2 py-1 text-xs font-medium",
         {
-          "bg-green-100 text-green-800": status === Status.completed,
+          "bg-success/15 text-success": status === Status.completed,
           "bg-primary/10 text-primary/80": status === Status.on_going,
-          "bg-yellow-100 text-yellow-800": status === Status.hiatus,
-          "bg-red-100 text-red-800": status === Status.cancelled,
+          "bg-warning/15 text-warning": status === Status.hiatus,
+          "bg-destructive/10 text-destructive": status === Status.cancelled,
         }
       )}
     >

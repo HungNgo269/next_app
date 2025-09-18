@@ -21,7 +21,7 @@ export default function PopularBookContent({ books }: popularBookContentProps) {
           >
             <ImageCard bookImage={book?.image_urls[0]} bookName={book.name} />
           </Link>
-          <div className="min-w-6 min-h-6 flex items-center justify-center text-lg font-bold text-black">
+          <div className="min-w-6 min-h-6 flex items-center justify-center text-lg font-bold text-card-foreground">
             {index + 1}
           </div>
           <div className="flex flex-col justify-center h-full">

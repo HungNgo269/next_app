@@ -1,4 +1,6 @@
+import { UUID } from "crypto";
+
 export interface UserStripe {
-  id: string;
+  id: UUID;
   stripe_customer_id: string;
 }
