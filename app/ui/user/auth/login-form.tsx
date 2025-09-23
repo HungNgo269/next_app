@@ -11,8 +11,7 @@ import GoogleSignIn from "./login-google";
 
 export default function LoginForm() {
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
-
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
   const [errorMessage, formAction, isPending] = useActionState(
     authenticate,
     undefined
@@ -52,7 +51,6 @@ export default function LoginForm() {
                 minLength={6}
               />
             </div>
-            {/* Forgot password */}
             <div className="flex items-center justify-center">
               <Button
                 variant="link"
@@ -63,8 +61,8 @@ export default function LoginForm() {
             </div>
 
             <input type="hidden" name="redirectTo" value={callbackUrl} />
+            {/* gửi kèm link redirect */}
 
-            {/* Error */}
             {errorMessage && (
               <div className="flex items-center space-x-2 p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
                 <ExclamationCircleIcon className="h-5 w-5 text-destructive" />

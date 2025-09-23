@@ -3,4 +3,5 @@ export interface ActionResult {
   message?: string;
   errors?: Record<string, string[]>;
   redirectTo?: string;
+  data?: any;
 }

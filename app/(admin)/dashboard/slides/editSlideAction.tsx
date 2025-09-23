@@ -1,25 +1,21 @@
 "use server";
+import { ActionResult } from "@/app/interface/actionResult";
 import { PatchSlideSchema } from "@/app/schema/slideSchema";
 import { appendIfDefined } from "@/lib/utils/helper";
 
-type ActionState = {
-  success: boolean;
-  message: string;
-  errors?: Record<string, string[]>;
-  imageUrl?: string;
-} | null;
-
 export async function EditSlideAction(
-  prevState: ActionState,
+  prevState: ActionResult | undefined,
   formData: FormData
-): Promise<ActionState> {
+): Promise<ActionResult> {
   try {
-    // Lấy dữ liệu text fields từ form
+    const isActive = formData.get("is_active");
     const raw = {
+      id: formData.get("id"),
       title: formData.get("title"),
-      order: formData.get("order"), // sẽ coerce sang number trong schema
-      desc: formData.get("desc"),
-      redirectLink: formData.get("redirectLink"),
+      redirect_url: formData.get("redirect_url"),
+      display_order: formData.get("display_order"),
+      is_active: typeof isActive === "string" ? isActive === "true" : isActive,
+      description: formData.get("description"),
     };
 
     const parsed = PatchSlideSchema.safeParse(raw);
@@ -31,8 +27,7 @@ export async function EditSlideAction(
       };
     }
 
-    // File là tùy chọn trong PATCH
-    const file = formData.get("file") as File | null;
+    const file = formData.get("image") as File | null;
     if (file && file.size > 0) {
       if (!file.type.startsWith("image/")) {
         return { success: false, message: "Please select an image file" };
@@ -42,23 +37,27 @@ export async function EditSlideAction(
         return { success: false, message: "File size must be less than 5MB" };
       }
     }
-
-    // Chỉ append những field có giá trị
+    //tạo formData
     const apiFormData = new FormData();
+    //có file thì thêm vào
     if (file && file.size > 0) {
       apiFormData.append("file", file);
     }
     apiFormData.append("folderName", "slides");
+    appendIfDefined(apiFormData, "id", raw.id);
     appendIfDefined(apiFormData, "title", parsed.data.title);
-    appendIfDefined(apiFormData, "desc", parsed.data.desc);
-    appendIfDefined(apiFormData, "link", parsed.data.redirectLink);
-    appendIfDefined(apiFormData, "order", parsed.data.order);
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+    appendIfDefined(apiFormData, "redirect_url", parsed.data.redirect_url);
+    appendIfDefined(apiFormData, "display_order", parsed.data.display_order);
+    appendIfDefined(apiFormData, "is_active", parsed.data.is_active);
+    appendIfDefined(apiFormData, "description", parsed.data.description);
 
-    const response = await fetch(`${baseUrl}/api/slides`, {
-      method: "PATCH",
-      body: apiFormData,
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/slides`,
+      {
+        method: "PATCH",
+        body: apiFormData,
+      }
+    );
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
@@ -71,7 +70,6 @@ export async function EditSlideAction(
       return {
         success: true,
         message: "Update successful!",
-        imageUrl: responseData.image_url,
       };
     } else {
       throw new Error("No data returned from server");

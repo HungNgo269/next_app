@@ -1,6 +1,9 @@
+"use client";
+import SignOutAction from "@/app/(auth)/signoutAction";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { User, CreditCard, Bell, Shield, LogOut } from "lucide-react";
+import { useTransition } from "react";
 
 const userNavLinks = [
   { id: 1, name: "Profile Information", icon: User },
@@ -15,6 +18,12 @@ interface props {
 }
 
 export default function UserNavLink({ active, onClick }: props) {
+  const [isPending, startTransition] = useTransition(); //trạng thái khi chạy, khi chạy thì await cái action
+  const handleLogout = () => {
+    startTransition(async () => {
+      await SignOutAction();
+    });
+  };
   return (
     <div className="lg:flex-3">
       <h2 className="font-semibold text-slate-900 dark:text-primary-foreground mb-4">
@@ -42,13 +51,14 @@ export default function UserNavLink({ active, onClick }: props) {
           })}
         </>
         <Separator className="my-4" />
-
         <Button
+          onClick={handleLogout}
           variant="ghost"
+          disabled={isPending}
           className="hidden md:flex w-full justify-start gap-3 text-left text-destructive hover:text-destructive/90 hover:bg-destructive/10 dark:text-destructive/80 dark:hover:bg-destructive/20"
         >
           <LogOut className="h-4 w-4" />
-          Sign Out
+          Log Out
         </Button>
       </nav>
     </div>

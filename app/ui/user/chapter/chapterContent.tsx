@@ -22,7 +22,6 @@ export default async function ChapterContent({
   let accessReason = "";
 
   if (chapter.chapter_number > 1) {
-    // First 3 chapters are free, rest require subscription
     const subscriptionCheck = await requireSubscription();
     hasAccess = subscriptionCheck.hasAccess;
     accessReason = subscriptionCheck.reason || "";

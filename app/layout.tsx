@@ -4,7 +4,7 @@ import { Metadata } from "next";
 import ClientProviders from "@/components/clientProvider";
 import CronInitializer from "@/app/ui/cronIni";
 import { getSessionCache } from "@/lib/utils/getSession";
-import { getURL } from "@/lib/utils/helper";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: {
@@ -26,6 +26,7 @@ export default async function RootLayout({
       <body className={`${inter.className} antialiased font-normal `}>
         <CronInitializer />
         <ClientProviders session={session}>{children}</ClientProviders>
+        <Toaster />
       </body>
     </html>
   );

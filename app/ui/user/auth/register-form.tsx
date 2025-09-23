@@ -8,12 +8,12 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { registerUserAction } from "@/app/(auth)/actions";
+import { registerUserAction } from "@/app/(auth)/register/actions";
 
 export default function RegisterForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
 
   const [state, formAction, isPending] = useActionState(
     registerUserAction,
@@ -114,7 +114,6 @@ export default function RegisterForm() {
 
             <input type="hidden" name="redirectTo" value={callbackUrl} />
 
-            {/* Success Message */}
             {state?.success && (
               <div className="flex items-center space-x-2 p-3 bg-success/10 border border-success/20 rounded-lg">
                 <div className="h-5 w-5 text-success">✓</div>
@@ -122,7 +121,6 @@ export default function RegisterForm() {
               </div>
             )}
 
-            {/* Error Message */}
             {state && !state.success && (
               <div className="flex items-center space-x-2 p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
                 <ExclamationCircleIcon className="h-5 w-5 text-destructive" />

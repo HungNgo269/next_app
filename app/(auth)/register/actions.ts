@@ -73,7 +73,7 @@ async function validateBusinessRules(data: any): Promise<void> {
   }
 
   if (!validateAge(data.dateOfBirth)) {
-    errors.push("You must be between 0 and 150 years old");
+    errors.push("You must be between 0 and 120 years old");
   }
 
   if (!validateUserNameContent(data.userName)) {
@@ -94,6 +94,8 @@ export async function registerUserAction(
   formData: FormData
 ): Promise<ActionResult> {
   try {
+    const redirectUrl = (formData.get("redirectTo") as string) || "/";
+
     const rawData = {
       id: crypto.randomUUID(),
       email: formData.get("email") as string,
@@ -102,8 +104,6 @@ export async function registerUserAction(
       passWord: formData.get("passWord") as string,
       dateOfBirth: new Date(formData.get("dateOfBirth") as string),
     };
-
-    console.log("Raw data:", rawData);
 
     let validatedData;
     try {
@@ -155,13 +155,10 @@ export async function registerUserAction(
           "Registration successful but auto-login failed. Please login manually.",
       };
     }
-
-    console.log("Login successful, redirecting...");
-
     return {
       success: true,
       message: "Registration successful! Redirecting...",
-      redirectTo: "/",
+      redirectTo: redirectUrl,
     };
   } catch (error) {
     console.error("Registration error:", error);
@@ -205,7 +202,6 @@ export async function registerUserAction(
       }
     }
 
-    // Business validation errors
     if (error instanceof Error) {
       return {
         success: false,

@@ -7,7 +7,6 @@ export const authConfig = {
   pages: {
     signIn: "/login",
     error: "/auth/error",
-    signOut: "/",
   },
   providers: [],
   callbacks: {
@@ -22,14 +21,6 @@ export const authConfig = {
             name: user?.name,
             google_id: user.id || account.providerAccountId,
           });
-
-          // console.log("Upserted user:", dbUser);
-
-          // if (!dbUser) {
-          //   console.error("Failed to upsert user");
-          //   return false;
-          // }
-
           return true;
         } catch (error) {
           console.error("Error during Google sign in:", error);
@@ -68,7 +59,7 @@ export const authConfig = {
       return session;
     },
     async redirect({ url }) {
-      return `${"/"}`;
+      return `${url}`;
     },
   },
 } satisfies NextAuthConfig;

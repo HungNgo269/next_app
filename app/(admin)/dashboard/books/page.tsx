@@ -1,14 +1,14 @@
-import Search from "@/app/ui/share/search/search";
+﻿import Search from "@/app/ui/share/search/search";
 import { Metadata } from "next";
 import { Suspense } from "react";
-import { fetchSlidePages } from "@/app/data/admin/slideData";
+import { fetchBookPagesActions } from "@/app/actions/bookActions";
 import Pagination from "@/app/ui/share/pagination/pagination";
 import BookTable from "@/app/ui/admin/books/bookTable";
 import { SlideSkeleton } from "@/app/ui/skeletons";
 import UserActions from "@/components/ui/UserAction";
 
 export const metadata: Metadata = {
-  title: "Slides",
+  title: "Books",
 };
 
 export default async function Page(props: {
@@ -20,7 +20,7 @@ export default async function Page(props: {
   const searchParams = await props.searchParams;
   const query = searchParams?.query || "";
   const currentPage = Number(searchParams?.page) || 1;
-  const totalPages = await fetchSlidePages(query);
+  const totalPages = await fetchBookPagesActions(query);
 
   return (
     <div className="max-w-7xl mx-auto p-8">
@@ -39,3 +39,4 @@ export default async function Page(props: {
     </div>
   );
 }
+

@@ -6,6 +6,7 @@ export interface Chapter {
   chapter_number: number;
   createdAt: string;
   updatedAt: string;
+  view_count?: number;
 }
 
 export interface ChapterStats {

@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
-import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-
 import type { Book } from "@/app/interface/book";
 import { Chapter } from "@/app/interface/chapter";
 import { fetchBookByIdActions } from "@/app/actions/bookActions";
@@ -14,21 +12,23 @@ import {
 import ChapterToolBar from "@/app/ui/user/chapter/chapterToolBar";
 import { getServerReaderSettings, ReaderSettings } from "@/lib/readerSetting";
 import ChapterContent from "@/app/ui/user/chapter/chapterContent";
-import { auth } from "@/auth";
 import { getSessionCache } from "@/lib/utils/getSession";
 import Link from "next/link";
 import { getURL } from "@/lib/utils/helper";
 
-const FALLBACK_CHAPTER_OG_IMAGE = getURL('hero-desktop.png');
+const FALLBACK_CHAPTER_OG_IMAGE = getURL("hero-desktop.png");
 
 const resolveImageUrl = (value?: string) => {
   if (!value) return undefined;
-  return value.startsWith('http') ? value : getURL(value);
+  return value.startsWith("http") ? value : getURL(value);
 };
 
 const toChapterSummary = (value?: string | null) => {
   if (!value) return undefined;
-  const plain = value.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+  const plain = value
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
   if (!plain) return undefined;
   return plain.length > 160 ? `${plain.slice(0, 157)}...` : plain;
 };
@@ -40,7 +40,11 @@ type PageProps = {
   }>;
 };
 
-export async function generateMetadata({ params }: { params: PageProps['params'] }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: PageProps["params"];
+}): Promise<Metadata> {
   const { chapterId, bookId } = await params;
   try {
     const [chapterData, bookRows] = await Promise.all([
@@ -53,8 +57,8 @@ export async function generateMetadata({ params }: { params: PageProps['params']
 
     if (!chapter) {
       return {
-        title: { absolute: 'Chapter Not Found | NextBook' },
-        description: 'The chapter you were looking for could not be found.',
+        title: { absolute: "Chapter Not Found | NextBook" },
+        description: "The chapter you were looking for could not be found.",
         robots: { index: false, follow: false },
       };
     }
@@ -69,7 +73,9 @@ export async function generateMetadata({ params }: { params: PageProps['params']
         ? `Read chapter ${chapter.chapter_number} of ${book.name} on NextBook.`
         : `Read chapter ${chapter.chapter_number} on NextBook.`);
     const imageUrl = book
-      ? resolveImageUrl(Array.isArray(book.image_urls) ? book.image_urls[0] : undefined)
+      ? resolveImageUrl(
+          Array.isArray(book.image_urls) ? book.image_urls[0] : undefined
+        )
       : undefined;
     const resolvedImage = imageUrl ?? FALLBACK_CHAPTER_OG_IMAGE;
     const canonicalUrl = getURL(canonicalPath);
@@ -78,8 +84,8 @@ export async function generateMetadata({ params }: { params: PageProps['params']
       chapter.title,
       `Chapter ${chapter.chapter_number}`,
       book?.author,
-      'NextBook',
-      'novel chapter',
+      "NextBook",
+      "novel chapter",
     ].filter(Boolean) as string[];
 
     return {
@@ -90,7 +96,7 @@ export async function generateMetadata({ params }: { params: PageProps['params']
         canonical: canonicalUrl,
       },
       openGraph: {
-        type: 'article',
+        type: "article",
         url: canonicalUrl,
         title: `${titleBase} | NextBook`,
         description,
@@ -100,13 +106,13 @@ export async function generateMetadata({ params }: { params: PageProps['params']
                 url: resolvedImage,
                 width: 1200,
                 height: 630,
-                alt: book ? `Artwork for ${book.name}` : 'Read on NextBook',
+                alt: book ? `Artwork for ${book.name}` : "Read on NextBook",
               },
             ]
           : undefined,
       },
       twitter: {
-        card: 'summary_large_image',
+        card: "summary_large_image",
         title: `${titleBase} | NextBook`,
         description,
         images: resolvedImage ? [resolvedImage] : undefined,
@@ -115,14 +121,12 @@ export async function generateMetadata({ params }: { params: PageProps['params']
     };
   } catch (_error) {
     return {
-      title: { absolute: 'Read Chapters | NextBook' },
-      description: 'Enjoy serialized fiction on NextBook.',
+      title: { absolute: "Read Chapters | NextBook" },
+      description: "Enjoy serialized fiction on NextBook.",
       robots: { index: false, follow: false },
     };
   }
 }
-
-
 
 export default async function ChapterPage({ params }: PageProps) {
   const session = await getSessionCache();
@@ -192,4 +196,3 @@ export default async function ChapterPage({ params }: PageProps) {
     </div>
   );
 }
-export const dynamic = "force-dynamic"; // Buộc SSR cho mỗi yêu cầu

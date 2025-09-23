@@ -1,9 +1,9 @@
+import { auth } from "@/auth";
+import PricingCard from "../../ui/user/subscription/pricingCard";
 import {
   getCurrentSubscription,
   getSubscriptionProducts,
-} from "@/app/data/subcriptions";
-import { auth } from "@/auth";
-import PricingCard from "../../ui/user/subscription/pricingCard";
+} from "@/app/data/subscriptions";
 
 export default async function PricingPage() {
   const session = await auth();

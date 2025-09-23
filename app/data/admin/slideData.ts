@@ -4,7 +4,7 @@ export async function fetchSlidesByPage(query: string, currentPage: number) {
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
   try {
     const data = await sql`
-      SELECT id,title,display_order,is_active,description,image_url,created_at,updated_at
+      SELECT id,title,display_order,is_active,redirect_url,description,image_url,created_at,updated_at
 
       FROM slides
       WHERE

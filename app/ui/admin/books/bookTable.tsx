@@ -1,10 +1,24 @@
-import Image from "next/image";
-import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { formatEnDateTime } from "@/lib/utils/formatDate";
-import Status from "@/app/ui/admin/slides/status";
-import { fetchBooksByPageActions } from "@/app/actions/bookActions";
+﻿import EditBook from "@/app/ui/admin/books/editBook";
+import UploadBook from "@/app/ui/admin/books/uploadBook";
+import DeleteBook from "@/app/ui/admin/books/deleteBook";
+import {
+  fetchBooksByPageActions,
+  fetchTotalChapterInBookByIdAction,
+} from "@/app/actions/bookActions";
+import { formatEnDate, formatEnDateTime } from "@/lib/utils/formatDate";
 import Active from "@/app/ui/admin/slides/active";
-import { BookTableProps } from "@/app/interface/book";
+import StatusLabel from "@/app/ui/admin/slides/status";
+import { Book, BookTableProps } from "@/app/interface/book";
+import Image from "next/image";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 export default async function BookTable({
   query,
@@ -13,105 +27,109 @@ export default async function BookTable({
   query: string;
   currentPage: number;
 }) {
-  const Books = (await fetchBooksByPageActions(
-    query,
-    currentPage
-  )) as unknown as BookTableProps[];
+  const books = (await fetchBooksByPageActions(query, currentPage)) as Book[];
   return (
-    <div className="mt-4 flow-root">
-      <div className="inline-block min-w-full align-middle">
-        <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
-          <div className="md:hidden">
-            {Books?.map((Book: BookTableProps) => (
-              <div
-                key={Book.id}
-                className="mb-2 w-full rounded-md bg-white p-4"
-              >
-                <div className="flex items-center justify-between border-b pb-4">
-                  <div>
-                    <div className="mb-2 flex items-center">
-                      <Image
-                        src={Book.image_urls[0]}
-                        className="mr-2 rounded-full"
-                        width={28}
-                        height={28}
-                        alt={`${Book}'s profile picture`}
-                      />
-                      <p>{Book.name}</p>
-                    </div>
-                  </div>
-                  <Active status={Book.is_active}></Active>
-                  <Status status={Book.status}></Status>
+    <div className="mt-4">
+      <div className="md:hidden space-y-4">
+        {books?.map((book: Book) => (
+          <Card key={book.id}>
+            <CardContent className="p-4 space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="relative h-12 w-12 overflow-hidden rounded-md border">
+                  <Image
+                    src={book.image_urls?.[0] || "/placeholder.svg"}
+                    alt={book.name}
+                    fill
+                    className="object-cover"
+                  />
                 </div>
-                <div className="flex w-full items-center justify-between pt-4">
-                  <div className="flex justify-end gap-2">
-                    <PencilIcon className="w-5" />
-                    <TrashIcon className="w-5" />
-                  </div>
+                <div className="flex-1">
+                  <p className="font-medium text-base">{book.name}</p>
+                  {book.status && <StatusLabel status={book.status} />}
+                </div>
+                <Active status={book.is_active} />
+              </div>
+              {book.author && (
+                <p className="text-sm text-muted-foreground">
+                  Author: {book.author}
+                </p>
+              )}
+              <div className="flex items-center justify-between text-sm text-muted-foreground">
+                <span>{formatEnDateTime(book.created_at ?? "")}</span>
+                <div className="flex gap-2">
+                  <EditBook book={{ ...book, id: Number(book.id) }} />
+                  <DeleteBook bookId={Number(book.id)} bookTitle={book.name} />
                 </div>
               </div>
-            ))}
-          </div>
-          <table className="hidden min-w-full text-gray-900 md:table">
-            <thead className="rounded-lg text-left text-sm font-normal">
-              <tr>
-                <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
-                  Book
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium ">
-                  Active
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Status
-                </th>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
 
-                <th scope="col" className="px-3 py-5 font-medium text-center">
-                  Date
-                </th>
-                <th scope="col" className="relative py-3 pl-6 pr-3">
-                  <span className="sr-only">Edit</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white">
-              {Books?.map((Book: BookTableProps) => (
-                <tr
-                  key={Book.id}
-                  className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
-                >
-                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                    <div className="flex items-center gap-3">
+      <div className="hidden md:block">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="font-medium">Book</TableHead>
+              <TableHead className="font-medium">Author</TableHead>
+              <TableHead className="font-medium text-center">Status</TableHead>
+              <TableHead className="font-medium">Active</TableHead>
+              <TableHead className="font-medium text-center">Views</TableHead>
+              <TableHead className="font-medium text-center">
+                Publish Date
+              </TableHead>
+
+              <TableHead className="w-[100px]">
+                <span className="sr-only">Actions</span>
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {books?.map((book: Book) => (
+              <TableRow key={book.id}>
+                <TableCell>
+                  <div className="flex items-center gap-3">
+                    <div className="relative h-12 w-12 overflow-hidden rounded-md border">
                       <Image
-                        src={Book.image_urls[0]}
-                        className="mr-2 rounded-full"
-                        width={28}
-                        height={28}
-                        alt={`${Book}'s profile picture`}
+                        src={book.image_urls?.[0] || "/placeholder.svg"}
+                        alt={book.name}
+                        fill
+                        className="object-cover"
                       />
-                      <p>{Book.name}</p>
                     </div>
-                  </td>
-
-                  <td className="whitespace-nowrap px-3 py-3">
-                    <Active status={Book.is_active}></Active>
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    <Status status={Book.status}></Status>
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3 text-center">
-                    {formatEnDateTime(Book?.created_at ?? new Date())}
-                  </td>
-                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                    <div className="flex justify-end gap-3">
-                      {/* <EditButton></EditButton>
-                      <DeleteButton BookId={Book.id}></DeleteButton> */}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                    <span className="font-medium max-w-[200px] truncate">
+                      {book.name}
+                    </span>
+                  </div>
+                </TableCell>
+                <TableCell className="max-w-[200px] truncate">
+                  {book.author || "-"}
+                </TableCell>
+                <TableCell className="text-center">
+                  {book.status ? <StatusLabel status={book.status} /> : "-"}
+                </TableCell>
+                <TableCell>
+                  <Active status={book.is_active} />
+                </TableCell>
+                <TableCell className="text-center">
+                  {book.views || "-"}
+                </TableCell>
+                <TableCell className="text-center text-sm text-muted-foreground">
+                  {formatEnDate(book.publish_date ?? "")}
+                </TableCell>
+                <TableCell>
+                  <div className="flex gap-4">
+                    <EditBook book={{ ...book, id: Number(book.id) }} />
+                    <DeleteBook
+                      bookId={Number(book.id)}
+                      bookTitle={book.name}
+                    />
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </div>
     </div>
   );

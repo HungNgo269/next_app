@@ -13,19 +13,18 @@ import { UserButton } from "@/app/ui/user/headerCustomer/headerUserButton";
 import { Logo } from "@/app/ui/share/Button/logo";
 import { getSessionCache } from "@/lib/utils/getSession";
 import HeaderClientColor from "./headerClientColor";
+import { headers } from "next/headers";
 
 export default async function Header() {
   const session = await getSessionCache();
   const user = session?.user;
+  const headerList = headers();
+  const pathName = (await headerList).get("x-pathname");
   return (
     <div className="w-full">
       <div className="max-w-screen mx-auto w-full">
         <div className="flex items-center  justify-between h-16 md:px-4 lg:px-8 xl:px-12">
           <div className="flex flex-row items-center">
-            {/* Mobile menu */}
-            {/* <Button variant="link" size="sm" className="sm:hidden">
-              <Menu className="h-5 w-5" />
-            </Button> */}
             <Link
               prefetch={true}
               href={"/"}
@@ -34,20 +33,13 @@ export default async function Header() {
               <Logo />
             </Link>
           </div>
-
           <div className="flex items-center gap-3">
-            {/* Mobile/tablet: icon only (overlay opens on tap) */}
             <div className="sm:hidden">
               <SearchComponent compact />
             </div>
-
-            {/* Desktop: full search */}
             <div className="hidden sm:block flex-grow-0 flex-shrink basis-[250px]">
               <SearchComponent />
             </div>
-
-            {/* Desktop extras */}
-
             {user ? (
               <div className="flex flex-row gap-3 items-center">
                 <div className="hidden sm:flex flex-row justify-center">
@@ -86,10 +78,13 @@ export default async function Header() {
               </div>
             ) : (
               <div className="flex flex-row gap-4">
-                <Link prefetch={true} href={"/register"}>
+                <Link
+                  prefetch={true}
+                  href={`/register?callbackUrl=${pathName}`}
+                >
                   <Button className="cursor-pointer">Sign In</Button>
                 </Link>
-                <Link prefetch={true} href={"/login"}>
+                <Link prefetch={true} href={`/login?callbackUrl=${pathName}`}>
                   <Button className="cursor-pointer" variant={"outline"}>
                     Login
                   </Button>

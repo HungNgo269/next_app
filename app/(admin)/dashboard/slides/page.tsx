@@ -6,6 +6,7 @@ import SlideTable from "@/app/ui/admin/slides/slideTable";
 import Pagination from "@/app/ui/share/pagination/pagination";
 import { SlideSkeleton } from "@/app/ui/skeletons";
 import UserActions from "@/components/ui/UserAction";
+import { Card } from "@/components/ui/card";
 export const metadata: Metadata = {
   title: "Slides",
 };
@@ -22,7 +23,7 @@ export default async function Page(props: {
   const totalPages = await fetchSlidePages(query);
 
   return (
-    <div className="max-w-7xl mx-auto p-8">
+    <Card className="max-w-7xl mx-auto p-8">
       <div className="mt-3 flex items-center justify-between gap-2 md:mt-6">
         <Search placeholder="Search slides..." />
       </div>
@@ -35,6 +36,6 @@ export default async function Page(props: {
       <div className="mt-5 flex w-full justify-center">
         <Pagination totalPages={totalPages} />
       </div>
-    </div>
+    </Card>
   );
 }

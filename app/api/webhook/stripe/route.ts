@@ -4,7 +4,7 @@ import {
   manageSubscriptionStatusChange,
   upsertSubscriptionPrice,
   upsertSubscriptionProduct,
-} from "@/app/data/subscription";
+} from "@/app/data/subscriptions";
 import Stripe from "stripe";
 
 const relevantEvents = new Set([
@@ -31,7 +31,7 @@ export async function POST(req: Request) {
     // https://github.com/stripe/stripe-node#configuration
     // https://stripe.com/docs/api/versioning
     // @ts-ignore
-    apiVersion: "2024-06-20", // Register this as an official Stripe plugin.
+    apiVersion: "2025-08-27.basil", // Register this as an official Stripe plugin.
     // https://stripe.com/docs/building-plugins#setappinfo
 
     appInfo: {

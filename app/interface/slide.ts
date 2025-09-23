@@ -1,10 +1,11 @@
 export interface ISlide {
   id: number;
-  title?: string;
+  title: string;
   image_url: string;
   redirect_url: string;
   display_order: number;
   is_active: boolean;
+  public_id: string;
   description: string;
   created_at?: string;
   updated_at?: string;
@@ -16,17 +17,6 @@ export interface SlideResponse {
   slide?: ISlide;
   error?: string;
   message?: string;
-  created_at?: string;
-  updated_at?: string;
-}
-
-export interface SlideTableProps {
-  id: string;
-  image_url: string;
-  title: string;
-  display_order: number;
-  is_active: boolean;
-  description: string;
   created_at?: string;
   updated_at?: string;
 }

@@ -106,9 +106,16 @@ export const getErrorRedirect = (
     disableButton,
     arbitraryParams
   );
-export function appendIfDefined(fd: FormData, key: string, value: unknown) {
+export function appendIfDefined(formData: FormData, key: string, value: any) {
   if (value !== undefined && value !== null) {
-    fd.append(key, String(value));
+    if (value instanceof File) {
+      if (value.size > 0) {
+        // Only append if file has content
+        formData.append(key, value);
+      }
+    } else if (value !== "") {
+      formData.append(key, value);
+    }
   }
 }
 export function formatPrice(amount: number, currency: string) {

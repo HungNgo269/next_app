@@ -1,4 +1,4 @@
-import { sql } from "@/lib/db";
+﻿import { sql } from "@/lib/db";
 import { unstable_cache } from "next/cache";
 import { Book, BookCardProps } from "@/app/interface/book";
 import { getStartDate, TimeFrame } from "@/app/data/rankingData";
@@ -56,7 +56,7 @@ export async function fetchBooksByPage(query: string, currentPage: number) {
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
   try {
     const data = await sql`
-      SELECT id,name,status,image_urls,is_active,created_at,updated_at
+      SELECT id,name,status,image_urls,is_active,views,author,publish_date,description
       FROM books
       WHERE
     id::text ILIKE ${`%${query}%`} OR
@@ -74,6 +74,25 @@ export async function fetchBooksByPage(query: string, currentPage: number) {
   }
 }
 
+export async function fetchBookPages(query: string) {
+  try {
+    const data = await sql`
+  SELECT COUNT(*)
+  FROM books
+  WHERE
+    id::text ILIKE ${`%${query}%`} OR
+    name ILIKE ${`%${query}%`} OR
+    status::text ILIKE ${`%${query}%`} OR
+    image_urls::text ILIKE ${`%${query}%`} OR
+    is_active::text ILIKE ${`%${query}%`}
+`;
+    const totalPages = Math.ceil(Number(data[0].count) / ITEMS_PER_PAGE);
+    return totalPages;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch book pages.");
+  }
+}
 export async function fetchBooksByQuery(query: string) {
   try {
     const data = await sql`

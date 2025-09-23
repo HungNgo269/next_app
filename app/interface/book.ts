@@ -4,7 +4,6 @@ export interface Book {
   id: number;
   name: string;
   description?: string;
-  price: number;
   image_urls: string[];
   is_active: boolean;
   created_at: string;

@@ -1,36 +1,34 @@
-"use server";
+﻿"use server";
 
+import { ActionResult } from "@/app/interface/actionResult";
 import { BookSchema } from "@/app/schema/bookSchema";
+import { appendIfDefined } from "@/lib/utils/helper";
 
-type ActionState = {
-  success: boolean;
-  message: string;
-  errors?: Record<string, string[]>;
-  imageUrl?: string;
-} | null;
-
-export async function uploadBookAction(
-  prevState: ActionState,
+export async function UploadBookAction(
+  prevState: ActionResult | undefined,
   formData: FormData
-): Promise<ActionState> {
+): Promise<ActionResult> {
   try {
-    const data = {
-      name: formData.get("title") as string,
-      author: formData.get("author") as string,
-      desc: formData.get("desc") as string,
+    const isActive = formData.get("is_active");
+    const raw = {
+      name: formData.get("name"),
+      author: formData.get("author"),
+      description: formData.get("description"),
+      is_active:
+        typeof isActive === "string" ? isActive === "true" : Boolean(isActive),
     };
 
-    const validatedFields = BookSchema.safeParse(data);
+    const parsed = BookSchema.safeParse(raw);
 
-    if (!validatedFields.success) {
+    if (!parsed.success) {
       return {
         success: false,
         message: "Validation failed",
-        errors: validatedFields.error.flatten().fieldErrors,
+        errors: parsed.error.flatten().fieldErrors,
       };
     }
 
-    const file = formData.get("file") as File;
+    const file = formData.get("image") as File | null;
     if (!file || file.size === 0) {
       return {
         success: false,
@@ -45,7 +43,7 @@ export async function uploadBookAction(
       };
     }
 
-    const maxSize = 5 * 1024 * 1024; // 5MB
+    const maxSize = 5 * 1024 * 1024;
     if (file.size > maxSize) {
       return {
         success: false,
@@ -54,17 +52,15 @@ export async function uploadBookAction(
     }
 
     const apiFormData = new FormData();
+    apiFormData.append("folderName", "books");
     apiFormData.append("file", file);
-    apiFormData.append("folderName", "Books");
-    apiFormData.append("name", validatedFields.data.name);
-    apiFormData.append("author", validatedFields.data.author);
-    apiFormData.append("desc", validatedFields.data.desc);
-
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+    appendIfDefined(apiFormData, "name", parsed.data.name);
+    appendIfDefined(apiFormData, "author", parsed.data.author);
+    appendIfDefined(apiFormData, "description", parsed.data.description);
+    appendIfDefined(apiFormData, "is_active", parsed.data.is_active);
 
     const response = await fetch(
-      `${baseUrl}
-      /api/upload/Books`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/book`,
       {
         method: "POST",
         body: apiFormData,
@@ -78,17 +74,18 @@ export async function uploadBookAction(
 
     const result = await response.json();
     const responseData = result.data;
-    if (responseData.Book) {
+
+    if (responseData?.book) {
       return {
         success: true,
         message: "Upload successful!",
-        imageUrl: responseData.image_url,
+        data: responseData,
       };
-    } else {
-      throw new Error("No URL returned from server");
     }
+
+    throw new Error("No data returned from server");
   } catch (error) {
-    console.error("Upload error:", error);
+    console.error("Upload book error:", error);
     const errorMessage =
       error instanceof Error
         ? error.message

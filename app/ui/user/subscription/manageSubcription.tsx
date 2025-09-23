@@ -6,8 +6,8 @@ import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { formatPrice } from "@/lib/utils/helper";
 import { Calendar, DollarSign, Package, AlertTriangle } from "lucide-react";
-import { createPortalSession } from "@/app/data/subcriptions";
 import { subcriptionsInfo } from "@/app/interface/subcription";
+import { createPortalSession } from "@/app/data/subscriptions";
 
 const ManageSubscription = ({
   subscription,
@@ -63,9 +63,9 @@ const ManageSubscription = ({
     const colors: Record<string, string> = {
       active:
         "bg-success/15 text-success dark:bg-success/30 dark:text-success/80",
-      trialing:
-        "bg-info/15 text-info dark:bg-info/25 dark:text-info/80",
-      canceled: "bg-destructive/10 text-destructive dark:bg-destructive/25 dark:text-destructive/80",
+      trialing: "bg-info/15 text-info dark:bg-info/25 dark:text-info/80",
+      canceled:
+        "bg-destructive/10 text-destructive dark:bg-destructive/25 dark:text-destructive/80",
       past_due:
         "bg-warning/15 text-warning dark:bg-warning/25 dark:text-warning/80",
     };

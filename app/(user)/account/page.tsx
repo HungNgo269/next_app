@@ -4,8 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { Settings } from "lucide-react";
 import { auth } from "@/auth";
 import AccountProvider from "@/app/ui/user/account/accountProvider";
-import { getCurrentSubscription } from "@/app/data/subcriptions";
 import { getUserProfile } from "@/app/data/userData";
+import { getCurrentSubscription } from "@/app/data/subscriptions";
 
 export default async function ProfilePage() {
   const session = await auth();

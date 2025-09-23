@@ -94,13 +94,13 @@ export async function UserButton() {
           <form
             action={async () => {
               "use server";
-              await signOut({ redirectTo: "/" });
+              await signOut();
             }}
             className="w-full"
           >
             <button className="w-full flex items-center px-2 py-1.5 text-sm cursor-pointer text-destructive hover:bg-accent rounded-sm">
               <LogOut className="mr-2 h-4 w-4" />
-              <span>Log out</span>
+              <span>Log Out</span>
             </button>
           </form>
         </DropdownMenuItem>

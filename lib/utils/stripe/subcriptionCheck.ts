@@ -29,7 +29,6 @@ export async function requireSubscription() {
 
   const sub = subscription[0];
 
-  // Check trial expiry
   if (sub.status === "trialing" && sub.trial_end) {
     const trialEnd = new Date(sub.trial_end);
     if (trialEnd < new Date()) {

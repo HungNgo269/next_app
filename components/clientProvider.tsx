@@ -21,7 +21,6 @@ export default function ClientProvider({
       >
         {children}
       </ThemeProvider>
-      {/* {children} */}
     </SessionProvider>
   );
 }

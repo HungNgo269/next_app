@@ -6,10 +6,11 @@ export const BookSchema = z.object({
     .min(1, "Title is required")
     .max(100, "Title must be less than 100 characters"),
   author: z.string(),
-  desc: z
+  description: z
     .string()
     .min(1, "Description is required")
     .max(500, "Description must be less than 500 characters"),
+  is_active: z.boolean(),
 });
 export const PatchBookSchema = BookSchema.partial().refine(
   (obj) => Object.keys(obj).length > 0,

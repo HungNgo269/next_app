@@ -40,9 +40,6 @@ export async function middleware(req: NextRequest) {
     return response;
   }
 
-  console.log("pathname", pathname);
-  console.log("token", token);
-
   if (pathname === "/login") {
     if (token?.role === "admin") {
       return NextResponse.redirect(new URL("/dashboard", req.url));
