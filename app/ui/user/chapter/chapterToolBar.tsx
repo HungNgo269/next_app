@@ -4,7 +4,6 @@ import {
   ChevronRight,
   Home,
   Info,
-  Bookmark,
   BookmarkCheck,
   Sun,
   Moon,
@@ -12,6 +11,7 @@ import {
   Plus,
   TypeIcon,
   ALargeSmall,
+  Bookmark,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import {
@@ -21,16 +21,19 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import React, { useState, useTransition } from "react";
+import React, { useEffect, useState, useTransition } from "react";
 import { ReaderSettings } from "@/lib/readerSetting";
 import Link from "next/link";
 import { updateReaderSettings } from "@/app/book/[bookId]/chapter/[chapterId]/action";
+import { IBookmark } from "@/app/interface/bookMark";
 
 interface Props {
   iniSettings: ReaderSettings;
   bookId: number;
   idPrev?: number | undefined | null;
   idNext?: number | undefined | null;
+  bookMarkOnClick: () => void;
+  bookMark: IBookmark | undefined | null;
 }
 
 export default function ChapterToolBar({
@@ -38,15 +41,12 @@ export default function ChapterToolBar({
   bookId,
   idPrev,
   idNext,
+  bookMarkOnClick,
+  bookMark,
 }: Props) {
   const [settings, setSettings] = useState(iniSettings);
-  const [isBookmarked, setIsBookmarked] = useState(false);
   const [isPending, startTransition] = useTransition();
   const { theme, setTheme } = useTheme();
-
-  const toggleBookmark = () => {
-    setIsBookmarked(!isBookmarked);
-  };
 
   const handleSettingChange = (key: keyof ReaderSettings, value: any) => {
     const newSettings = { ...settings, [key]: value }; //fontsize :16(etc)
@@ -197,8 +197,6 @@ export default function ChapterToolBar({
             </div>
           </DropdownMenuContent>
         </DropdownMenu>
-
-        {/* Theme Toggle */}
         <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
             <Button
@@ -262,15 +260,14 @@ export default function ChapterToolBar({
           size="icon"
           className="w-10 h-10"
           title="Book Mark"
-          onClick={toggleBookmark}
+          onClick={bookMarkOnClick}
         >
-          {isBookmarked ? (
-            <BookmarkCheck className="w-5 h-5 fill-current text-warning" />
+          {bookMark ? (
+            <BookmarkCheck className="w-5 h-5 fill-current text-primary" />
           ) : (
             <Bookmark className="w-5 h-5" />
           )}
         </Button>
-
         <div className="w-full h-px bg-border my-1" />
 
         <Link

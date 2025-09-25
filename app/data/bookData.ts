@@ -308,12 +308,10 @@ LIMIT 5
 }
 export async function fetchTotalChapterInBookById(id: number) {
   try {
-    const res = await sql`
-    SELECT COUNT(c.chapter_number) 
-    FROM chapters c join books b where  c.bookid=b.id
-    
+    const res =
+      await sql`SELECT COUNT(c.chapter_number) as total FROM chapters c where c.book_id=${id}
   `;
-    return res;
+    return res[0]?.total ?? 0;
   } catch (error) {
     console.error("Server Action Error:", error);
     throw new Error("Failed to fetch book image for chapter");

@@ -1,7 +1,7 @@
 "use client";
 
 import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
-import { useActionState } from "react";
+import { useActionState, useEffect, useRef } from "react";
 import { authenticate } from "@/app/(auth)/login/actions";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -16,7 +16,13 @@ export default function LoginForm() {
     authenticate,
     undefined
   );
-
+  const ref = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    const focus = () => {
+      ref?.current?.focus();
+    };
+    focus();
+  }, []);
   return (
     <div className="flex-1 flex items-center justify-center p-8 bg-background">
       <div className="w-full max-w-md    p-6">
@@ -37,6 +43,7 @@ export default function LoginForm() {
                 fieldSize={"lg"}
                 placeholder="Email Address"
                 required
+                ref={ref}
               />
             </div>
 

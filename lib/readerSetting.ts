@@ -17,7 +17,6 @@ export async function getServerReaderSettings() {
   try {
     const settingsString = cookieStore.get("reader-settings")?.value;
     if (settingsString) {
-      console.log("check", settingsString);
       const settings = JSON.parse(settingsString);
       return { ...defaultSettings, ...settings };
     }

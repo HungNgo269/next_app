@@ -19,6 +19,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import BookViewCount from "@/app/ui/admin/books/bookChapterCount";
+import BookChapterCount from "@/app/ui/admin/books/bookChapterCount";
 
 export default async function BookTable({
   query,
@@ -28,6 +30,7 @@ export default async function BookTable({
   currentPage: number;
 }) {
   const books = (await fetchBooksByPageActions(query, currentPage)) as Book[];
+
   return (
     <div className="mt-4">
       <div className="md:hidden space-y-4">
@@ -74,6 +77,9 @@ export default async function BookTable({
               <TableHead className="font-medium">Author</TableHead>
               <TableHead className="font-medium text-center">Status</TableHead>
               <TableHead className="font-medium">Active</TableHead>
+              <TableHead className="font-medium text-center">
+                Chapters
+              </TableHead>
               <TableHead className="font-medium text-center">Views</TableHead>
               <TableHead className="font-medium text-center">
                 Publish Date
@@ -110,6 +116,9 @@ export default async function BookTable({
                 </TableCell>
                 <TableCell>
                   <Active status={book.is_active} />
+                </TableCell>
+                <TableCell className="text-center">
+                  <BookChapterCount bookId={book.id} />
                 </TableCell>
                 <TableCell className="text-center">
                   {book.views || "-"}

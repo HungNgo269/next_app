@@ -95,18 +95,24 @@ export async function updateReaderSettings(settings: Partial<ReaderSettings>) {
   });
   revalidatePath("/");
 }
-export async function checkPrevChapterAction(currentChapterNumber: number) {
+export async function checkPrevChapterAction(
+  currentChapterNumber: number,
+  bookId: number
+) {
   try {
-    return await checkPrevChapter(currentChapterNumber);
+    return await checkPrevChapter(currentChapterNumber, bookId);
   } catch (error) {
     console.error("Server Action Error:", error);
     throw new Error("Failed to fetch category books");
   }
 }
 
-export async function checkNextChapterAction(currentChapterNumber: number) {
+export async function checkNextChapterAction(
+  currentChapterNumber: number,
+  bookId: number
+) {
   try {
-    return await checkNextChapter(currentChapterNumber);
+    return await checkNextChapter(currentChapterNumber, bookId);
   } catch (error) {
     console.error("Server Action Error:", error);
     throw new Error("Failed to fetch category books");

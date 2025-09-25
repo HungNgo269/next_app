@@ -13,8 +13,10 @@ import ChapterToolBar from "@/app/ui/user/chapter/chapterToolBar";
 import { getServerReaderSettings, ReaderSettings } from "@/lib/readerSetting";
 import ChapterContent from "@/app/ui/user/chapter/chapterContent";
 import { getSessionCache } from "@/lib/utils/getSession";
+import { requireSubscription } from "@/lib/utils/stripe/subcriptionCheck";
 import Link from "next/link";
 import { getURL } from "@/lib/utils/helper";
+import ChapterSubWrapper from "@/app/ui/user/chapter/chapterSubWrapper";
 
 const FALLBACK_CHAPTER_OG_IMAGE = getURL("hero-desktop.png");
 
@@ -133,12 +135,11 @@ export default async function ChapterPage({ params }: PageProps) {
   const user = session?.user;
   const { chapterId, bookId } = await params;
   const [chapterData] = await Promise.all([fetchChapterActions(chapterId)]);
-  const chapter: Chapter = chapterData as unknown as Chapter;
+  const chapter: Chapter = chapterData as Chapter;
   const [idPrevChapter, idNextChapter] = await Promise.all([
-    checkPrevChapterAction(chapter.chapter_number),
-    checkNextChapterAction(chapter.chapter_number),
+    checkPrevChapterAction(chapter.chapter_number, bookId),
+    checkNextChapterAction(chapter.chapter_number, bookId),
   ]);
-  const settings: ReaderSettings = (await getServerReaderSettings()) || 16;
   return (
     <div className="min-h-screen bg-background relative">
       <ViewIncrementer
@@ -146,53 +147,55 @@ export default async function ChapterPage({ params }: PageProps) {
         chapterId={chapterId}
         bookId={bookId}
       />
-      <div className={`max-w-4xl mx-auto px-4 py-8 `}>
-        <ChapterContent chapter={chapter} settings={settings}></ChapterContent>
-        <div className=" flex  justify-between items-center mt-12 pt-8 border-t">
-          {idPrevChapter ? (
-            <Link
-              className="flex flex-row items-center gap-2"
-              href={`/book/${bookId}/chapter/${idPrevChapter}`}
-              aria-disabled={idPrevChapter === null}
-            >
-              <ChevronLeft className="w-4 h-4" />
-              Previous Chapter
-            </Link>
-          ) : (
-            <Link
-              className="flex flex-row items-center gap-2"
-              href={`$/book/${bookId}`}
-            >
-              <ChevronLeft className="w-4 h-4" />
-              Home
-            </Link>
-          )}
-          {idNextChapter ? (
-            <Link
-              className="flex flex-row items-center gap-2"
-              href={`/book/${bookId}/chapter/${idNextChapter}`}
-              aria-disabled={idNextChapter == null}
-            >
-              Next Chapter
-              <ChevronRight className="w-4 h-4" />
-            </Link>
-          ) : (
-            <Link
-              className="flex flex-row items-center gap-2"
-              href={`/book/${bookId}`}
-            >
-              Home
-              <ChevronRight className="w-4 h-4" />
-            </Link>
-          )}
+      <div className="max-w-full">
+        <ChapterSubWrapper
+          userId={user?.id ?? ""}
+          bookId={bookId}
+          chapter={chapter}
+          idPrevChapter={idPrevChapter}
+          idNextChapter={idNextChapter}
+        ></ChapterSubWrapper>
+        <div className="max-w-4xl mx-auto px-4">
+          <div className="flex justify-between items-center mt-12 pt-8 border-t">
+            {idPrevChapter ? (
+              <Link
+                className="flex flex-row items-center gap-2"
+                href={`/book/${bookId}/chapter/${idPrevChapter}`}
+                aria-disabled={idPrevChapter === null}
+              >
+                <ChevronLeft className="w-4 h-4" />
+                Previous Chapter
+              </Link>
+            ) : (
+              <Link
+                className="flex flex-row items-center gap-2"
+                href={`/book/${bookId}`}
+              >
+                <ChevronLeft className="w-4 h-4" />
+                Home
+              </Link>
+            )}
+            {idNextChapter ? (
+              <Link
+                className="flex flex-row items-center gap-2"
+                href={`/book/${bookId}/chapter/${idNextChapter}`}
+                aria-disabled={idNextChapter == null}
+              >
+                Next Chapter
+                <ChevronRight className="w-4 h-4" />
+              </Link>
+            ) : (
+              <Link
+                className="flex flex-row items-center gap-2"
+                href={`/book/${bookId}`}
+              >
+                Home
+                <ChevronRight className="w-4 h-4" />
+              </Link>
+            )}
+          </div>
         </div>
       </div>
-      <ChapterToolBar
-        iniSettings={settings}
-        bookId={bookId}
-        idPrev={idPrevChapter}
-        idNext={idNextChapter}
-      ></ChapterToolBar>
     </div>
   );
 }
