@@ -11,7 +11,6 @@ export async function GET(request: Request) {
     const limit = parseInt(searchParams.get("limit") || "5", 10);
     const cacheKey = `popular-books-${timeframe}-${limit}`;
     const startDate = getStartDate(timeframe);
-    console.log("startDate", startDate);
     const books = await unstable_cache(
       async () => {
         const result = await sql`SELECT b.id, b.image_urls, b.name, b.author,

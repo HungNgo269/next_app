@@ -2,6 +2,8 @@
 import { unstable_cache } from "next/cache";
 import { Book, BookCardProps } from "@/app/interface/book";
 import { getStartDate, TimeFrame } from "@/app/data/rankingData";
+const ITEMS_PER_PAGE = 10;
+
 export async function fetchBookById(id: number) {
   try {
     let res = await sql`Select * from books  where id=${id}`;
@@ -51,7 +53,6 @@ export async function fetchBookRecommended() {
     throw new Error("Failed to fetch book image for chapter");
   }
 }
-const ITEMS_PER_PAGE = 6;
 export async function fetchBooksByPage(query: string, currentPage: number) {
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
   try {
@@ -281,7 +282,6 @@ export async function fetchPopularBook(timeframe: string) {
   try {
     const cacheKey = `popular-books-${timeframe}`;
     const startDate = getStartDate(timeframe as TimeFrame);
-    console.log("startDate", startDate);
     const books = await unstable_cache(
       async () => {
         const result = await sql`SELECT b.id, b.image_urls, b.name, b.author,
@@ -337,5 +337,18 @@ export async function RemoveFromBookShelf(bookId: number) {
   } catch (error) {
     console.error("Server Action Error:", error);
     throw new Error("Failed to fetch book image for chapter");
+  }
+}
+export async function fetchBookNameByIdChapter(bookId: number) {
+  try {
+    const res = await sql`
+    select b.name from books b join
+    chapters c on c.book_id=b.id
+where b.id = ${bookId} 
+  `;
+    return res[0]?.name as string;
+  } catch (error) {
+    console.error("Server Action Error:", error);
+    throw new Error("Failed to fetchBookNameByIdChapter");
   }
 }

@@ -13,6 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import DeleteSlide from "@/app/ui/admin/slides/deleteSlide";
+import Image from "next/image";
 
 export default async function SlideTable({
   query,
@@ -82,6 +83,14 @@ export default async function SlideTable({
               <TableRow key={slide.id}>
                 <TableCell>
                   <div className="flex items-center gap-3">
+                    <div className="relative rounded-[8px] h-8 w-8  overflow-hidden">
+                      <Image
+                        src={slide.image_url}
+                        alt="image for slide"
+                        fill
+                        className="object-cover "
+                      ></Image>
+                    </div>
                     <span className="font-medium max-w-[200px] truncate">
                       {slide.title}
                     </span>

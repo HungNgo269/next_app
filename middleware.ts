@@ -28,6 +28,7 @@ export async function middleware(req: NextRequest) {
   const token = await getToken({
     req: req,
     secret: process.env.AUTH_SECRET,
+    // cookieName: "__Secure-authjs.session-token",
   });
 
   if (pathname.startsWith("/dashboard")) {
@@ -39,7 +40,11 @@ export async function middleware(req: NextRequest) {
     }
     return response;
   }
-
+  if (pathname.startsWith("/")) {
+    if (token?.role === "admin") {
+      return NextResponse.redirect(new URL("/dashboard", req.url));
+    }
+  }
   if (pathname === "/login") {
     if (token?.role === "admin") {
       return NextResponse.redirect(new URL("/dashboard", req.url));

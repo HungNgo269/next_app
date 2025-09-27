@@ -1,4 +1,7 @@
-﻿import { fetchChaptersByPageAction } from "@/app/actions/chapterAdminActions";
+﻿import {
+  fetchChaptersByPageAction,
+  fetchChaptersByPageOfBookAction,
+} from "@/app/actions/chapterAdminActions";
 import { formatEnDateTime } from "@/lib/utils/formatDate";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -11,6 +14,7 @@ import {
 } from "@/components/ui/table";
 import EditChapter from "@/app/ui/admin/chapters/editChapter";
 import DeleteChapter from "@/app/ui/admin/chapters/deleteChapter";
+import { fetchChapterOfBookAction } from "@/app/actions/chapterActions";
 
 interface ChapterRow {
   id: number;
@@ -25,14 +29,25 @@ interface ChapterRow {
 export default async function ChapterTable({
   query,
   currentPage,
+  bookId,
 }: {
   query: string;
   currentPage: number;
+  bookId?: number;
 }) {
-  const chapters = (await fetchChaptersByPageAction(
-    query,
-    currentPage
-  )) as ChapterRow[];
+  let chapters;
+  if (bookId) {
+    chapters = (await fetchChaptersByPageOfBookAction(
+      query,
+      currentPage,
+      bookId
+    )) as ChapterRow[];
+  } else {
+    chapters = (await fetchChaptersByPageAction(
+      query,
+      currentPage
+    )) as ChapterRow[];
+  }
 
   return (
     <div className="mt-4">

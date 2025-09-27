@@ -42,7 +42,24 @@ export async function fetchChapterPages(query: string) {
     throw new Error("Failed to fetch chapter pages.");
   }
 }
-
+export async function fetchChapterPagesOfBook(query: string) {
+  try {
+    const data = await sql`
+      SELECT COUNT(*)
+      FROM chapters
+      WHERE
+        id::text ILIKE ${`%${query}%`} OR
+        title ILIKE ${`%${query}%`} OR
+        chapter_number::text ILIKE ${`%${query}%`} OR
+        book_id::text ILIKE ${`%${query}%`}
+    `;
+    const totalPages = Math.ceil(Number(data[0].count) / ITEMS_PER_PAGE);
+    return totalPages;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch chapter pages.");
+  }
+}
 export async function uploadChapterContent({
   book_id,
   title,
@@ -69,5 +86,30 @@ export async function deleteChapter(chapterId: string) {
   } catch (error) {
     console.error("Database Error:", error);
     return { success: false, error: "Failed to delete chapter" };
+  }
+}
+export async function fetchChaptersByPageOfBook(
+  query: string,
+  currentPage: number,
+  bookId: number
+) {
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+  try {
+    const data = await sql`
+      SELECT c.id, c.title, c.chapter_number, c.book_id, c.content, c.created_at, c.updated_at
+      FROM chapters c join books b on c.book_id = b.id where b.id =${bookId}
+      ANd(
+
+       c.id::text ILIKE ${`%${query}%`} OR
+        c.title ILIKE ${`%${query}%`} OR
+        c.chapter_number::text ILIKE ${`%${query}%`} 
+      )
+      ORDER BY created_at DESC
+      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
+    `;
+    return data;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch chapters.");
   }
 }

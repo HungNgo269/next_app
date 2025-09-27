@@ -2,6 +2,7 @@
 
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
+import { getToken } from "next-auth/jwt";
 
 export async function authenticate(
   prevState: string | undefined,

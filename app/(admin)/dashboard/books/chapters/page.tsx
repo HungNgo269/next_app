@@ -5,7 +5,6 @@ import Pagination from "@/app/ui/share/pagination/pagination";
 import ChapterTable from "@/app/ui/admin/chapters/chapterTable";
 import UserActions from "@/components/ui/UserAction";
 import { SlideSkeleton } from "@/app/ui/skeletons";
-import ChapterEditor from "@/app/ui/admin/text-editor/chapterEditor";
 import { fetchChapterPagesAction } from "@/app/actions/chapterAdminActions";
 
 export const metadata: Metadata = {
@@ -34,9 +33,6 @@ export default async function Page(props: {
       </Suspense>
       <div className="mt-5 flex w-full justify-center">
         <Pagination totalPages={totalPages} />
-      </div>
-      <div className="mt-8">
-        <ChapterEditor />
       </div>
     </div>
   );

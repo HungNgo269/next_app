@@ -1,6 +1,7 @@
 "use server";
 
 import {
+  fetchChapterByBookmark,
   fetchChapterDataCard,
   fetchChapterOfBook,
   fetchNewestChapter,
@@ -34,6 +35,14 @@ export async function fetchNewestChapterAction(currentPage: number) {
 export async function fetchTotalChapterPageAction() {
   try {
     return await fetchTotalChapterPage();
+  } catch (error) {
+    console.error("Server Action Error:", error);
+    throw new Error("Failed to fetch chapter");
+  }
+}
+export async function fetchChapterByBookmarkAction(userId: string) {
+  try {
+    return await fetchChapterByBookmark(userId);
   } catch (error) {
     console.error("Server Action Error:", error);
     throw new Error("Failed to fetch chapter");

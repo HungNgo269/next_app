@@ -9,7 +9,9 @@ import { IBookmark } from "@/app/interface/bookMark";
 import { Chapter } from "@/app/interface/chapter";
 import ChapterToolBar from "@/app/ui/user/chapter/chapterToolBar";
 import { ReaderSettings } from "@/lib/readerSetting";
+import { Dialog } from "@radix-ui/react-dialog";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 
 interface ChapterContentProps {
   userId: string;
@@ -70,6 +72,9 @@ export default function ChapterContent({
     }
   }, []);
   useEffect(() => {
+    if (!userId) {
+      return;
+    }
     const getBookMark = async () => {
       const res = (await getBookMarkAction(userId, chapter.id)) || null;
       if (res) {
@@ -77,7 +82,7 @@ export default function ChapterContent({
       }
     };
     getBookMark();
-  }, []);
+  }, [userId, chapter.id]);
   const scrollToProgress = (targetProgress: number): void => {
     if (!chapterRef.current) return;
     const chapter = chapterRef.current;
@@ -90,7 +95,7 @@ export default function ChapterContent({
   };
   useEffect(() => {
     createScrollAnchors();
-    console.log("first", bookMark);
+
     if (bookMark) {
       scrollToProgress(bookMark.progress);
     }
@@ -106,23 +111,16 @@ export default function ChapterContent({
 
         if (maxProgress.current > 0) {
           setCurrentProgress(maxProgress.current);
-          if (typeof window !== "undefined") {
-            window.history.replaceState(
-              null,
-              "",
-              `#progress-${maxProgress.current}`
-            );
-          }
         }
       },
       {
         root: null,
-        rootMargin: "0px 0px -80% 0px", // Trigger when element is 20% from top
+        rootMargin: "0px",
         threshold: 0,
       }
     );
 
-    // Observe all Anchors
+    // Observe anchor
     const currentAnchors = scrollAnchorsRef.current;
     currentAnchors.forEach((anchor) => observer.observe(anchor));
     return () => {
@@ -133,9 +131,15 @@ export default function ChapterContent({
         }
       });
     };
-  }, [createScrollAnchors, bookMark]);
+  }, [createScrollAnchors, bookMark?.progress]);
 
   const addBookmark = async () => {
+    if (!userId) {
+      toast.warning("You have to login first", {
+        position: "top-center",
+        description: "You can't using book mark without an account",
+      });
+    }
     const newBookmark = await addBookMarkAction(
       userId,
       chapter.id,

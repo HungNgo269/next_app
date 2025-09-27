@@ -27,7 +27,6 @@ interface Props {
 }
 
 export default function EditBook({ book }: Props) {
-  console.log("chec", book);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: book?.name ?? "",
@@ -111,6 +110,8 @@ export default function EditBook({ book }: Props) {
   return (
     <>
       <button
+        title="Edit book"
+        className="hover:cursor-pointer"
         onClick={() => {
           setIsDialogOpen(!isDialogOpen);
         }}

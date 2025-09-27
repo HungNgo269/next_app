@@ -191,10 +191,8 @@ export function LoginCanvas({
         style={{ width: "100%", height: "100%" }}
       />
 
-      {/* Subtle overlay for depth */}
       <div className="absolute inset-0 bg-gradient-to-br from-transparent via-popover/20 to-popover/40" />
 
-      {/* Optional content overlay */}
       <div className="absolute inset-0 flex items-center justify-center p-8">
         <div className="text-center space-y-4 max-w-sm">
           <h2 className="text-2xl font-bold text-sidebar-foreground/80">

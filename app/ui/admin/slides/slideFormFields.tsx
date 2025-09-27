@@ -33,9 +33,7 @@ export default async function SlideFormFields({
 
   return (
     <div className="space-y-6">
-      {/* Form Fields Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Title Field */}
         <div className="space-y-2">
           <label
             htmlFor="title"
@@ -66,7 +64,6 @@ export default async function SlideFormFields({
           )}
         </div>
 
-        {/* Order Field */}
         <div className="space-y-2">
           <label
             htmlFor="order"
@@ -100,7 +97,6 @@ export default async function SlideFormFields({
         </div>
       </div>
 
-      {/* Description Field */}
       <div className="space-y-2">
         <label
           htmlFor="desc"
@@ -131,7 +127,6 @@ export default async function SlideFormFields({
         )}
       </div>
 
-      {/* Redirect Link Field */}
       <div className="space-y-2">
         <label
           htmlFor="redirectLink"

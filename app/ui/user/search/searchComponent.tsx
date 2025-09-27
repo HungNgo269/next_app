@@ -92,7 +92,6 @@ export default function SearchComponent({
 
         {isCompactOpen && (
           <div className="fixed inset-0 z-50">
-            {/* backdrop */}
             <div
               className="absolute inset-0 bg-black/40"
               onClick={() => {
@@ -100,7 +99,6 @@ export default function SearchComponent({
                 setIsCompactOpen(false);
               }}
             />
-            {/* panel */}
             <div className="absolute inset-x-0 top-0 bg-white p-3 shadow-lg rounded-b-2xl">
               <div className="flex items-center justify-between mb-2">
                 <span className="font-medium">Search</span>

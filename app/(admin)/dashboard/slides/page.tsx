@@ -23,7 +23,7 @@ export default async function Page(props: {
   const totalPages = await fetchSlidePages(query);
 
   return (
-    <Card className="max-w-7xl mx-auto p-8">
+    <div className="max-w-7xl mx-auto p-8">
       <div className="mt-3 flex items-center justify-between gap-2 md:mt-6">
         <Search placeholder="Search slides..." />
       </div>
@@ -36,6 +36,6 @@ export default async function Page(props: {
       <div className="mt-5 flex w-full justify-center">
         <Pagination totalPages={totalPages} />
       </div>
-    </Card>
+    </div>
   );
 }

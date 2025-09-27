@@ -1,5 +1,5 @@
 import { sql } from "@/lib/db";
-const ITEMS_PER_PAGE = 6;
+const ITEMS_PER_PAGE = 10;
 export async function fetchSlidesByPage(query: string, currentPage: number) {
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
   try {
@@ -58,7 +58,6 @@ export async function fetchSlidePages(query: string) {
     id::text ILIKE ${`%${query}%`} OR
     title ILIKE ${`%${query}%`} OR
     image_url ILIKE ${`%${query}%`} OR
-
     display_order::text ILIKE ${`%${query}%`} OR
     is_active::text ILIKE ${`%${query}%`} OR
     description ILIKE ${`%${query}%`}

@@ -32,20 +32,6 @@ export function ChapterContainer({
   const pathName = usePathname();
   return (
     <div className="flex flex-row items-center justify-start space-x-3 mb-3 gap-4">
-      {/* <div>
-        <Image
-          src={v}
-          alt="book cover"
-          width={0}
-          height={0}
-          sizes="125px"
-          style={{
-            width: "125px",
-            height: "auto",
-            borderRadius: "10px",
-          }}
-        />
-      </div> */}
       <div className="h-full flex flex-col items-start w-full">
         <div className="rounded-lg p-4 bg-card shadow-sm w-full">
           <div className="mb-4">
@@ -75,7 +61,8 @@ export function ChapterContainer({
                           href={`${pathName}/chapter/${chapter.id}`}
                           className="text-primary hover:text-primary/80 hover:underline text-sm truncate"
                         >
-                          {chapter.title}
+                          Chapter {chapter.chapter_number}
+                          {chapter.title ? `: ${chapter.title}` : ""}
                         </Link>
                       </div>
                       <span className="text-gray-400 text-sm flex-shrink-0 ml-2">

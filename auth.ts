@@ -6,6 +6,7 @@ import { z } from "zod";
 import { authConfig } from "./auth.config";
 import { getUser } from "./app/data/userData";
 import { User } from "./app/interface/user";
+import { NextResponse } from "next/server";
 
 export const { auth, signIn, signOut, handlers } = NextAuth({
   ...authConfig,
@@ -18,7 +19,7 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
   },
   providers: [
     Credentials({
-      async authorize(credentials) {
+      async authorize(credentials, req) {
         const parsedCredentials = z
           .object({ email: z.string().email(), password: z.string().min(6) })
           .safeParse(credentials);
@@ -51,6 +52,7 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
         }
 
         console.log("Invalid credentials format");
+
         return null;
       },
     }),

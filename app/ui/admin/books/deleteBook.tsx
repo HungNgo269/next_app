@@ -52,6 +52,8 @@ export default function DeleteBook({ bookId, bookTitle }: Props) {
   return (
     <>
       <button
+        title="Delete Book"
+        className="hover:cursor-pointer"
         onClick={() => {
           setIsDialogOpen(!isDialogOpen);
         }}

@@ -43,6 +43,17 @@ export async function getBookMark(userId: string, chapterId: number) {
     throw new Error("Failed to get Book Mark.");
   }
 }
+export async function getAllBookMark(userId: string) {
+  try {
+    const res = await sql`
+      select * from book_mark where userid=${userId}
+    `;
+    return res as IBookmark[];
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to get Book Mark.");
+  }
+}
 export async function updateBookMark(
   userId: string,
   chapterId: number,

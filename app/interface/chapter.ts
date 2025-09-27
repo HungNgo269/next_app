@@ -8,6 +8,14 @@ export interface Chapter {
   updatedAt: string;
   view_count?: number;
 }
+export interface ChapterInfo {
+  id: number;
+  title: string;
+  chapter_number: number;
+  view_count?: number;
+  created_at?: string;
+  updated_at?: string;
+}
 
 export interface ChapterStats {
   guestViews?: number;

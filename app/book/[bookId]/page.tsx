@@ -205,13 +205,7 @@ export default async function BookPage({ params }: PageProps) {
                     {book.author}
                   </span>
                 </div>
-                {/* <Button
-                  onClick={() => {
-                    await;
-                  }}
-                >
-                  + Follow this book
-                </Button> */}
+             
               </div>
               <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-0">
                 <span className="font-medium text-secondary-foreground">

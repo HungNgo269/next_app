@@ -82,7 +82,6 @@ const ManageSubscription = ({
 
   return (
     <div className="space-y-8">
-      {/* Subscription Overview */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-3">
           <div className="flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-300">
@@ -115,7 +114,6 @@ const ManageSubscription = ({
         </div>
       </div>
 
-      {/* Additional Info */}
       {(subscription.trial_end || subscription.cancel_at_period_end) && (
         <div className="space-y-4">
           {subscription.trial_end && (
@@ -150,7 +148,6 @@ const ManageSubscription = ({
         </div>
       )}
 
-      {/* Action Buttons */}
       <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t border-slate-200 dark:border-slate-700">
         <Button
           onClick={handleManageBilling}

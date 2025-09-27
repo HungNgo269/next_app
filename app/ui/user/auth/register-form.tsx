@@ -162,7 +162,6 @@ export default function RegisterForm() {
 
           <hr className="border-0.5 border-border mt-6" />
 
-          {/* Footer */}
           <div className="text-center mt-4">
             <p className="text-muted-foreground text-sm">
               Already have an account?{" "}

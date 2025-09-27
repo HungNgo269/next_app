@@ -80,11 +80,16 @@ export default async function Header() {
               <div className="flex flex-row gap-4">
                 <Link
                   prefetch={true}
-                  href={`/register?callbackUrl=${pathName}`}
+                  href={`/register?callbackUrl=${encodeURIComponent(
+                    pathName!
+                  )}`} //encodeURI = ensure valid
                 >
                   <Button className="cursor-pointer">Sign In</Button>
                 </Link>
-                <Link prefetch={true} href={`/login?callbackUrl=${pathName}`}>
+                <Link
+                  prefetch={true}
+                  href={`/login?callbackUrl=${encodeURIComponent(pathName!)}`}
+                >
                   <Button className="cursor-pointer" variant={"outline"}>
                     Login
                   </Button>

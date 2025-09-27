@@ -35,6 +35,9 @@ export default function LoginForm() {
 
         <div className="mt-6">
           <form action={formAction} className="space-y-4">
+            <input type="hidden" name="redirectTo" value={callbackUrl} />
+            {/* gửi kèm link redirect */}
+
             <div className="space-y-2 ">
               <Input
                 id="email"
@@ -66,9 +69,6 @@ export default function LoginForm() {
                 Forgot password?
               </Button>
             </div>
-
-            <input type="hidden" name="redirectTo" value={callbackUrl} />
-            {/* gửi kèm link redirect */}
 
             {errorMessage && (
               <div className="flex items-center space-x-2 p-3 bg-destructive/10 border border-destructive/20 rounded-lg">

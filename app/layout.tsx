@@ -23,7 +23,10 @@ export default async function RootLayout({
   const session = await getSessionCache();
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.className} antialiased font-normal `}>
+      <body
+        suppressHydrationWarning
+        className={`${inter.className} antialiased font-normal `}
+      >
         <CronInitializer />
         <ClientProviders session={session}>{children}</ClientProviders>
         <Toaster />

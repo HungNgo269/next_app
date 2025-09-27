@@ -58,8 +58,10 @@ export const authConfig = {
       }
       return session;
     },
-    async redirect({ url }) {
-      return `${url}`;
+    async authorized({ auth }) {
+      if (auth) {
+        return true;
+      }
     },
   },
 } satisfies NextAuthConfig;

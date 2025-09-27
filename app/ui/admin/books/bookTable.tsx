@@ -21,6 +21,9 @@ import {
 } from "@/components/ui/table";
 import BookViewCount from "@/app/ui/admin/books/bookChapterCount";
 import BookChapterCount from "@/app/ui/admin/books/bookChapterCount";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Info } from "lucide-react";
 
 export default async function BookTable({
   query,
@@ -38,7 +41,7 @@ export default async function BookTable({
           <Card key={book.id}>
             <CardContent className="p-4 space-y-4">
               <div className="flex items-center gap-3">
-                <div className="relative h-12 w-12 overflow-hidden rounded-md border">
+                <div className="relative h-8 w-8 overflow-hidden rounded-md border">
                   <Image
                     src={book.image_urls?.[0] || "/placeholder.svg"}
                     alt={book.name}
@@ -57,9 +60,17 @@ export default async function BookTable({
                   Author: {book.author}
                 </p>
               )}
-              <div className="flex items-center justify-between text-sm text-muted-foreground">
+              <div className="space-y-3 text-sm text-muted-foreground">
                 <span>{formatEnDateTime(book.created_at ?? "")}</span>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
+                  <Button asChild size="sm" variant="outline">
+                    <Link href={`/dashboard/books/${book.id}`}>Detail</Link>
+                  </Button>
+                  <Button asChild size="sm" variant="outline">
+                    <Link href={`/dashboard/books/${book.id}/chapters`}>
+                      Chapters
+                    </Link>
+                  </Button>
                   <EditBook book={{ ...book, id: Number(book.id) }} />
                   <DeleteBook bookId={Number(book.id)} bookTitle={book.name} />
                 </div>
@@ -95,7 +106,7 @@ export default async function BookTable({
               <TableRow key={book.id}>
                 <TableCell>
                   <div className="flex items-center gap-3">
-                    <div className="relative h-12 w-12 overflow-hidden rounded-md border">
+                    <div className="relative h-8 w-8 overflow-hidden rounded-md border">
                       <Image
                         src={book.image_urls?.[0] || "/placeholder.svg"}
                         alt={book.name}
@@ -127,7 +138,14 @@ export default async function BookTable({
                   {formatEnDate(book.publish_date ?? "")}
                 </TableCell>
                 <TableCell>
-                  <div className="flex gap-4">
+                  <div className="flex flex-row flex-wrap items-center gap-2">
+                    <Link
+                      href={`/dashboard/books/${book.id}`}
+                      title="Book Information"
+                    >
+                      <Info className="w-5 h-5" />
+                    </Link>
+                
                     <EditBook book={{ ...book, id: Number(book.id) }} />
                     <DeleteBook
                       bookId={Number(book.id)}
