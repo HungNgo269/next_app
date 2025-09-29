@@ -4,7 +4,7 @@ import { sql } from "@/lib/db";
 export async function fetchChapter(ChapterId: number) {
   try {
     const data =
-      await sql` SELECT id,book_id,title,chapter_number,content,view_count
+      await sql` SELECT id,book_id,title,chapter_number,content,view_count,updated_at,created_at
     FROM chapters
     WHERE id = ${ChapterId}`;
     return data[0] as Chapter;

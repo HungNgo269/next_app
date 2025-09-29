@@ -75,7 +75,6 @@ export async function UploadSlideAction(
     const result = await response.json();
     const slide = result?.data?.slide;
     const responseData = result.data;
-    console.log("check result", result);
     if (slide?.public_id && slide?.secure_url) {
       return {
         success: true,

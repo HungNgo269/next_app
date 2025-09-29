@@ -2,7 +2,7 @@
   fetchChaptersByPageAction,
   fetchChaptersByPageOfBookAction,
 } from "@/app/actions/chapterAdminActions";
-import { formatEnDateTime } from "@/lib/utils/formatDate";
+import { formatDateTime } from "@/lib/utils/formatDate";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
@@ -15,6 +15,8 @@ import {
 import EditChapter from "@/app/ui/admin/chapters/editChapter";
 import DeleteChapter from "@/app/ui/admin/chapters/deleteChapter";
 import { fetchChapterOfBookAction } from "@/app/actions/chapterActions";
+import { Edit, Info } from "lucide-react";
+import Link from "next/link";
 
 interface ChapterRow {
   id: number;
@@ -79,7 +81,7 @@ export default async function ChapterTable({
                 </div>
               </div>
               <p className="text-xs text-muted-foreground">
-                {formatEnDateTime(chapter.created_at ?? "")}
+                {formatDateTime(chapter.created_at ?? "")}
               </p>
             </CardContent>
           </Card>
@@ -112,19 +114,15 @@ export default async function ChapterTable({
                 </TableCell>
                 <TableCell className="text-center">{chapter.book_id}</TableCell>
                 <TableCell className="text-center text-sm text-muted-foreground">
-                  {formatEnDateTime(chapter.created_at ?? "")}
+                  {formatDateTime(chapter.created_at ?? "")}
                 </TableCell>
                 <TableCell>
                   <div className="flex gap-4">
-                    <EditChapter
-                      chapter={{
-                        id: chapter.id,
-                        title: chapter.title,
-                        chapter_number: chapter.chapter_number,
-                        book_id: chapter.book_id,
-                        content: chapter.content ?? "",
-                      }}
-                    />
+                    <Link
+                      href={`/dashboard/books/${chapter.book_id}/chapters/${chapter.id}`}
+                    >
+                      <Edit className="w-5 h-5" />
+                    </Link>
                     <DeleteChapter
                       chapterId={Number(chapter.id)}
                       chapterTitle={chapter.title}

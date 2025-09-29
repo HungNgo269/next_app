@@ -92,16 +92,16 @@ export async function updateChapter(data: {
     throw new Error("Failed to update chapter");
   }
 }
-export async function createChapter(
-  chapterContent: string,
-  chapterTitle: string,
-  chapterNumber: number,
-  bookId: number
-) {
+export async function createChapter(data: {
+  content: string;
+  title: string;
+  chapterNumber: number;
+  bookId: number;
+}) {
   try {
     let res = await sql`
     insert into chapters (book_id,title,content,chapter_number) values 
-    (${bookId},${chapterTitle},${chapterContent},${chapterNumber})
+    (${data.bookId},${data.title},${data.content},${data.chapterNumber})
     returning *
     `;
     return res[0];

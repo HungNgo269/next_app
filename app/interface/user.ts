@@ -16,9 +16,3 @@ export interface UserProfile {
 export interface User extends UserProfile {
   password: string;
 }
-export interface UserOauth {
-  email: string;
-  name?: string;
-  image_url?: string | null;
-  google_id?: string;
-}

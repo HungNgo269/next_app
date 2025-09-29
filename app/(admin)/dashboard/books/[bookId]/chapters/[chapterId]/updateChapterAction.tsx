@@ -2,9 +2,9 @@
 
 import { updateChapter } from "@/app/data/chapterData";
 import { ActionResult } from "@/app/interface/actionResult";
-import { ChapterSchema } from "@/app/schema/chapterSchema";
+import { PatchChapterSchema } from "@/app/schema/chapterSchema";
 
-export async function ChapterAction(
+export async function UpdateChapterAction(
   prevState: ActionResult | undefined,
   formData: FormData
 ): Promise<ActionResult> {
@@ -12,26 +12,29 @@ export async function ChapterAction(
     const id = formData.get("id") as string;
     if (!id) {
       return {
-        message: "Upsert chapter content fail",
+        message: "Update chapter content fail",
         success: false,
       };
     }
-
     const raw = {
-      content: formData.get("content"),
-      title: formData.get("title"),
-      bookid: formData.get("bookid"),
-      chapterNumber: formData.get("chapterNumber"),
+      content: formData.get("content") || undefined,
+      title: formData.get("title") || undefined,
+      book_id: formData.get("bookid")
+        ? Number(formData.get("bookid"))
+        : undefined,
+      chapter_number: formData.get("chapterNumber")
+        ? Number(formData.get("chapterNumber"))
+        : undefined,
     };
-    const parse = ChapterSchema.safeParse(raw);
 
+    const parse = PatchChapterSchema.safeParse(raw);
+    console.log("pares", parse);
     if (!parse.success) {
       return {
         message: "Invalid data format",
         success: false,
       };
     }
-    //truyen 1 object => ko can thu tu
     const result = await updateChapter({
       id: parseInt(id),
       content: parse.data.content || "",

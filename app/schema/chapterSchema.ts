@@ -5,10 +5,7 @@ export const ChapterSchema = z.object({
     .number({ invalid_type_error: "Book id must be a number" })
     .int("Book id must be an integer")
     .positive("Book id must be positive"),
-  title: z
-    .string()
-    .min(1, "Title is required")
-    .max(150, "Title must be less than 150 characters"),
+  title: z.string().max(150, "Title must be less than 150 characters"),
   chapter_number: z
     .number({ invalid_type_error: "Chapter number must be a number" })
     .int("Chapter number must be an integer")

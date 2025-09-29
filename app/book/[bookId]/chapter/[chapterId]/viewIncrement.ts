@@ -19,7 +19,6 @@ export default function ViewIncrementer({
     const incrementView = async () => {
       try {
         const result = await incrementChapterView(chapterId, bookId, userId);
-        console.log("check", result);
         if (result.success) {
         } else {
           console.error("Failed to increment view:", result.error);

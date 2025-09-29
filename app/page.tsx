@@ -9,11 +9,9 @@ import SectionComponent from "@/app/ui/user/section/section";
 import { HeaderWrapper } from "@/app/ui/user/headerCustomer/headerWrapper";
 import SlideWrapper from "@/app/ui/admin/slides/slideWrapper";
 import NewChapterList from "@/app/ui/user/chapter/newChapterList";
-// sm	40rem (640px)	@media (width >= 40rem) { ... }
-// md	48rem (768px)	@media (width >= 48rem) { ... }
-// lg	64rem (1024px)	@media (width >= 64rem) { ... }
-// xl	80rem (1280px)	@media (width >= 80rem) { ... }
-// 2xl	96rem (1536px)	@media (width >= 96rem) { ... }
+import SseClient from "@/app/ui/user/test/SseClient";
+//ALL SEO created by codex
+
 export default function HomePage() {
   return (
     <div
@@ -27,6 +25,7 @@ export default function HomePage() {
       </header>
       <SlideWrapper />
       <div className="w-full mx-auto mt-10 md:w-[700px] lg:w-[900px]  xl:w-[1190px] ">
+        {/* <SseClient></SseClient> */}
         <Suspense>
           <BestSellerContainer />
         </Suspense>

@@ -10,35 +10,27 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+
 import { fetchBookByIdActions } from "@/app/actions/bookActions";
 import type { Book } from "@/app/interface/book";
 import { fetchChapterActions } from "@/app/book/[bookId]/chapter/[chapterId]/action";
-import ChapterForm from "@/app/(admin)/dashboard/books/[bookId]/chapters/[chapterId]/updateChapterForm";
+import CreateChapterForm from "@/app/(admin)/dashboard/books/[bookId]/chapters/add/addChapterForm";
 
 type PageProps = {
   params: Promise<{
     bookId: number;
-    chapterId: number;
   }>;
 };
 
-export default async function UpdateChapterPage({ params }: PageProps) {
-  const { bookId, chapterId } = await params;
+export default async function AddChapterPage({ params }: PageProps) {
+  const { bookId } = await params;
 
-  const [bookRows, chapter] = await Promise.all([
-    fetchBookByIdActions(bookId),
-    fetchChapterActions(chapterId),
-  ]);
+  const [bookRows] = await Promise.all([fetchBookByIdActions(bookId)]);
 
   const book = (bookRows?.[0] ?? undefined) as Book | undefined;
-  if (!book || !chapter) {
+  if (!book) {
     notFound();
   }
-
-  // const [state, formAction, isPending] = useActionState(
-  //   ChapterAction,
-  //   undefined
-  // );
 
   return (
     <div className="max-w-full mx-auto space-y-6 p-6">
@@ -82,7 +74,7 @@ export default async function UpdateChapterPage({ params }: PageProps) {
           <BreadcrumbSeparator className="text-primary-foreground/80" />
           <BreadcrumbItem>
             <BreadcrumbPage className="font-semibold text-primary-foreground">
-              {chapter.chapter_number}
+              Add a chapter
             </BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
@@ -91,14 +83,11 @@ export default async function UpdateChapterPage({ params }: PageProps) {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold text-foreground">
-            {book.name} Chapter {chapter.chapter_number ?? "-"}
+            {book.name ?? "-"}
           </h1>
-          <p className="text-sm text-muted-foreground">
-            {chapter.title ? chapter.title : ""}
-          </p>
         </div>
       </div>
-      <ChapterForm chapter={chapter} bookId={bookId} />
+      <CreateChapterForm bookId={bookId} />
     </div>
   );
 }

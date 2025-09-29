@@ -1,6 +1,5 @@
 "use client";
-import { ChapterAction } from "@/app/(admin)/dashboard/books/[bookId]/chapters/[chapterId]/chapterAction";
-import { Badge } from "@/components/ui/badge";
+import { CreateChapterAction } from "@/app/(admin)/dashboard/books/[bookId]/chapters/add/addChapterAction";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,7 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { BookOpen, Clock, Save } from "lucide-react";
+import { BookOpen, Save, Upload } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useActionState, useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -22,34 +21,28 @@ const EditComponentNoSSR = dynamic(
   }
 );
 interface props {
-  chapterContent: string;
-  chapterId: number;
-  chapterTitle: string;
   bookId: number;
 }
 
-export default function ChapterForm({
-  chapterContent,
-  chapterId,
-  chapterTitle,
-  bookId,
-}: props) {
+export default function CreateChapterForm({ bookId }: props) {
   const [mounted, setMounted] = useState(false);
-  const [content, setContent] = useState(chapterContent);
+  const [content, setContent] = useState("");
   const [formData, setFormData] = useState({
-    title: chapterTitle ?? "",
+    title: "",
+    chapterNumber: "",
   });
   const [state, formAction, isPending] = useActionState(
-    ChapterAction,
+    CreateChapterAction,
     undefined
   );
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
   useEffect(() => {
     if (state?.success) {
-      toast.success("Edit book success!");
+      toast.success("Add book success!");
     } else if (state?.success === false && state.message) {
       toast.error(state.message);
     }
@@ -69,23 +62,19 @@ export default function ChapterForm({
               </div>
               <div>
                 <h1 className="text-xl font-semibold text-balance">
-                  Edit Chapter
+                  Add Chapter
                 </h1>
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <Badge variant="secondary" className="gap-1">
-                <Clock className="h-3 w-3" />
-                Draft
-              </Badge>
               <Button
                 type="submit"
                 form="chapter-form"
                 disabled={isPending}
                 className="gap-2"
               >
-                <Save className="h-4 w-4" />
-                {isPending ? "Saving..." : "Save Changes"}
+                <Upload className="h-4 w-4" />
+                {isPending ? "Adding..." : "Add chapter"}
               </Button>
             </div>
           </div>
@@ -108,12 +97,7 @@ export default function ChapterForm({
                 </CardDescription>
               </CardHeader>
               <CardContent className="pt-0">
-                <div className="min-h-[500px] rounded-lg border bg-background/50 p-4">
-                  <EditComponentNoSSR
-                    initialContent={chapterContent || ""}
-                    onChange={setContent}
-                  />
-                </div>
+                <EditComponentNoSSR initialContent={""} onChange={setContent} />
               </CardContent>
             </Card>
           </div>
@@ -137,6 +121,27 @@ export default function ChapterForm({
                     }
                     placeholder="Enter chapter title..."
                     className="h-10"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label
+                    htmlFor="chapterNumber"
+                    className="text-sm font-medium"
+                  >
+                    Chapter Number
+                  </Label>
+                  <Input
+                    id="chapterNumber"
+                    name="chapterNumber"
+                    value={formData.chapterNumber}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        chapterNumber: e.target.value,
+                      })
+                    }
+                    placeholder="Enter chapter Numer..."
+                    className="h-10"
                     required
                   />
                 </div>
@@ -148,14 +153,6 @@ export default function ChapterForm({
                 <CardTitle className="text-base">Publishing Info</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Status</span>
-                  <Badge variant="outline">Draft</Badge>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Last Modified</span>
-                  <span className="text-foreground">Just now</span>
-                </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">Word Count</span>
                   <span className="text-foreground">
@@ -172,7 +169,6 @@ export default function ChapterForm({
           </div>
 
           <input type="hidden" name="content" value={content} />
-          <input type="hidden" name="id" value={chapterId} />
           <input type="hidden" name="bookid" value={bookId} />
         </form>
 

@@ -35,6 +35,7 @@ export async function fetchChapterPages(query: string) {
         chapter_number::text ILIKE ${`%${query}%`} OR
         book_id::text ILIKE ${`%${query}%`}
     `;
+    console.log(data[0].count);
     const totalPages = Math.ceil(Number(data[0].count) / ITEMS_PER_PAGE);
     return totalPages;
   } catch (error) {

@@ -7,7 +7,14 @@ import BookTable from "@/app/ui/admin/books/bookTable";
 import { SlideSkeleton } from "@/app/ui/skeletons";
 import UserActions from "@/components/ui/UserAction";
 import Link from "next/link";
-
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 export const metadata: Metadata = {
   title: "Books",
 };
@@ -24,19 +31,25 @@ export default async function Page(props: {
   const totalPages = await fetchBookPagesActions(query);
 
   return (
-    <div className="max-w-7xl mx-auto p-8">
-      <nav className="flex items-center space-x-2 text-lg text-muted-foreground mb-6">
-        <Link
-          href="/dashboard"
-          className="hover:text-foreground transition-colors"
-        >
-          Dashboard
-        </Link>
-        <span>/</span>
-        <Link href="/dashboard/books" className="font-medium text-foreground">
-          Books
-        </Link>
-      </nav>
+    <div className="max-w-full mx-auto p-8">
+      <Breadcrumb className="mb-6 w-fit rounded-lg bg-primary px-4 py-2 text-primary-foreground shadow-sm">
+        <BreadcrumbList className="gap-1.5 sm:gap-2">
+          <BreadcrumbItem>
+            <BreadcrumbLink
+              asChild
+              className="text-primary-foreground hover:text-primary-foreground/90"
+            >
+              <Link href={`/dashboard/`}>Dashboard</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator className="text-primary-foreground/80" />
+          <BreadcrumbItem>
+            <BreadcrumbPage className="font-semibold text-primary-foreground">
+              <Link href={`/dashboard/books`}>Books</Link>
+            </BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
       <div className="mt-3 flex items-center justify-between gap-2 md:mt-6">
         <Search placeholder="Search book..." />
       </div>

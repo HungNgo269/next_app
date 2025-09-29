@@ -1,6 +1,6 @@
 import EditSlide from "@/app/ui/admin/slides/editSlide";
 import { fetchSlidesByPageActions } from "@/app/actions/slideActions";
-import { formatEnDateTime } from "@/lib/utils/formatDate";
+import { formatDateTime } from "@/lib/utils/formatDate";
 import Active from "@/app/ui/admin/slides/active";
 import { ISlide } from "@/app/interface/slide";
 import { Card, CardContent } from "@/components/ui/card";
@@ -47,7 +47,7 @@ export default async function SlideTable({
               <div className="flex items-center justify-between pt-4">
                 <div className="text-sm text-muted-foreground">
                   Order: {slide.display_order} •{" "}
-                  {formatEnDateTime(slide.created_at ?? "")}
+                  {formatDateTime(slide.created_at ?? "")}
                 </div>
                 <div className="flex gap-2">
                   <EditSlide slide={slide} />
@@ -106,7 +106,7 @@ export default async function SlideTable({
                   <Active status={slide.is_active} />
                 </TableCell>
                 <TableCell className="text-center text-sm text-muted-foreground">
-                  {formatEnDateTime(slide.created_at ?? "")}
+                  {formatDateTime(slide.created_at ?? "")}
                 </TableCell>
                 <TableCell>
                   <div className="flex gap-4">

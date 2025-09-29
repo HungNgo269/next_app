@@ -1,7 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import {
   fetchBookByIdActions,
   fetchTotalChapterInBookByIdAction,
@@ -10,7 +17,7 @@ import Active from "@/app/ui/admin/slides/active";
 import StatusLabel from "@/app/ui/admin/slides/status";
 import type { Book } from "@/app/interface/book";
 import { Button } from "@/components/ui/button";
-import { formatEnDate } from "@/lib/utils/formatDate";
+import { formatDate } from "@/lib/utils/formatDate";
 import { fetchCategoryOfBookAction } from "@/app/actions/categoryActions";
 
 type PageProps = {
@@ -39,25 +46,34 @@ export default async function BookDetailsPage({ params }: PageProps) {
   return (
     <div className="min-h-screen bg-background">
       <div className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="max-w-7xl mx-auto px-6 py-6">
-          <nav className="flex items-center space-x-2 text-lg text-muted-foreground mb-6">
-            <Link
-              href="/dashboard"
-              className="hover:text-foreground transition-colors"
-            >
-              Dashboard
-            </Link>
-            <span>/</span>
-            <Link
-              href="/dashboard/books"
-              className="hover:text-foreground transition-colors"
-            >
-              Books
-            </Link>
-            <span>/</span>
-            <span className="text-foreground font-medium">{book.name}</span>
-          </nav>
-
+        <div className="max-w-full mx-auto px-6 py-6">
+          <Breadcrumb className="mb-6 w-fit rounded-lg bg-primary px-4 py-2 text-primary-foreground shadow-sm">
+            <BreadcrumbList className="gap-1.5 sm:gap-2">
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  asChild
+                  className="text-primary-foreground hover:text-primary-foreground/90"
+                >
+                  <Link href={`/dashboard/`}>Dashboard</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator className="text-primary-foreground/80" />
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  asChild
+                  className="text-primary-foreground hover:text-primary-foreground/90"
+                >
+                  <Link href={`/dashboard/books`}>Books</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator className="text-primary-foreground/80" />
+              <BreadcrumbItem>
+                <BreadcrumbPage className="font-semibold text-primary-foreground">
+                  <Link href={`/dashboard/books/${bookId}`}>{book.name}</Link>
+                </BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
           <div className="flex flex-col lg:flex-row gap-8">
             <div className="flex-shrink-0 mx-auto lg:mx-0">
               <div className="relative h-80 w-56 sm:h-96 sm:w-64 rounded-lg overflow-hidden border shadow-md">
@@ -136,9 +152,7 @@ export default async function BookDetailsPage({ params }: PageProps) {
 
               <div className="pt-2">
                 <Button asChild size="lg" className="shadow-sm">
-                  <Link
-                    href={`/dashboard/books/${book.id}/chapters?page=1&query=`}
-                  >
+                  <Link href={`/dashboard/books/${book.id}/chapters`}>
                     View Chapters
                   </Link>
                 </Button>
@@ -148,7 +162,7 @@ export default async function BookDetailsPage({ params }: PageProps) {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-8 space-y-8">
+      <div className="max-w-full mx-auto px-6 py-8 space-y-8">
         <div className="space-y-4">
           <h2 className="text-lg font-semibold text-foreground">Timeline</h2>
           <div className="space-y-3">
@@ -167,7 +181,7 @@ export default async function BookDetailsPage({ params }: PageProps) {
                     {item.label}
                   </span>
                   <span className="text-muted-foreground">
-                    {formatEnDate(item.date!)}
+                    {formatDate(item.date!)}
                   </span>
                 </div>
               ))}

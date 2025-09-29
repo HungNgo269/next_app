@@ -4,8 +4,8 @@ export interface Chapter {
   content: string;
   book_id: number;
   chapter_number: number;
-  createdAt: string;
-  updatedAt: string;
+  created_at: string;
+  updated_at: string;
   view_count?: number;
 }
 export interface ChapterInfo {

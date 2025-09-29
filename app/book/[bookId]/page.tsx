@@ -13,10 +13,10 @@ import ImageCard from "@/app/ui/share/image/imageCard";
 import type { Chapter } from "@/app/interface/chapter";
 import BookDesc from "@/app/ui/user/books/bookDesc";
 import { getURL } from "@/lib/utils/helper";
-import { Button } from "@/components/ui/button";
+import { getSessionCache } from "@/lib/utils/getSession";
+import FollowButton from "@/app/book/[bookId]/followBookButton";
 
 const FALLBACK_BOOK_OG_IMAGE = getURL("hero-desktop.png");
-
 const toAbsoluteImageUrl = (value?: string) => {
   if (!value) return undefined;
   return value.startsWith("http") ? value : getURL(value);
@@ -123,6 +123,8 @@ export async function generateMetadata({
 }
 
 export default async function BookPage({ params }: PageProps) {
+  const session = await getSessionCache();
+  const user = session?.user;
   const { bookId } = await params;
   const [bookData, bookCategories, chapters] = await Promise.all([
     fetchBookByIdActions(bookId),
@@ -145,7 +147,7 @@ export default async function BookPage({ params }: PageProps) {
         />
         <div className="absolute inset-0  bg-opacity-40">
           <div className="container mx-auto px-4 sm:px-6 h-full flex items-center">
-            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 md:gap-8 max-w-6xl w-full pt-4 sm:pt-8 md:pt-12">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 md:gap-8 max-w-full  pt-4 sm:pt-8 md:pt-12 mx-auto  lg:mx-40 ">
               <div className="relative w-32 h-44 sm:w-36 sm:h-52 md:w-44 md:h-64 flex-shrink-0 rounded-lg overflow-hidden shadow-xl">
                 <ImageCard
                   bookImage={book.image_urls[0]}
@@ -205,7 +207,10 @@ export default async function BookPage({ params }: PageProps) {
                     {book.author}
                   </span>
                 </div>
-             
+                <FollowButton
+                  bookId={bookId}
+                  userId={user?.id || ""}
+                ></FollowButton>
               </div>
               <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-0">
                 <span className="font-medium text-secondary-foreground">

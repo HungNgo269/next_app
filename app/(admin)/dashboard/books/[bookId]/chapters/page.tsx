@@ -1,6 +1,14 @@
 import Link from "next/link";
 
 import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import {
   fetchBookNameByIdChapterAction,
   fetchTotalChapterInBookByIdAction,
 } from "@/app/actions/bookActions";
@@ -17,63 +25,88 @@ type PageProps = {
   params: Promise<{
     bookId: number;
   }>;
+
   searchParams: Promise<{
     query: string;
+
     page: number;
   }>;
 };
 
 export default async function BookChaptersPage({
   params,
+
   searchParams,
 }: PageProps) {
   const { bookId } = await params;
-  const { query, page } = await searchParams;
+
+  let { query, page } = await searchParams;
+
+  if (!page) {
+    page = 1;
+  }
+
+  if (!query) {
+    query = "";
+  }
+
   const [bookName, chapters, totalChapters] = await Promise.all([
     fetchBookNameByIdChapterAction(bookId),
+
     fetchChapterOfBookAction(bookId),
+
     fetchTotalChapterInBookByIdAction(bookId),
   ]);
-  const totalPage = Math.ceil(totalChapters / 10);
-  return (
-    <div className="max-w-7xl mx-auto p-8">
-      <nav className="flex items-center space-x-2 text-lg text-muted-foreground mb-6">
-        <Link
-          className="hover:text-foreground transition-colors"
-          href={`/dashboard/`}
-        >
-          Dashboard
-        </Link>
-        <span>/</span>
-        <Link
-          className="hover:text-foreground transition-colors"
-          href={`/dashboard/books`}
-        >
-          Books
-        </Link>
-        <span>/</span>
-        <Link
-          className="hover:text-foreground transition-colors"
-          href={`/dashboard/books/${bookId}`}
-        >
-          <span>{bookName}</span>
-        </Link>
-        <span>/</span>
-        <Link
-          className="text-foreground font-medium"
-          href={`/dashboard/books/${bookId}/chapters`}
-        >
-          Chapters
-        </Link>
-      </nav>
 
+  const totalPage = Math.ceil(totalChapters / 10);
+
+  return (
+    <div className="max-w-full mx-auto p-8">
+      <Breadcrumb className="mb-6 w-fit rounded-lg bg-primary px-4 py-2 text-primary-foreground shadow-sm">
+        <BreadcrumbList className="gap-1.5 sm:gap-2">
+          <BreadcrumbItem>
+            <BreadcrumbLink
+              asChild
+              className="text-primary-foreground hover:text-primary-foreground/90"
+            >
+              <Link href={`/dashboard/`}>Dashboard</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator className="text-primary-foreground/80" />
+          <BreadcrumbItem>
+            <BreadcrumbLink
+              asChild
+              className="text-primary-foreground hover:text-primary-foreground/90"
+            >
+              <Link href={`/dashboard/books`}>Books</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator className="text-primary-foreground/80" />
+          <BreadcrumbItem>
+            <BreadcrumbLink
+              asChild
+              className="text-primary-foreground hover:text-primary-foreground/90"
+            >
+              <Link href={`/dashboard/books/${bookId}`}>{bookName}</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator className="text-primary-foreground/80" />
+          <BreadcrumbItem>
+            <BreadcrumbPage className="font-semibold text-primary-foreground">
+              Chapters
+            </BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex flex-col gap-5">
           <h1 className="text-2xl font-semibold text-foreground">{bookName}</h1>
+
           <p className="text-sm text-muted-foreground">
             Total {totalChapters} chapter{totalChapters === 1 ? "" : "s"}
           </p>
         </div>
+
         <Button>
           <Link
             title="Edit chapter"
@@ -86,13 +119,15 @@ export default async function BookChaptersPage({
 
       <div className="p-0 mt-5">
         {chapters.length > 0 ? (
-          <div className="max-w-7xl mx-auto p-8 space-y-8">
+          <div className="max-w-full mx-auto p-8 space-y-8">
             <div className="mt-3 flex items-center justify-between gap-2 md:mt-6">
               <Search placeholder="Search chapter..." />
             </div>
+
             <Suspense key={query + page} fallback={<SlideSkeleton />}>
               <ChapterTable query={query} currentPage={page} bookId={bookId} />
             </Suspense>
+
             <div className="mt-5 flex w-full justify-center">
               <Pagination totalPages={totalPage} />
             </div>

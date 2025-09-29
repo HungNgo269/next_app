@@ -5,7 +5,7 @@ import {
   fetchBooksByPageActions,
   fetchTotalChapterInBookByIdAction,
 } from "@/app/actions/bookActions";
-import { formatEnDate, formatEnDateTime } from "@/lib/utils/formatDate";
+import { formatDate, formatDateTime } from "@/lib/utils/formatDate";
 import Active from "@/app/ui/admin/slides/active";
 import StatusLabel from "@/app/ui/admin/slides/status";
 import { Book, BookTableProps } from "@/app/interface/book";
@@ -61,7 +61,7 @@ export default async function BookTable({
                 </p>
               )}
               <div className="space-y-3 text-sm text-muted-foreground">
-                <span>{formatEnDateTime(book.created_at ?? "")}</span>
+                <span>{formatDateTime(book.created_at ?? "")}</span>
                 <div className="flex flex-wrap gap-2">
                   <Button asChild size="sm" variant="outline">
                     <Link href={`/dashboard/books/${book.id}`}>Detail</Link>
@@ -135,7 +135,7 @@ export default async function BookTable({
                   {book.views || "-"}
                 </TableCell>
                 <TableCell className="text-center text-sm text-muted-foreground">
-                  {formatEnDate(book.publish_date ?? "")}
+                  {formatDate(book.publish_date ?? "")}
                 </TableCell>
                 <TableCell>
                   <div className="flex flex-row flex-wrap items-center gap-2">
@@ -145,7 +145,7 @@ export default async function BookTable({
                     >
                       <Info className="w-5 h-5" />
                     </Link>
-                
+
                     <EditBook book={{ ...book, id: Number(book.id) }} />
                     <DeleteBook
                       bookId={Number(book.id)}

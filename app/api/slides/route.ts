@@ -34,7 +34,6 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
-    console.log("check file", file.name, file.size, file.type);
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
     const cloudinaryResult = await new Promise<UploadApiResponse>(
