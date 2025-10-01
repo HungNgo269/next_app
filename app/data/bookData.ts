@@ -339,16 +339,15 @@ export async function RemoveFromBookShelf(bookId: number) {
     throw new Error("Failed to fetch book image for chapter");
   }
 }
-export async function fetchBookNameByIdChapter(bookId: number) {
+export async function fetchBookNameByBookId(bookId: number) {
   try {
     const res = await sql`
-    select b.name from books b join
-    chapters c on c.book_id=b.id
+    select b.name from books b
 where b.id = ${bookId} 
   `;
     return res[0]?.name as string;
   } catch (error) {
     console.error("Server Action Error:", error);
-    throw new Error("Failed to fetchBookNameByIdChapter");
+    throw new Error("Failed to fetchBookNameByBookId");
   }
 }

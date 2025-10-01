@@ -15,6 +15,7 @@ import { Save, X } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { UploadChapterAction } from "@/app/(admin)/dashboard/chapters/uploadChapterAction";
+import Link from "next/link";
 
 interface UploadChapterProps {
   open?: boolean;
@@ -113,7 +114,9 @@ export default function UploadChapter({
               id="title"
               name="title"
               value={formData.title}
-              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, title: e.target.value })
+              }
               required
             />
           </div>
@@ -142,7 +145,12 @@ export default function UploadChapter({
             </ul>
           )}
 
-          <div className="flex gap-2 pt-2">
+          <div className="flex gap-2 pt-2 justify-end items-end">
+            <Link href={`/dashboard/books/1/chapters/add`}>
+              <Button size="sm" disabled={isPending || isLoading}>
+                Want to use Rich Text Editor ?
+              </Button>
+            </Link>
             <Button type="submit" size="sm" disabled={isPending || isLoading}>
               <Save className="h-4 w-4 mr-2" />
               {isPending || isLoading ? "Saving..." : "Save"}

@@ -21,7 +21,6 @@ export default function SearchComponent({
     setQuery(q);
     setIsOpen(false);
     if (compact) setIsCompactOpen(false);
-    console.log("Searching for:", q);
   };
 
   const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (e) => {

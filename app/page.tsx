@@ -9,7 +9,6 @@ import SectionComponent from "@/app/ui/user/section/section";
 import { HeaderWrapper } from "@/app/ui/user/headerCustomer/headerWrapper";
 import SlideWrapper from "@/app/ui/admin/slides/slideWrapper";
 import NewChapterList from "@/app/ui/user/chapter/newChapterList";
-import SseClient from "@/app/ui/user/test/SseClient";
 //ALL SEO created by codex
 
 export default function HomePage() {
@@ -25,7 +24,6 @@ export default function HomePage() {
       </header>
       <SlideWrapper />
       <div className="w-full mx-auto mt-10 md:w-[700px] lg:w-[900px]  xl:w-[1190px] ">
-        {/* <SseClient></SseClient> */}
         <Suspense>
           <BestSellerContainer />
         </Suspense>

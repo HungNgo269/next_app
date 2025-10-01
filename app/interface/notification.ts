@@ -3,8 +3,12 @@ export interface Notification {
   userId: string;
   bookId: number;
   chapterId: number;
-  title: string;
-  message: string;
+  read: boolean;
   created_at: Date;
   updated_at: Date;
+}
+export interface NotificationRow {
+  userId: string;
+  bookId: number;
+  chapterId: number;
 }

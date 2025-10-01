@@ -5,7 +5,7 @@ import {
   fetchBookByCategorySort,
   fetchBookById,
   fetchBookImage,
-  fetchBookNameByIdChapter,
+  fetchBookNameByBookId,
   fetchBookPages,
   fetchBooksByPage,
   fetchBooksByQuery,
@@ -155,9 +155,9 @@ export async function fetchTotalChapterInBookByIdAction(id: number) {
     throw new Error("Failed to fetchTotalBookPage");
   }
 }
-export async function fetchBookNameByIdChapterAction(id: number) {
+export async function fetchBookNameByBookIdAction(id: number) {
   try {
-    return await fetchBookNameByIdChapter(id);
+    return await fetchBookNameByBookId(id);
   } catch (error) {
     console.error("Server Action Error:", error);
     throw new Error("Failed to fetchTotalBookPage");

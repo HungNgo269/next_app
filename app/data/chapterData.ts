@@ -1,4 +1,4 @@
-import { ChapterInfo } from "@/app/interface/chapter";
+import { ChapterBase, ChapterInfo } from "@/app/interface/chapter";
 import { sql } from "../../lib/db";
 
 export async function fetchChapterDataCard(id: number) {
@@ -104,7 +104,7 @@ export async function createChapter(data: {
     (${data.bookId},${data.title},${data.content},${data.chapterNumber})
     returning *
     `;
-    return res[0];
+    return res[0] as ChapterBase;
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to  create Chapter.");

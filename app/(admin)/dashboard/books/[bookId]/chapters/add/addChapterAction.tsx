@@ -1,5 +1,6 @@
 "use server";
 
+import { notifyNewChapter } from "@/app/actions/notificationsAction";
 import { createChapter } from "@/app/data/chapterData";
 import { ActionResult } from "@/app/interface/actionResult";
 import { ChapterSchema } from "@/app/schema/chapterSchema";
@@ -19,10 +20,7 @@ export async function CreateChapterAction(
         ? Number(formData.get("chapterNumber"))
         : undefined,
     };
-    console.log("raw", raw);
-
     const parse = ChapterSchema.safeParse(raw);
-    console.log("pares", parse);
     if (!parse.success) {
       return {
         message: "Invalid data format",
@@ -35,8 +33,16 @@ export async function CreateChapterAction(
       chapterNumber: parse.data.chapter_number,
       bookId: parse.data.book_id,
     });
-    console.log("Create result:", result);
-
+    const chapter = result;
+    if (!result) {
+      return {
+        message: "Create chapter content fail",
+        success: false,
+      };
+    }
+    setTimeout(async () => {
+      await notifyNewChapter(chapter);
+    }, 5000);
     return {
       message: "Create chapter content success",
       success: true,

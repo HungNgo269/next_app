@@ -1,4 +1,4 @@
-import IBookFollow from "@/app/interface/bookFollow";
+import { IBookFollow, BookFollowRow } from "@/app/interface/bookFollow";
 import { sql } from "@/lib/db";
 
 export async function GetBookFollow(userId: string, bookId: number) {
@@ -12,14 +12,15 @@ export async function GetBookFollow(userId: string, bookId: number) {
   }
 }
 
-export async function GetUsersFollowBook(bookId: number) {
+export async function GetUsersFollowBook(bookId: number): Promise<string[]> {
   try {
-    const res = await sql`Select * from book_follow 
-        where  bookId = ${bookId} group by userId`;
-    return res as IBookFollow[];
+    const res = await sql`Select userId from book_follow 
+        where bookId = ${bookId}`;
+
+    return (res as BookFollowRow[]).map((row) => row.userid);
   } catch (error) {
     console.error("Database Error:", error);
-    throw new Error("Failed to add Book Follow.");
+    throw new Error("Failed to get users following book.");
   }
 }
 

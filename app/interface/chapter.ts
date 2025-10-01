@@ -16,7 +16,15 @@ export interface ChapterInfo {
   created_at?: string;
   updated_at?: string;
 }
-
+export interface ChapterBase {
+  id: number;
+  book_id: number;
+  title?: string;
+  content: string;
+  chapter_number: number;
+  created_at?: string;
+  updated_at?: string;
+}
 export interface ChapterStats {
   guestViews?: number;
   todayViews?: number;

@@ -9,7 +9,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import {
-  fetchBookNameByIdChapterAction,
+  fetchBookNameByBookIdAction,
   fetchTotalChapterInBookByIdAction,
 } from "@/app/actions/bookActions";
 import { fetchChapterOfBookAction } from "@/app/actions/chapterActions";
@@ -51,7 +51,7 @@ export default async function BookChaptersPage({
   }
 
   const [bookName, chapters, totalChapters] = await Promise.all([
-    fetchBookNameByIdChapterAction(bookId),
+    fetchBookNameByBookIdAction(bookId),
 
     fetchChapterOfBookAction(bookId),
 

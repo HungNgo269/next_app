@@ -59,7 +59,6 @@ export default function BookCarousel({
     setIsTransitioning(true);
     setCurrentSlide((prev) => prev - 1);
   };
-  console.log("slide", slides);
   return (
     <div className={`relative lg:${cfg.container} w-full`}>
       <div className="relative overflow-hidden">
