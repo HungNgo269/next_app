@@ -1,4 +1,5 @@
 import { GetUsersFollowBookAction } from "@/app/actions/bookFollowActions";
+import { Notification, NotificationUI } from "@/app/interface/notification";
 
 type SSEController = ReadableStreamDefaultController<Uint8Array>;
 //SSE gửi dạng byte về => convert sang unit8array(mảng nhị phân 2 mũ 8)(8bit unsigned integers)0->255 tức 0 = 00000000 1->00000001
@@ -44,13 +45,17 @@ export function AddConnection(userId: string, controller: SSEController) {
   };
   connections.set(userId, newConnection);
 }
-export function SendToUser(userId: string, event: string, data: any) {
+export function SendToUser(
+  userId: string,
+  event: string,
+  data: NotificationUI
+) {
   const conn = connections.get(userId);
   if (conn) {
     try {
       const encoder = new TextEncoder(); //chuyển string(event) sang unit8array(byte)
       // event: eventName \n =>data: {"key": "value"}\n\n (\n\n = kết thúc trong sse)
-      const message = `event:${event}\ndata:${JSON.stringify(data)}\n\n`;
+      const message = `event: ${event}\ndata: ${JSON.stringify(data)}\n\n`;
       console.log("check message", message);
       //enqueue => thêm chunk vào hàng đợi, client nhận qua eventsrc(tức đẩy dữ liệu)
       conn.controller.enqueue(encoder.encode(message));
@@ -62,7 +67,11 @@ export function SendToUser(userId: string, event: string, data: any) {
   }
   return false;
 }
-export function broadcast(userIds: string[], event: string, data: unknown) {
+export function broadcast(
+  userIds: string[],
+  event: string,
+  data: NotificationUI
+) {
   userIds.forEach((userId) => {
     SendToUser(userId, event, data);
   });
@@ -70,7 +79,7 @@ export function broadcast(userIds: string[], event: string, data: unknown) {
 export async function boardcastBook(
   bookId: number,
   event: string,
-  data: unknown
+  data: NotificationUI
 ) {
   const followers = await GetUsersFollowBookAction(bookId);
   if (followers) {

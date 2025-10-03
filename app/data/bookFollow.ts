@@ -46,3 +46,34 @@ export async function RemoveBookFollow(userId: string, bookId: number) {
     throw new Error("Failed to remove Book Foolow.");
   }
 }
+
+export async function GetFollowedBooks(userId: string) {
+  try {
+    const res = await sql`
+      SELECT
+        b.id,
+        b.name,
+        b.author,
+        b.description,
+        b.image_urls,
+        b.rating,
+        b.views,
+        b.status,
+        b.popularity,
+        MAX(c.id)             AS latest_chapter_id,
+        MAX(c.chapter_number) AS latest_chapter_number,
+        MAX(c.created_at)     AS latest_chapter_date
+      FROM book_follow bf
+      JOIN books b ON bf.bookid = b.id
+      LEFT JOIN chapters c ON c.book_id = b.id
+      WHERE bf.userid = ${userId}
+      GROUP BY b.id, b.name, b.author, b.description, b.image_urls, b.rating, b.views, b.status, b.popularity
+      ORDER BY MAX(c.created_at) DESC NULLS LAST, b.name ASC;
+    `;
+    return res;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch followed books.");
+  }
+}
+

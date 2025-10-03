@@ -5,6 +5,25 @@ import { useMemo, useState } from "react";
 import BookCarouselNavigation from "@/app/ui/user/books/bookCarouselNavigation";
 import BookCarouselContent from "@/app/ui/user/books/bookCarouselContent";
 
+// sm	40rem min(640px)	@media (width >= 40rem) { ... }
+// md	48rem (768px)	@media (width >= 48rem) { ... }
+// lg	64rem (1024px)	@media (width >= 64rem) { ... }
+// xl	80rem (1280px)	@media (width >= 80rem) { ... }
+// // 2xl	96rem (1536px)
+// export type Variant = "xl" | "lg" | "md";
+//  xl2: {
+//     container: "w-[1190px]",
+//     grid: "lg:grid lg:grid-cols-5 gap-1",
+//   },
+//   xl: {
+//     container: "w-[850px]",
+//     grid: "lg:grid lg:grid-cols-5 gap-1",
+//   },
+//   lg: {
+//     container: "w-[850px]",
+//     grid: "lg:grid lg:grid-cols-5 gap-1",
+//   },
+
 export type Variant = "lg" | "sm";
 interface BookCarouselProps {
   books: Book[];
@@ -14,14 +33,15 @@ interface BookCarouselProps {
 
 export const CONFIG = {
   lg: {
-    container: "w-[1190px]",
-    grid: "lg:grid lg:grid-cols-5 gap-1",
+    container: "w-full lg:w-[950px] xl:w-[1190px]",
+    grid: "grid grid-cols-5 gap-1",
   },
   sm: {
-    container: "w-[850px]",
-    grid: "lg:grid lg:grid-cols-5 gap-1",
+    container: "w-full lg:w-[750px] xl:w-[850px]",
+    grid: "grid grid-cols-5 gap-1",
   },
 } as const;
+
 const ITEMS_PER_SLIDE = 5;
 
 export default function BookCarousel({

@@ -14,7 +14,7 @@ import { Logo } from "@/app/ui/share/Button/logo";
 import { getSessionCache } from "@/lib/utils/getSession";
 import HeaderClientColor from "./headerClientColor";
 import { headers } from "next/headers";
-import NotificationReceiver from "@/app/ui/user/test/NotificationReceiver";
+import NotificationReceiver from "@/app/ui/user/headerCustomer/NotificationReceiver";
 
 export default async function Header() {
   const session = await getSessionCache();
@@ -57,13 +57,13 @@ export default async function Header() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-48">
                       <DropdownMenuItem>
-                        <Link prefetch={true} href={"#"}>
+                        <Link prefetch={true} href={"/bookshelf"}>
                           Your Book Shelf
                         </Link>
                       </DropdownMenuItem>
 
                       <DropdownMenuItem>
-                        <Link prefetch={true} href={"#"}>
+                        <Link prefetch={true} href={"/bookmark"}>
                           View Bookmark
                         </Link>
                       </DropdownMenuItem>

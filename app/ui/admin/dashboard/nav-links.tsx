@@ -8,6 +8,7 @@ import {
   House,
   NotebookText,
   Play,
+  User,
 } from "lucide-react";
 
 import Link from "next/link";
@@ -18,7 +19,7 @@ import { useState } from "react";
 // Map of links to display in the side navigation.
 // Depending on the size of the application, this would be stored in a database.
 const links = [
-  { name: "Home", href: "/dashboard", icon: House },
+  { name: "User", href: "/dashboard", icon: User },
   { name: "Slides", href: "/dashboard/slides", icon: Play },
   {
     name: "Books",

@@ -351,3 +351,15 @@ where b.id = ${bookId}
     throw new Error("Failed to fetchBookNameByBookId");
   }
 }
+export async function fetchBookImageByBookId(bookId: number) {
+  try {
+    const res = await sql`
+    select b.image_urls from books b
+where b.id = ${bookId} 
+  `;
+    return res[0].image_urls[0];
+  } catch (error) {
+    console.error("Server Action Error:", error);
+    throw new Error("Failed to fetchBookNameByBookId");
+  }
+}

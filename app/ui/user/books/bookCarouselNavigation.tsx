@@ -1,18 +1,18 @@
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
 
 type Variant = "lg" | "sm";
 
 const MAP = {
   lg: {
-    width: "1238px",
-    height: "300px",
-    className: "h-[300px] w-[1238px]",
+    className: "xl:h-[300px]  lg:h-[225px] ",
+    positionLeft: "left-[-20px]",
+    positionRight: "right-[-5px]",
   },
   sm: {
-    width: "840px",
-    height: "207px",
-    className: "h-[207px] w-[840px]",
+    className: "xl:h-[207px]   lg:h-[180px] ",
+    positionLeft: "left-[-20px]",
+    positionRight: "right-[-12px]",
   },
 } as const;
 
@@ -39,9 +39,9 @@ export default function BookCarouselNavigation({
 
   return (
     <div
-      className={`absolute top-0 md:flex justify-between items-center z-20 pointer-events-none hidden   ${
+      className={`absolute top-0 md:flex justify-between items-center z-20 pointer-events-none hidden xl:h-[300px]   ${
         s.className
-      } ${showPrevButton ? "left-[-18px]" : "right-[-17px]"}`}
+      } ${showPrevButton ? s.positionLeft : s.positionRight}`}
     >
       <div className="flex justify-start">
         {showPrevButton && (

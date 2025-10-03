@@ -119,7 +119,7 @@ export default async function BookChaptersPage({
 
       <div className="p-0 mt-5">
         {chapters.length > 0 ? (
-          <div className="max-w-full mx-auto p-8 space-y-8">
+          <div className="max-w-full mx-auto space-y-8">
             <div className="mt-3 flex items-center justify-between gap-2 md:mt-6">
               <Search placeholder="Search chapter..." />
             </div>

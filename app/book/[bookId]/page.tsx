@@ -1,5 +1,11 @@
 import type { Metadata } from "next";
-import { Star, BookOpen, MessageCircle } from "lucide-react";
+import {
+  Star,
+  BookOpen,
+  MessageCircle,
+  Bookmark,
+  MessageSquare,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import { fetchBookByIdActions } from "@/app/actions/bookActions";
@@ -134,118 +140,73 @@ export default async function BookPage({ params }: PageProps) {
   const book = bookData[0] as Book;
 
   return (
-    <div
-      className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50
-     dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 "
-    >
-      <div className="relative w-full h-64 sm:h-72 md:h-80">
+    <div className="min-h-screen relative ">
+      <div className="absolute w-full h-64 sm:h-72 md:h-80 top-0 left-0 -z-10">
         <Image
           src={book.image_urls[0] || "/placeholder.svg"}
           alt={book.name}
           fill
           className="object-cover blur-xs"
         />
-        <div className="absolute inset-0  bg-opacity-40">
-          <div className="container mx-auto px-4 sm:px-6 h-full flex items-center">
-            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 md:gap-8 max-w-full  pt-4 sm:pt-8 md:pt-12 mx-auto  lg:mx-40 ">
-              <div className="relative w-32 h-44 sm:w-36 sm:h-52 md:w-44 md:h-64 flex-shrink-0 rounded-lg overflow-hidden shadow-xl">
-                <ImageCard
-                  bookImage={book.image_urls[0]}
-                  bookName={book.name}
-                />
-              </div>
-
-              <div className="flex-1 text- space-y-2 sm:space-y-3 md:space-y-4 text-center sm:text-left  text-white">
-                <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight ">
-                  {book.name}
-                </h1>
-                <p className="text-lg sm:text-xl font-medium">{book.author}</p>
-                <div className="flex flex-wrap justify-center sm:justify-start gap-2 pt-2">
-                  {bookCategories.map((category) => (
-                    <Link
-                      key={category.category_id}
-                      prefetch={true}
-                      href={`${category.url}&page=1`}
-                    >
-                      <Badge className="bg-info hover:bg-info/90 text-info-foreground px-2 py-1 sm:px-3 text-xs sm:text-sm">
-                        {category.name}
-                      </Badge>
-                    </Link>
-                  ))}
-                </div>
-
-                <div className="flex items-center justify-center sm:justify-start gap-4 sm:gap-6 text-sm">
-                  <div className="flex items-center gap-1">
-                    <Star className="w-4 h-4 text-warning fill-current" />
-                    <span>{book.rating}</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <BookOpen className="w-4 h-4" />
-                    <span>{book.views}</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <MessageCircle className="w-4 h-4" />
-                    <span>12</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+        <div className="absolute inset-0 bg-opacity-40 bg-black/30"></div>
+      </div>
+      <div
+        className="h-full grid grid-cols-[minmax(0,200px)_minmax(0,1180px)]
+         grid-rows-[minmax(0,216px)_minmax(0,48px)_minmax(0,24px)_minmax(0,24px)_minmax(0,auto)] 
+      gap-4 items-start pt-15 lg:w-[1400px] w-full mx-auto"
+      >
+        <div className="relative w-[200px] h-[300px] row-span-2 col-span-1   rounded-lg overflow-hidden shadow-xl">
+          <ImageCard bookImage={book.image_urls[0]} bookName={book.name} />
+        </div>
+        <div className="flex flex-col justify-between text-white row-span-1 col-start-2 col-span-1 h-full  ml-2">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight">
+            {book.name}
+          </h1>
+          <p className="text-lg sm:text-xl font-medium">{book.author}</p>
+        </div>
+        <div className="row-span-1 col-span-1 col-start-2 row-start-2 h-full ml-2">
+          <FollowButton bookId={bookId} userId={user?.id || ""}></FollowButton>
+        </div>
+        <div className="row-span-1 col-span-1 col-start-2 row-start-3 flex flex-wrap justify-center sm:justify-start gap-2 ml-2 items-center">
+          {bookCategories.map((category) => (
+            <Link
+              key={category.category_id}
+              prefetch={true}
+              href={`${category.url}&page=1`}
+            >
+              <Badge className="bg-info hover:bg-info/90 text-info-foreground  text-xs sm:text-sm">
+                {category.name}
+              </Badge>
+            </Link>
+          ))}
+          <span className="font-medium text-secondary-foreground">Status:</span>
+          <span className="sm:ml-2 text-secondary-foreground">
+            {book.is_active ? "Completed" : "Ongoing"}
+          </span>
+        </div>
+        <div className="row-span-1 col-span-1 col-start-2 row-start-4 gap-4 ml-2 flex items-center justify-center sm:justify-start">
+          <div className="flex items-center gap-1">
+            <Star className="w-4 h-4 text-warning fill-current" />
+            <span>{book.rating}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <MessageSquare className="w-4 h-4" />
+            <span>{book.views}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <Bookmark className="w-4 h-4" />
+            <span>12</span>
           </div>
         </div>
-      </div>
 
-      <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 max-w-6xl">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
-          <div className="lg:col-span-2 space-y-4 sm:space-y-6">
-            <div className="space-y-3 sm:space-y-4">
-              <div className="flex flex-row justify-between">
-                <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-0">
-                  <span className="font-medium text-secondary-foreground">
-                    Author:
-                  </span>
-                  <span className="sm:ml-2 text-secondary-foreground">
-                    {book.author}
-                  </span>
-                </div>
-                <FollowButton
-                  bookId={bookId}
-                  userId={user?.id || ""}
-                ></FollowButton>
-              </div>
-              <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-0">
-                <span className="font-medium text-secondary-foreground">
-                  Status:
-                </span>
-                <span className="sm:ml-2 text-secondary-foreground">
-                  {book.is_active ? "Completed" : "Ongoing"}
-                </span>
-              </div>
-            </div>
+        <div className="row-span-1 col-span-1 col-start-2 row-start-5 gap-4 ml-2 flex flex-col items-center justify-center sm:justify-start">
+          <BookDesc content={book?.description}></BookDesc>
 
-            <h3 className="text-lg font-semibold text-secondary-foreground">
-              Description
-            </h3>
-            <BookDesc content={book?.description}></BookDesc>
-
-            <ChapterContainer
-              title={book.name}
-              chapters={chapters as Chapter[]}
-              totalChapters={chapters.length}
-            />
-          </div>
-
-          <div className="space-y-4 sm:space-y-6">
-            <div className="text-xs text-gray-500 mb-2 uppercase tracking-wide">
-              Translator
-            </div>
-            <div className="font-medium text-gray-900 mb-3">
-              Translation Team
-            </div>
-            <p className="text-sm text-gray-600">
-              Professional translation team dedicated to bringing you quality
-              content.
-            </p>
-          </div>
+          <ChapterContainer
+            title={book.name}
+            chapters={chapters as Chapter[]}
+            totalChapters={chapters.length}
+          />
         </div>
       </div>
 

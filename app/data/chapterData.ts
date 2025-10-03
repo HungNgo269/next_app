@@ -18,8 +18,8 @@ export async function fetchChapterOfBook(bookId: number) {
   try {
     let res = await sql`
     SELECT c.id, c.title,c.chapter_number,c.view_count,c.created_at,c.updated_at
-    FROM chapters  c
-    WHERE book_id = ${bookId}`;
+    FROM chapters  c 
+    WHERE book_id = ${bookId} order by c.chapter_number desc`;
     return res as ChapterInfo[];
   } catch (error) {
     console.error("Database Error:", error);
@@ -56,9 +56,21 @@ export async function fetchTotalChapterPage() {
 export async function fetchChapterByBookmark(userId: string) {
   try {
     let res = await sql`
-    SELECT c.id,c.book_id,c.title,b.image_urls,b.description,b.rating,b.author
-    FROM book_mark bm join chapters c on bm.chapterid=c.id 
-    join books b on c.book_id = b.id  where bm.userid=${userId};
+    SELECT
+      c.id            AS chapter_id,
+      c.book_id       AS book_id,
+      c.title         AS chapter_title,
+      c.chapter_number,
+      bm.progress,
+      b.name          AS book_name,
+      b.image_urls,
+      b.description,
+      b.rating,
+      b.author
+    FROM book_mark bm
+    JOIN chapters c ON bm.chapterid = c.id
+    JOIN books b ON c.book_id = b.id
+    WHERE bm.userid = ${userId};
     `;
     return res;
   } catch (error) {

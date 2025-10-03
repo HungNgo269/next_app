@@ -45,6 +45,7 @@ export default function FollowButton({ userId, bookId }: props) {
 
   return (
     <Button
+      className="h-full"
       disabled={isLoading}
       onClick={() => {
         handleClick();

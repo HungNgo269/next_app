@@ -1,6 +1,7 @@
 "use client";
 
 import { Chapter } from "@/app/interface/chapter";
+import { formatDateTimeUTC } from "@/lib/utils/formatDate";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -20,7 +21,7 @@ export function ChapterContainer({
   title,
   chapters,
   totalChapters,
-  showMoreText = "Xem tiếp",
+  showMoreText = "Show more",
   initialVisibleChapters = 5,
 }: ChapterContainerProps) {
   const [showAll, setShowAll] = useState(false);
@@ -31,14 +32,11 @@ export function ChapterContainer({
   const hasMoreChapters = chapters.length > initialVisibleChapters;
   const pathName = usePathname();
   return (
-    <div className="flex flex-row items-center justify-start space-x-3 mb-3 gap-4">
+    <div className="flex flex-row items-center justify-start space-x-3 mb-3 gap-4 w-full">
       <div className="h-full flex flex-col items-start w-full">
         <div className="rounded-lg p-4 bg-card shadow-sm w-full">
           <div className="mb-4">
-            <h2 className="text-lg font-medium text-gray-900">
-              {title}
-              <span className="text-destructive">*</span>
-            </h2>
+            <h2 className="text-lg font-medium text-gray-900">Chapters List</h2>
           </div>
 
           <div className="flex gap-4">
@@ -66,7 +64,7 @@ export function ChapterContainer({
                         </Link>
                       </div>
                       <span className="text-gray-400 text-sm flex-shrink-0 ml-2">
-                        {chapter.createdAt}
+                        {formatDateTimeUTC(chapter.created_at)}
                       </span>
                     </div>
                   ))}
@@ -84,11 +82,11 @@ export function ChapterContainer({
                     className="text-primary hover:text-primary/80 hover:underline text-sm font-medium"
                   >
                     {showAll
-                      ? "Thu gọn"
+                      ? "Show less"
                       : `${showMoreText} ${
                           totalChapters
-                            ? `(${totalChapters} chương)`
-                            : `(${chapters.length} chương)`
+                            ? `(${totalChapters} chapters)`
+                            : `(${chapters.length} chapters)`
                         }`}
                   </button>
                 </div>

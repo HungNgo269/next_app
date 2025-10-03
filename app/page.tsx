@@ -13,10 +13,7 @@ import NewChapterList from "@/app/ui/user/chapter/newChapterList";
 
 export default function HomePage() {
   return (
-    <div
-      className="bg-gradient-to-br from-slate-50 via-white to-slate-50
-     dark:from-slate-950 dark:via-slate-900 dark:to-slate-950"
-    >
+    <div className="overflow-x-hidden">
       <header className="ml-auto mr-auto w-full  ">
         <Suspense>
           <HeaderWrapper children={<Header></Header>}></HeaderWrapper>,
@@ -27,7 +24,7 @@ export default function HomePage() {
         <Suspense>
           <BestSellerContainer />
         </Suspense>
-        <div className="flex  justify-between mt-10 lg:flex-row flex-col">
+        <div className="flex  justify-between mt-10 lg:flex-row flex-col gap-10">
           <div className="lg:w-[850px] md:w-[700px]  flex flex-col gap-5">
             <Suspense>
               <NewBookList />
@@ -40,7 +37,7 @@ export default function HomePage() {
               <BookRecommend></BookRecommend>
             </Suspense>
           </div>
-          <div className="lg:w-[300px] md:w-[400px] flex flex-col gap-5">
+          <div className=" flex flex-col gap-5">
             <MostPopularBook />
           </div>
         </div>
