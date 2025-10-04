@@ -44,9 +44,6 @@ export default function SlideContent({
                         {slide.description}
                       </p>
                     )}
-                    <div className="inline-flex items-center px-6 py-3 bg-primary hover:bg-primary/80 rounded-lg font-semibold transition-colors duration-200 text-primary-foreground">
-                      <ChevronRight className="ml-2 h-4 w-4 " />
-                    </div>
                   </div>
                 </div>
               </div>

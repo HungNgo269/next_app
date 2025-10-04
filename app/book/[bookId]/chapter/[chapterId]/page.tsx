@@ -155,7 +155,7 @@ export default async function ChapterPage({ params }: PageProps) {
           idPrevChapter={idPrevChapter}
           idNextChapter={idNextChapter}
         ></ChapterSubWrapper>
-        <div className="max-w-4xl mx-auto px-4">
+        <div className="max-w-4xl mx-auto px-4 hidden lg:block">
           <div className="flex justify-between items-center mb-12 pt-8 border-t">
             {idPrevChapter ? (
               <Link

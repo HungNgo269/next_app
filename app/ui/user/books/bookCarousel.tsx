@@ -5,25 +5,6 @@ import { useMemo, useState } from "react";
 import BookCarouselNavigation from "@/app/ui/user/books/bookCarouselNavigation";
 import BookCarouselContent from "@/app/ui/user/books/bookCarouselContent";
 
-// sm	40rem min(640px)	@media (width >= 40rem) { ... }
-// md	48rem (768px)	@media (width >= 48rem) { ... }
-// lg	64rem (1024px)	@media (width >= 64rem) { ... }
-// xl	80rem (1280px)	@media (width >= 80rem) { ... }
-// // 2xl	96rem (1536px)
-// export type Variant = "xl" | "lg" | "md";
-//  xl2: {
-//     container: "w-[1190px]",
-//     grid: "lg:grid lg:grid-cols-5 gap-1",
-//   },
-//   xl: {
-//     container: "w-[850px]",
-//     grid: "lg:grid lg:grid-cols-5 gap-1",
-//   },
-//   lg: {
-//     container: "w-[850px]",
-//     grid: "lg:grid lg:grid-cols-5 gap-1",
-//   },
-
 export type Variant = "lg" | "sm";
 interface BookCarouselProps {
   books: Book[];
@@ -80,7 +61,7 @@ export default function BookCarousel({
     setCurrentSlide((prev) => prev - 1);
   };
   return (
-    <div className={`relative lg:${cfg.container} w-full`}>
+    <div className={`relative  lg:${cfg.container} w-full`}>
       <div className="relative overflow-hidden">
         <div
           className="flex transition-transform duration-300 ease-in-out h-fit"

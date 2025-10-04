@@ -77,3 +77,13 @@ export async function GetFollowedBooks(userId: string) {
   }
 }
 
+export async function GetBookFollowerCount(bookId: number) {
+  try {
+    const res = await sql`Select count(*) as followers from book_follow 
+        where bookId = ${bookId}`;
+    return Number(res[0].count) > 0;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to get users following book.");
+  }
+}

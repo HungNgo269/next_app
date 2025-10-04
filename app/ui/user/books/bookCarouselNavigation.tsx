@@ -7,7 +7,7 @@ const MAP = {
   lg: {
     className: "xl:h-[300px]  lg:h-[225px] ",
     positionLeft: "left-[-20px]",
-    positionRight: "right-[-5px]",
+    positionRight: "right-[-15px]",
   },
   sm: {
     className: "xl:h-[207px]   lg:h-[180px] ",
@@ -39,7 +39,7 @@ export default function BookCarouselNavigation({
 
   return (
     <div
-      className={`absolute top-0 md:flex justify-between items-center z-20 pointer-events-none hidden xl:h-[300px]   ${
+      className={`absolute top-0 md:flex justify-between items-center z-20 pointer-events-none hidden  ${
         s.className
       } ${showPrevButton ? s.positionLeft : s.positionRight}`}
     >

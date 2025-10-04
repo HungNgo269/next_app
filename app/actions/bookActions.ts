@@ -10,6 +10,7 @@ import {
   fetchBookPages,
   fetchBooksByPage,
   fetchBooksByQuery,
+  fetchBookSideInfo,
   fetchNewBook,
   fetchOurRecommendedBook,
   fetchPopularBook,
@@ -49,6 +50,15 @@ export async function fetchMostViewedBookByCategoryActions(categoryId: number) {
 export async function fetchBookImageAction(bookId: number) {
   try {
     return await fetchBookImage(bookId);
+  } catch (error) {
+    console.error("Server Action Error:", error);
+    throw new Error("Failed to fetch category books");
+  }
+}
+//commment(todo), rating,views
+export async function fetchBookSideInfoAction(bookId: number) {
+  try {
+    return await fetchBookSideInfo(bookId);
   } catch (error) {
     console.error("Server Action Error:", error);
     throw new Error("Failed to fetch category books");

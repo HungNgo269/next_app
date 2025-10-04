@@ -29,6 +29,13 @@ export interface BookImage {
   image_urls: string[];
   description?: string;
 }
+
+export interface BookSideInfo {
+  commentCount?: number;
+  rating?: number;
+  bookMarkCount?: number;
+  views?: number;
+}
 export interface BookTableProps {
   id: string;
   name: string;

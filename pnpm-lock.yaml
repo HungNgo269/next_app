@@ -120,8 +120,8 @@ importers:
         specifier: ^18.5.0
         version: 18.5.0(@types/node@22.10.7)
       swiper:
-        specifier: ^11.2.10
-        version: 11.2.10
+        specifier: 6.8.4
+        version: 6.8.4
       swr:
         specifier: ^2.3.6
         version: 2.3.6(react@19.1.0)
@@ -1187,6 +1187,9 @@ packages:
   detect-node-es@1.1.0:
     resolution: {integrity: sha512-ypdmJU/TbBby2Dxibuv7ZLW3Bs1QEmM7nHjEANfohJLvE0XVujisn1qPJcZxg+qDucsr+bP6fLD1rPS3AhJ7EQ==}
 
+  dom7@3.0.0:
+    resolution: {integrity: sha512-oNlcUdHsC4zb7Msx7JN3K0Nro1dzJ48knvBOnDPKJ2GV9wl1i5vydJZUSyOfrkKFDZEud/jBsTk92S/VGSAe/g==}
+
   dunder-proto@1.0.1:
     resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
     engines: {node: '>= 0.4'}
@@ -1767,6 +1770,9 @@ packages:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
     engines: {node: '>=0.10.0'}
 
+  ssr-window@3.0.0:
+    resolution: {integrity: sha512-q+8UfWDg9Itrg0yWK7oe5p/XRCJpJF9OBtXfOPgSJl+u3Xd5KI328RUEvUqSMVM9CiQUEf1QdBzJMkYGErj9QA==}
+
   string-width@4.2.3:
     resolution: {integrity: sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==}
     engines: {node: '>=8'}
@@ -1800,8 +1806,8 @@ packages:
       babel-plugin-macros:
         optional: true
 
-  swiper@11.2.10:
-    resolution: {integrity: sha512-RMeVUUjTQH+6N3ckimK93oxz6Sn5la4aDlgPzB+rBrG/smPdCTicXyhxa+woIpopz+jewEloiEE3lKo1h9w2YQ==}
+  swiper@6.8.4:
+    resolution: {integrity: sha512-O+buF9Q+sMA0H7luMS8R59hCaJKlpo8PXhQ6ZYu6Rn2v9OsFd4d1jmrv14QvxtQpKAvL/ZiovEeANI/uDGet7g==}
     engines: {node: '>= 4.7.0'}
 
   swr@2.3.6:
@@ -2879,6 +2885,10 @@ snapshots:
 
   detect-node-es@1.1.0: {}
 
+  dom7@3.0.0:
+    dependencies:
+      ssr-window: 3.0.0
+
   dunder-proto@1.0.1:
     dependencies:
       call-bind-apply-helpers: 1.0.2
@@ -3417,6 +3427,8 @@ snapshots:
 
   source-map-js@1.2.1: {}
 
+  ssr-window@3.0.0: {}
+
   string-width@4.2.3:
     dependencies:
       emoji-regex: 8.0.0
@@ -3442,7 +3454,10 @@ snapshots:
       client-only: 0.0.1
       react: 19.1.0
 
-  swiper@11.2.10: {}
+  swiper@6.8.4:
+    dependencies:
+      dom7: 3.0.0
+      ssr-window: 3.0.0
 
   swr@2.3.6(react@19.1.0):
     dependencies:

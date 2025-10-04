@@ -11,7 +11,7 @@ export default function ImageCard({ bookImage, bookName }: ImageCardProps) {
       src={bookImage || "/default-cover.png"}
       alt={bookName}
       fill
-      className="object-cover transition-opacity duration-500"
+      className="object-cover duration-500 group-hover:scale-[102%] transition-transform"
     />
   );
 }

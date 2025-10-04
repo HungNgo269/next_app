@@ -22,7 +22,10 @@ const stripHtml = (value?: string | null) => {
   if (!value) {
     return "";
   }
-  return value.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+  return value
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 };
 
 const getCoverImage = (image: BookmarkEntry["image_urls"]) => {
@@ -56,7 +59,8 @@ export default async function BookMarkPage() {
             Your Bookmarks
           </h1>
           <p className="text-muted-foreground">
-            Resume your bookmarked chapters whenever you're ready to keep reading.
+            Resume your bookmarked chapters whenever you're ready to keep
+            reading.
           </p>
         </div>
 
@@ -64,10 +68,11 @@ export default async function BookMarkPage() {
           <div className="flex flex-col items-center justify-center gap-3 rounded-lg border border-dashed p-10 text-center text-muted-foreground">
             <p>You haven't added any bookmarks yet.</p>
             <p className="text-sm">
-              Browse the library and tap the bookmark button while reading to save your place.
+              Browse the library and tap the bookmark button while reading to
+              save your place.
             </p>
             <Button asChild>
-              <Link prefetch={true} href="/book?page=1">
+              <Link prefetch={true} href="/book">
                 Browse books
               </Link>
             </Button>
@@ -77,7 +82,10 @@ export default async function BookMarkPage() {
             {bookmarks.map((item) => {
               const coverImage = getCoverImage(item.image_urls);
               const progressValue = Number(item.progress) || 0;
-              const normalizedProgress = Math.min(Math.max(progressValue, 0), 100);
+              const normalizedProgress = Math.min(
+                Math.max(progressValue, 0),
+                100
+              );
               const ratingValue =
                 item.rating === null || item.rating === undefined
                   ? null
@@ -110,7 +118,9 @@ export default async function BookMarkPage() {
                         {bookName}
                       </Link>
                       {item.author ? (
-                        <p className="text-sm text-muted-foreground">by {item.author}</p>
+                        <p className="text-sm text-muted-foreground">
+                          by {item.author}
+                        </p>
                       ) : null}
                     </div>
 
@@ -123,12 +133,16 @@ export default async function BookMarkPage() {
                     </Link>
 
                     {description ? (
-                      <p className="line-clamp-2 text-sm text-muted-foreground">{description}</p>
+                      <p className="line-clamp-2 text-sm text-muted-foreground">
+                        {description}
+                      </p>
                     ) : null}
 
                     <div className="flex flex-wrap items-center gap-3 pt-2 text-sm text-muted-foreground">
                       <span>Progress: {normalizedProgress}%</span>
-                      {hasRating ? <span>Rating: {ratingValue!.toFixed(1)}</span> : null}
+                      {hasRating ? (
+                        <span>Rating: {ratingValue!.toFixed(1)}</span>
+                      ) : null}
                     </div>
                   </div>
 

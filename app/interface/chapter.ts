@@ -64,7 +64,7 @@ export interface ChapterUploadProps {
 }
 export interface ChapterCardProps {
   id: number;
-  book_id: number; //=>get bookName
   title: string;
   chapter_number: number;
+  name: string;
 }

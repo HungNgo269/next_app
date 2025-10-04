@@ -1,6 +1,11 @@
 ﻿import { sql } from "@/lib/db";
 import { unstable_cache } from "next/cache";
-import { Book, BookCardProps } from "@/app/interface/book";
+import {
+  Book,
+  BookCardProps,
+  BookImage,
+  BookSideInfo,
+} from "@/app/interface/book";
 import { getStartDate, TimeFrame } from "@/app/data/rankingData";
 const ITEMS_PER_PAGE = 10;
 
@@ -27,6 +32,32 @@ export async function fetchNewBook() {
     throw new Error("Failed to fetch book by id.");
   }
 }
+export async function fetchBookSideInfo(bookId: number) {
+  try {
+    const res = await sql`
+    SELECT views,rating
+    FROM Books
+    WHERE id = ${bookId}
+  `;
+    return res[0] as BookSideInfo;
+  } catch (error) {
+    console.error("Server Action Error:", error);
+    throw new Error("Failed to fetchBookSideInfo");
+  }
+}
+export async function fetchNumberOfBookMark(bookId: number) {
+  try {
+    const res = await sql`
+    SELECT views,rating
+    FROM Books
+    WHERE id = ${bookId}
+  `;
+    return res[0] as BookSideInfo;
+  } catch (error) {
+    console.error("Server Action Error:", error);
+    throw new Error("Failed to fetchBookSideInfo");
+  }
+}
 export async function fetchBookImage(bookId: number) {
   try {
     const res = await sql`
@@ -34,7 +65,7 @@ export async function fetchBookImage(bookId: number) {
     FROM Books
     WHERE id = ${bookId}
   `;
-    return res[0];
+    return res[0] as BookImage;
   } catch (error) {
     console.error("Server Action Error:", error);
     throw new Error("Failed to fetch book image for chapter");

@@ -57,8 +57,32 @@ export default function ChapterToolBar({
     });
   };
   return (
-    <div className="hidden lg:block fixed right-4 top-1/2 -translate-y-1/2 z-50">
-      <div className="flex flex-col gap-2 bg-card border rounded-lg shadow-lg items-center ">
+    <div className="block fixed lg:right-4 bottom-0 left-0 md:bottom-auto md:left-auto lg:top-1/2 lg:-translate-y-1/2 z-50 lg:w-fit w-full">
+      <div className="flex flex-row lg:flex-col lg:gap-2 bg-card border rounded-lg shadow-lg items-center justify-between ">
+        <Link
+          className="lg:hidden block"
+          prefetch={true}
+          href={
+            idPrev != null
+              ? `/book/${bookId}/chapter/${idPrev}`
+              : `/book/${bookId}`
+          }
+          aria-disabled={idPrev == null} // Ngăn điều hướng bằng bàn phím
+          onClick={(e) => idPrev == null && e.preventDefault()} // Ngăn click khi không có idNext
+        >
+          <Button
+            disabled={!idPrev}
+            variant="ghost"
+            size="icon"
+            className={`w-10 h-10 ${
+              idPrev === null
+                ? "opacity-50 cursor-not-allowed"
+                : "cursor-pointer "
+            }`}
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </Button>
+        </Link>
         <Link prefetch={true} href={`/book/${bookId}`}>
           <Button
             variant="ghost"
@@ -238,7 +262,7 @@ export default function ChapterToolBar({
             <DropdownMenuItem
               title="System"
               onClick={() => setTheme("system")}
-              className="cursor-pointer"
+              className="cursor-pointe"
             >
               <Info className="w-4 h-4 mr-2" />
               System
@@ -249,7 +273,7 @@ export default function ChapterToolBar({
         <Button
           variant="ghost"
           size="icon"
-          className="w-10 h-10"
+          className="w-10 h-10 hidden lg:flex"
           title="Report"
         >
           <Info className="w-5 h-5" />
@@ -268,9 +292,10 @@ export default function ChapterToolBar({
             <Bookmark className="w-5 h-5" />
           )}
         </Button>
-        <div className="w-full h-px bg-border my-1" />
+        <div className="w-full h-px bg-border my-1 lg:block hidden " />
 
         <Link
+          className="hidden lg:block"
           prefetch={true}
           href={
             idPrev != null

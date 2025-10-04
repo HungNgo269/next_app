@@ -48,14 +48,11 @@ export const metadata: Metadata = {
 };
 
 interface PageProps {
-  searchParams: Promise<{ page: number }>;
+  searchParams: Promise<{ page: string }>;
 }
 export default async function ChapterPage({ searchParams }: PageProps) {
-  let currentPage = (await searchParams).page;
-  if (currentPage === null || currentPage === undefined) {
-    currentPage = 1;
-  }
-
+  const page = (await searchParams).page;
+  const currentPage = Number(page) || 1;
   const [totalPages] = await Promise.all([fetchTotalChapterPageAction()]);
   return (
     <div className="w-full">

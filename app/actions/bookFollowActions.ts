@@ -5,6 +5,7 @@ import {
   GetUsersFollowBook,
   RemoveBookFollow,
   GetFollowedBooks,
+  GetBookFollowerCount,
 } from "@/app/data/bookFollow";
 
 export async function GetBookFollowAction(userId: string, bookId: number) {
@@ -50,6 +51,13 @@ export async function GetUsersFollowBookAction(bookId: number) {
 export async function GetFollowedBooksAction(userId: string) {
   try {
     return await GetFollowedBooks(userId);
+  } catch (error) {
+    console.error("Server Action Error:", error);
+  }
+}
+export async function GetBookFollowerCountAction(bookId: number) {
+  try {
+    return await GetBookFollowerCount(bookId);
   } catch (error) {
     console.error("Server Action Error:", error);
   }

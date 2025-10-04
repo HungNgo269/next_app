@@ -23,7 +23,7 @@
   --color-muted: hsl(var(--muted));
   --color-muted-foreground: hsl(var(--muted-foreground));
 
-  --color-skeleton:hsl(var(--color-skeleton))
+  --color-skeleton: hsl(var(--color-skeleton));
 
   --color-accent: hsl(var(--accent));
   --color-accent-foreground: hsl(var(--accent-foreground));
@@ -98,13 +98,13 @@
     --popover-foreground: oklch(0.35 0 0);
     --primary: oklch(0.55 0.15 200); /* Cyan-600 equivalent */
     --primary-foreground: oklch(1 0 0); /* White text on primary */
-    --secondary: oklch(0.9467 0.0297 161.1) /* Purple accent */
+    --secondary: oklch(0.9467 0.0297 161.1); /* Purple accent */
     --secondary-foreground: oklch(1 0 0); /* White text on secondary */
     --muted: oklch(0.98 0 0); /* Light gray muted */
     --muted-foreground: oklch(0.35 0 0);
-  --skeleton: oklch(0.577 0.245 27.325);
+    --skeleton: oklch(0.577 0.245 27.325);
 
-    --accent: oklch(0.9467 0.0297 161.1) /* Purple accent */
+    --accent: oklch(0.9467 0.0297 161.1); /* Purple accent */
     --accent-foreground: oklch(1 0 0);
     --destructive: oklch(0.577 0.245 27.325);
     --destructive-foreground: oklch(1 0 0);
@@ -117,7 +117,7 @@
     --border: oklch(0.92 0 0); /* Light border */
     --input: oklch(0.98 0 0); /* Light input background */
     --ring: oklch(0.55 0.15 200); /* Cyan focus ring */
-    --chart-1: oklch(0.9467 0.0297 161.1) /* Purple */
+    --chart-1: oklch(0.9467 0.0297 161.1); /* Purple */
     --chart-2: oklch(0.55 0.15 200); /* Cyan */
     --chart-3: oklch(0.98 0 0); /* Light gray */
     --chart-4: oklch(0.35 0 0); /* Dark gray */
@@ -127,7 +127,7 @@
     --sidebar-foreground: oklch(0.35 0 0);
     --sidebar-primary: oklch(0.55 0.15 200); /* Cyan primary */
     --sidebar-primary-foreground: oklch(1 0 0);
-    --sidebar-accent: oklch(0.9467 0.0297 161.1) /* Purple accent */
+    --sidebar-accent: oklch(0.9467 0.0297 161.1); /* Purple accent */
     --sidebar-accent-foreground: oklch(1 0 0);
     --sidebar-border: oklch(0.92 0 0);
     --sidebar-ring: oklch(0.55 0.15 200);

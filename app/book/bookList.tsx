@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import {
   fetchAllBookAction,
   fetchBookByCategorySortAction,
@@ -5,6 +6,7 @@ import {
 import { getcategoryIdBySlug } from "../constant/categories";
 import { BookCardProps } from "../interface/book";
 import BookCard from "../ui/user/books/bookCard";
+import { BookCardSkeleton } from "@/app/ui/skeletons";
 
 export async function BookList({
   tag,
@@ -36,18 +38,21 @@ export async function BookList({
   return (
     <div
       className="
-    w-full gap-3
-    flex overflow-x-auto                     
-    md:grid md:grid-cols-3 lg:grid-cols-4    xl:grid-cols-5
+    w-full gap-2
+    grid grid-cols-2
+    md:grid-cols-5
     md:overflow-visible
     md:place-items-center md:justify-center  
+    justify-items-center
   "
     >
-      {books?.length
-        ? books.map((book: BookCardProps) => (
-            <BookCard variant="sm" book={book} key={book.id} />
-          ))
-        : null}
+      <Suspense fallback={<BookCardSkeleton></BookCardSkeleton>}>
+        {books?.length
+          ? books.map((book: BookCardProps) => (
+              <BookCard variant="sm" book={book} key={book.id} />
+            ))
+          : null}
+      </Suspense>
     </div>
   );
 }

@@ -1,31 +1,35 @@
-import { sql } from "@/lib/db";
-import { Book } from "@/app/interface/book";
-import ChapterCard from "@/app/ui/user/chapter/chapterCard";
-import { Chapter } from "@/app/interface/chapter";
-import ViewMoreBookButton from "@/app/ui/user/books/viewMoreBookButton";
+"use server";
+//  Server Component chỉ nhận searchParams tự động nếu nó là PAGE component, không phải component con.
+import { Suspense } from "react";
+import Pagination from "@/app/ui/share/pagination/pagination";
+import { fetchTotalChapterPageAction } from "@/app/actions/chapterActions";
+import ChapterGrid from "@/app/ui/user/chapter/chapterGrid";
+import { ChapterCardGridSkeleton } from "@/app/ui/skeletons";
 
-export default async function NewChapterList() {
-  const Chapters = (await sql`
-  SELECT DISTINCT ON (Book_id) *
-  FROM chapters 
-  ORDER BY Book_id, created_at DESC
-  LIMIT 6
-`) as unknown as Chapter[];
+interface props {
+  searchParams?: string;
+}
+
+export default async function NewChapterList({ searchParams }: props) {
+  const currentPage = Number(searchParams) || 1;
+  const totalPages = await fetchTotalChapterPageAction();
   return (
-    <div className="flex flex-col justify-center items-center gap-4">
+    <div
+      className="flex flex-col justify-center items-center gap-4"
+      id="new_chapter"
+    >
       <div className="flex flex-row items-center justify-between w-full gap-2">
         <span className="font-bold text-2xl text-start flex-1 min-w-0 truncate">
           New Chapter
         </span>
-        <ViewMoreBookButton
-          context="chapter"
-          url="/chapter?page=1"
-        ></ViewMoreBookButton>
       </div>
-      <div className="grid md:grid-cols-2 gap-4 grid-cols-1">
-        {Chapters.map((Chapter: Chapter) => (
-          <ChapterCard key={Chapter.id} ChapterId={Chapter.id} />
-        ))}
+
+      <Suspense key={currentPage} fallback={<ChapterCardGridSkeleton />}>
+        <ChapterGrid page={currentPage} />
+      </Suspense>
+
+      <div className="flex justify-center items-center mt-4">
+        <Pagination totalPages={totalPages} hashUrl="new_chapter" />
       </div>
     </div>
   );

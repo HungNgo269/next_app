@@ -13,19 +13,20 @@ import { fetchTotalBookPage } from "../data/bookData";
 import { getURL } from "@/lib/utils/helper";
 import { BookList } from "./bookList";
 const BOOK_PAGE_TITLE = "Discover Stories & Novels | NextBook";
-const BOOK_PAGE_DESCRIPTION = "Browse reader favorites, trending novels, and new releases across the full NextBook library.";
-const BOOK_PAGE_URL = getURL('book');
-const BOOK_PAGE_IMAGE = getURL('hero-desktop.png');
+const BOOK_PAGE_DESCRIPTION =
+  "Browse reader favorites, trending novels, and new releases across the full NextBook library.";
+const BOOK_PAGE_URL = getURL("book");
+const BOOK_PAGE_IMAGE = getURL("hero-desktop.png");
 
 export const metadata: Metadata = {
   title: { absolute: BOOK_PAGE_TITLE },
   description: BOOK_PAGE_DESCRIPTION,
   keywords: [
-    'NextBook library',
-    'online novels',
-    'light novels',
-    'fantasy books',
-    'romance updates',
+    "NextBook library",
+    "online novels",
+    "light novels",
+    "fantasy books",
+    "romance updates",
   ],
   alternates: {
     canonical: BOOK_PAGE_URL,
@@ -34,18 +35,18 @@ export const metadata: Metadata = {
     url: BOOK_PAGE_URL,
     title: BOOK_PAGE_TITLE,
     description: BOOK_PAGE_DESCRIPTION,
-    type: 'website',
+    type: "website",
     images: [
       {
         url: BOOK_PAGE_IMAGE,
         width: 1200,
         height: 630,
-        alt: 'Explore the NextBook library',
+        alt: "Explore the NextBook library",
       },
     ],
   },
   twitter: {
-    card: 'summary_large_image',
+    card: "summary_large_image",
     title: BOOK_PAGE_TITLE,
     description: BOOK_PAGE_DESCRIPTION,
     images: [BOOK_PAGE_IMAGE],
@@ -54,13 +55,13 @@ export const metadata: Metadata = {
 };
 
 interface BookPageProps {
-  searchParams: Promise<{ tag?: string; sort?: string; page: number }>;
+  searchParams: Promise<{ tag?: string; sort?: string; page: string }>;
 }
 
 export default async function BookPage({ searchParams }: BookPageProps) {
   let { tag, sort, page } = await searchParams;
-
-  const sortOptions: string = sort ?? "popularity";
+  const currentPage = Number(page) | 1;
+  const sortOptions: string = sort ?? "newest";
   const categoryId = getcategoryIdBySlug(tag ?? "");
 
   let totalPages;
@@ -70,7 +71,7 @@ export default async function BookPage({ searchParams }: BookPageProps) {
     totalPages = await fetchTotalBookPage();
   }
   return (
-    <div className="mx-auto w-full lg:w-[1190px] mt-20 ">
+    <div className="mx-auto w-full lg:w-[1190px] mt-20 p-2">
       <div className="flex justify-between">
         <div className="w-full lg:w-[850px] flex flex-col gap-5">
           <CategoryName />
@@ -80,13 +81,11 @@ export default async function BookPage({ searchParams }: BookPageProps) {
           </div>
 
           <div className="flex flex-col">
-            <Suspense fallback={<BookCardSkeleton></BookCardSkeleton>}>
-              <BookList
-                tag={tag}
-                sortOptions={sortOptions}
-                currentPage={page}
-              />
-            </Suspense>
+            <BookList
+              tag={tag}
+              sortOptions={sortOptions}
+              currentPage={currentPage}
+            />
 
             <div className="mt-5 flex w-full justify-center">
               <Pagination totalPages={totalPages} />

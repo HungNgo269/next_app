@@ -9,9 +9,16 @@ import SectionComponent from "@/app/ui/user/section/section";
 import { HeaderWrapper } from "@/app/ui/user/headerCustomer/headerWrapper";
 import SlideWrapper from "@/app/ui/admin/slides/slideWrapper";
 import NewChapterList from "@/app/ui/user/chapter/newChapterList";
+import Swipper from "@/app/ui/user/swipper/swipper";
+import { BookCardSkeleton, SlideSkeleton } from "@/app/ui/skeletons";
 //ALL SEO created by codex
+interface PageProps {
+  searchParams?: Promise<{ page?: string }>;
+}
 
-export default function HomePage() {
+export default async function HomePage({ searchParams }: PageProps) {
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+  const page = (await searchParams)?.page;
   return (
     <div className="overflow-x-hidden">
       <header className="ml-auto mr-auto w-full  ">
@@ -20,24 +27,21 @@ export default function HomePage() {
         </Suspense>
       </header>
       <SlideWrapper />
-      <div className="w-full mx-auto mt-10 md:w-[700px] lg:w-[900px]  xl:w-[1190px] ">
+      <div className="w-full mx-auto mt-10 md:w-[700px] lg:w-[900px]  xl:w-[1190px] p-2 lg:p-0 ">
         <Suspense>
           <BestSellerContainer />
         </Suspense>
         <div className="flex  justify-between mt-10 lg:flex-row flex-col gap-10">
           <div className="lg:w-[850px] md:w-[700px]  flex flex-col gap-5">
+            <Suspense>{isMobile ? <Swipper /> : <NewBookList />}</Suspense>
             <Suspense>
-              <NewBookList />
-            </Suspense>
-
-            <Suspense>
-              <NewChapterList />
+              <NewChapterList searchParams={page} />
             </Suspense>
             <Suspense>
               <BookRecommend></BookRecommend>
             </Suspense>
           </div>
-          <div className=" flex flex-col gap-5">
+          <div className=" flex flex-col gap-5 w-[300px]">
             <MostPopularBook />
           </div>
         </div>

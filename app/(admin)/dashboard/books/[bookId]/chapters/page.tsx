@@ -28,7 +28,6 @@ type PageProps = {
 
   searchParams: Promise<{
     query: string;
-
     page: number;
   }>;
 };
@@ -40,16 +39,9 @@ export default async function BookChaptersPage({
 }: PageProps) {
   const { bookId } = await params;
 
-  let { query, page } = await searchParams;
-
-  if (!page) {
-    page = 1;
-  }
-
-  if (!query) {
-    query = "";
-  }
-
+  const page = (await searchParams).page;
+  const query = (await searchParams).query || "";
+  const currentPage = Number(page) | 1;
   const [bookName, chapters, totalChapters] = await Promise.all([
     fetchBookNameByBookIdAction(bookId),
 
@@ -124,8 +116,12 @@ export default async function BookChaptersPage({
               <Search placeholder="Search chapter..." />
             </div>
 
-            <Suspense key={query + page} fallback={<SlideSkeleton />}>
-              <ChapterTable query={query} currentPage={page} bookId={bookId} />
+            <Suspense key={query + currentPage} fallback={<SlideSkeleton />}>
+              <ChapterTable
+                query={query}
+                currentPage={currentPage}
+                bookId={bookId}
+              />
             </Suspense>
 
             <div className="mt-5 flex w-full justify-center">
