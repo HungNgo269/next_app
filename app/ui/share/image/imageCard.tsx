@@ -9,7 +9,7 @@ export default function ImageCard({ bookImage, bookName }: ImageCardProps) {
   return (
     <Image
       src={bookImage || "/default-cover.png"}
-      alt={bookName}
+      alt={bookName || "Lỗi rồi người ơi"}
       fill
       className="object-cover duration-500 group-hover:scale-[102%] transition-transform"
     />

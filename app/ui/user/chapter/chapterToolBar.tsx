@@ -57,7 +57,7 @@ export default function ChapterToolBar({
     });
   };
   return (
-    <div className="block fixed lg:right-4 bottom-0 left-0 md:bottom-auto md:left-auto lg:top-1/2 lg:-translate-y-1/2 z-50 lg:w-fit w-full">
+    <div className="block fixed lg:right-4 bottom-0 left-0 lg:bottom-auto lg:left-auto lg:top-1/2 lg:-translate-y-1/2 z-50 lg:w-fit w-full">
       <div className="flex flex-row lg:flex-col lg:gap-2 bg-card border rounded-lg shadow-lg items-center justify-between ">
         <Link
           className="lg:hidden block"

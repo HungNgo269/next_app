@@ -152,15 +152,21 @@ export default function ChapterContent({
     await removeBookMarkAction(userId, chapter.id);
     setBookMark(null);
   };
-
+  console.log("chapter", chapter);
   return (
     <div className="min-h-screen bg-background relative">
       <article className={`max-w-4xl mx-auto px-4 py-8`} style={contentStyle}>
         <div
           ref={chapterRef}
-          className="prose prose-lg max-w-none leading-relaxed text-justify relative"
+          className="prose prose-lg max-w-none leading-relaxed text-justify relative flex flex-col gap-7"
           style={{ position: "relative" }}
         >
+          <div className="flex flex-row items-center justify-center text-2xl ">
+            <span>
+              Chapter {`${chapter.chapter_number}`}{" "}
+              {chapter.title.length > 0 ? `: ${chapter.title}` : ""}
+            </span>
+          </div>
           <div
             className="prose prose-lg max-w-none leading-relaxed text-justify"
             dangerouslySetInnerHTML={{ __html: chapter.content }}

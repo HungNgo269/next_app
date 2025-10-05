@@ -7,9 +7,10 @@ import BookCard from "@/app/ui/user/books/bookCard";
 
 interface Props {
   books: BookCardProps[];
+  context: string;
 }
 
-export default function Swipper({ books }: Props) {
+export default function Swipper({ books, context }: Props) {
   const [emblaRef] = useEmblaCarousel(
     {
       loop: true,
@@ -22,7 +23,9 @@ export default function Swipper({ books }: Props) {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex justify-between items-center">
-        <span className="font-bold text-2xl">New Book</span>
+        <span className="font-bold text-2xl">{`${
+          context === "Best Seller" ? "Best Seller" : "New Book"
+        }`}</span>
         <ViewMoreBookButton url="/book" />
       </div>
       <div className="relative">
