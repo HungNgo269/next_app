@@ -99,7 +99,7 @@ export default function NotificationReceiver({ userId }: props) {
     <DropdownMenu modal={false} open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
         <Button size="icon" variant="ghost" className="relative bg-transparent">
-          <Bell className="h-5 w-5" />
+          <Bell className="h-4 w-4" />
           {notifications.length > 0 && (
             <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-destructive text-destructive-foreground text-xs flex items-center justify-center">
               {notifications.length ?? ""}
@@ -138,7 +138,7 @@ export default function NotificationReceiver({ userId }: props) {
                       alt={notification.book_name ?? ""}
                     />
                   </div>
-                  <div className="flex flex-col gap-1 flex-1 min-w-0 text-accent-foreground text-sm">
+                  <div className="flex flex-col gap-1 flex-1 min-w-0 text-foreground text-sm">
                     <p>
                       Don't miss it! {notification.book_name} Chapter
                       {notification.chapter_number} is out now!

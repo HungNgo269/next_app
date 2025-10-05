@@ -1,5 +1,6 @@
 "use client";
 import { Category } from "@/app/interface/category";
+import { Separator } from "@/components/ui/separator";
 import { memo } from "react";
 
 interface CategorySelectorProps {
@@ -14,9 +15,9 @@ function CategorySelector({
   onCategoryChange,
 }: CategorySelectorProps) {
   return (
-    <div className="flex flex-row justify-start items-center gap-1 md:overflow-hidden overflow-x-scroll">
-      {categories.map((category: Category) => (
-        <div key={category.id}>
+    <div className="flex flex-row justify-start items-center gap-0.5 md:overflow-hidden ">
+      {categories.map((category: Category, index) => (
+        <div key={category.id} className="flex flex-row justify-center gap-0.5">
           <button
             onClick={() => onCategoryChange(category.id)}
             className={`
@@ -28,6 +29,12 @@ function CategorySelector({
           >
             {category.name}
           </button>
+
+          <div className="flex justify-center items-center">
+            {index < categories.length - 1 && (
+              <span className="text-gray-500 text-xs text-center">•</span>
+            )}
+          </div>
         </div>
       ))}
     </div>

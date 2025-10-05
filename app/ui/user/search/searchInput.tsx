@@ -19,7 +19,7 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
           onChange={(e) => onChange(e.target.value)}
           onFocus={onFocus}
           onKeyDown={onKeyDown}
-          className="w-full text-base bg-transparent placeholder:text-accent-foreground px-4 border-none
+          className="w-full text-base bg-transparent placeholder:text-foreground px-4 border-none
            focus:outline-none focus:ring-0"
           aria-label="Search input"
         />

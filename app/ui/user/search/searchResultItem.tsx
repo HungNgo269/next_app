@@ -65,12 +65,10 @@ export default function SearchResultItem({ query }: Props) {
             <div className="flex flex-col justify-start ">
               <div className="font-semibold">{book.name}</div>
               {book.author && (
-                <div className="text-accent-foreground text-sm">
-                  {book.author}
-                </div>
+                <div className="text-foreground text-sm">{book.author}</div>
               )}
               {book.rating && (
-                <div className="text-accent-foreground text-sm ">
+                <div className="text-foreground text-sm ">
                   Rating: {book.rating}
                 </div>
               )}

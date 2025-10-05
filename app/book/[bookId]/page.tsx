@@ -5,6 +5,7 @@ import {
   MessageCircle,
   Bookmark,
   MessageSquare,
+  Eye,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
@@ -200,13 +201,13 @@ export default async function BookPage({ params }: PageProps) {
             {book.is_active ? "Completed" : "Ongoing"}
           </span>
         </div>
-        <div className="row-span-1 col-span-1 col-start-2 row-start-2 md:row-start-4 gap-4 ml-2 flex  sm:justify-start text-white md:text-accent-foreground">
+        <div className="row-span-1 col-span-1 col-start-2 row-start-2 md:row-start-4 gap-4 ml-2 flex  sm:justify-start md:text-foreground">
           <div className="flex items-center gap-1">
             <Star className="w-4 h-4 text-warning fill-current" />
             <span>{book.rating}</span>
           </div>
           <div className="flex items-center gap-1">
-            <MessageSquare className="w-4 h-4" />
+            <Eye className="w-4 h-4" />
             <span>{book.views}</span>
           </div>
           <div className="flex items-center gap-1">
@@ -214,7 +215,7 @@ export default async function BookPage({ params }: PageProps) {
             <span>12</span>
           </div>
         </div>
-        <div className="row-span-1 col-span-2 md:col-span-1 md:col-start-2 row-start-5 gap-4 ml-2 flex flex-col items-center justify-center sm:justify-start">
+        <div className="row-span-1 col-span-2 md:col-span-1 md:col-start-2 row-start-5 gap-4 ml-2 flex flex-col items-start justify-center sm:justify-start">
           <BookDesc content={book?.description}></BookDesc>
 
           <ChapterContainer

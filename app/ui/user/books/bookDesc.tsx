@@ -13,25 +13,29 @@ export default function BookDesc({ content }: BookDescProps) {
   };
 
   return (
-    <span className=" text-secondary-foreground leading-relaxed text-sm sm:text-base">
+    <span className=" text-foreground leading-relaxed text-sm sm:text-base">
       {show ? (
         <>
-          {safeContent}
-          <span
-            onClick={handleShow}
-            className="text-info hover:underline cursor-pointer ml-1"
-          >
-            show less
+          <span>
+            {safeContent}
+            <span
+              onClick={handleShow}
+              className="text-info hover:underline cursor-pointer ml-1"
+            >
+              show less
+            </span>
           </span>
         </>
       ) : (
         <>
-          <span className="line-clamp-3">{safeContent}</span>
-          <span
-            onClick={handleShow}
-            className="text-info hover:underline cursor-pointer ml-1"
-          >
-            show more
+          <span>
+            <span className="line-clamp-3">{safeContent}</span>
+            <span
+              onClick={handleShow}
+              className="text-info hover:underline cursor-pointer ml-1 inline"
+            >
+              show more
+            </span>
           </span>
         </>
       )}

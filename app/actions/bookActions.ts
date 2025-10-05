@@ -11,6 +11,7 @@ import {
   fetchBooksByPage,
   fetchBooksByQuery,
   fetchBookSideInfo,
+  fetchMostViewedBook,
   fetchNewBook,
   fetchOurRecommendedBook,
   fetchPopularBook,
@@ -180,5 +181,13 @@ export async function fetchBookImageByBookIdAction(id: number) {
   } catch (error) {
     console.error("Server Action Error:", error);
     throw new Error("Failed to fetchBookImageByBookId");
+  }
+}
+export async function fetchMostViewedBookActions() {
+  try {
+    return await fetchMostViewedBook();
+  } catch (error) {
+    console.error("Server Action Error:", error);
+    throw new Error("Failed to fetch category books");
   }
 }

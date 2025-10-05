@@ -1,13 +1,13 @@
 "use client";
 
-import { Book } from "@/app/interface/book";
+import { Book, BookCardProps } from "@/app/interface/book";
 import { useMemo, useState } from "react";
 import BookCarouselNavigation from "@/app/ui/user/books/bookCarouselNavigation";
 import BookCarouselContent from "@/app/ui/user/books/bookCarouselContent";
 
 export type Variant = "lg" | "sm";
 interface BookCarouselProps {
-  books: Book[];
+  books: BookCardProps[];
   variant?: Variant;
   isLoading?: boolean;
 }
@@ -15,14 +15,13 @@ interface BookCarouselProps {
 export const CONFIG = {
   lg: {
     container: "w-full lg:w-[950px] xl:w-[1190px]",
-    grid: "grid grid-cols-5 gap-1",
+    grid: "grid grid-cols-5 gap-2  justify-items-center",
   },
   sm: {
-    container: "w-full lg:w-[750px] xl:w-[850px]",
-    grid: "grid grid-cols-5 gap-1",
+    container: "w-full lg:w-[700px] xl:w-[850px]",
+    grid: "grid grid-cols-5 gap-2 justify-items-center",
   },
 } as const;
-
 const ITEMS_PER_SLIDE = 5;
 
 export default function BookCarousel({
@@ -64,7 +63,7 @@ export default function BookCarousel({
     <div className={`relative  lg:${cfg.container} w-full`}>
       <div className="relative overflow-hidden">
         <div
-          className="flex transition-transform duration-300 ease-in-out h-fit"
+          className="flex transition-transform duration-300 ease-in-out h-fit "
           style={{ transform: `translateX(-${currentSlide * 100}%)` }}
           onTransitionEnd={() => setIsTransitioning(false)}
         >

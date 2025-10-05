@@ -10,14 +10,14 @@ import { HeaderWrapper } from "@/app/ui/user/headerCustomer/headerWrapper";
 import SlideWrapper from "@/app/ui/admin/slides/slideWrapper";
 import NewChapterList from "@/app/ui/user/chapter/newChapterList";
 import Swipper from "@/app/ui/user/swipper/swipper";
-import { BookCardSkeleton, SlideSkeleton } from "@/app/ui/skeletons";
-//ALL SEO created by codex
+import SwipperNewBook from "@/app/ui/user/swipper/swipperNewBook";
+import SwipperBestSeller from "@/app/ui/user/swipper/swipperBestSeller";
+//ALL SEO,skeleton created by codex
 interface PageProps {
   searchParams?: Promise<{ page?: string }>;
 }
 
 export default async function HomePage({ searchParams }: PageProps) {
-  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
   const page = (await searchParams)?.page;
   return (
     <div className="overflow-x-hidden">
@@ -27,13 +27,26 @@ export default async function HomePage({ searchParams }: PageProps) {
         </Suspense>
       </header>
       <SlideWrapper />
-      <div className="w-full mx-auto mt-10 md:w-[700px] lg:w-[900px]  xl:w-[1190px] p-2 lg:p-0 ">
-        <Suspense>
-          <BestSellerContainer />
-        </Suspense>
-        <div className="flex  justify-between mt-10 lg:flex-row flex-col gap-10">
-          <div className="lg:w-[850px] md:w-[700px]  flex flex-col gap-5">
-            <Suspense>{isMobile ? <Swipper /> : <NewBookList />}</Suspense>
+      <div className="w-full mx-auto mt-10 md:w-[700px] lg:w-[950px]  xl:w-[1190px] p-2 lg:p-0 ">
+        <div className="block md:hidden">
+          <SwipperBestSeller />
+        </div>
+        <div className="hidden md:block">
+          <Suspense>
+            <BestSellerContainer />
+          </Suspense>
+        </div>
+
+        <div className="flex  justify-between mt-10 lg:flex-row flex-col lg:gap-3 xl:gap-10">
+          <div className="md:w-[700px] lg:w-[800px] xl:w-[850px]  flex flex-col gap-5">
+            <div className="block md:hidden">
+              <SwipperNewBook />
+            </div>
+            <div className="hidden md:block">
+              <Suspense>
+                <NewBookList />
+              </Suspense>
+            </div>
             <Suspense>
               <NewChapterList searchParams={page} />
             </Suspense>
@@ -41,7 +54,7 @@ export default async function HomePage({ searchParams }: PageProps) {
               <BookRecommend></BookRecommend>
             </Suspense>
           </div>
-          <div className=" flex flex-col gap-5 w-[300px]">
+          <div className=" flex flex-col gap-5 w-[200px] md:w-[250px] xl:w-[300px]">
             <MostPopularBook />
           </div>
         </div>

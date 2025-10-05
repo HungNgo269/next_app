@@ -4,7 +4,7 @@ import { Category } from "@/app/interface/category";
 export default async function BestSellerContainer() {
   const categories = (await fetchAllCategoryAction()) as unknown as Category[];
   return (
-    <div className="flex flex-row justify-between">
+    <div className="flex flex-row justify-between lg:w-full w-full md:w-[700px]">
       <BookCategoryContainer key="category-container" categories={categories} />
     </div>
   );

@@ -257,8 +257,6 @@ export async function fetchBookByCategorySort(
   order: string
 ) {
   const offset = (currentPage - 1) * 30;
-
-  // Validate input
   const allowedSorts = ["views", "rating", "newest", "popularity"];
   const allowedOrders = ["ASC", "DESC"];
 
@@ -392,5 +390,17 @@ where b.id = ${bookId}
   } catch (error) {
     console.error("Server Action Error:", error);
     throw new Error("Failed to fetchBookNameByBookId");
+  }
+}
+export async function fetchMostViewedBook() {
+  try {
+    const res = await sql`
+    select b.name,b.author,b.image_urls,b.id from books b
+    order by b.views desc limit 10
+  `;
+    return res as BookCardProps[];
+  } catch (error) {
+    console.error("Server Action Error:", error);
+    throw new Error("Failed to fetchMostViewedBook");
   }
 }

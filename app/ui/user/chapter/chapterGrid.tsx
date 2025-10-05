@@ -9,7 +9,7 @@ interface Props {
 export default async function ChapterGrid({ page }: Props) {
   const Chapters = await fetchNewestChapterAction(page);
   return (
-    <div className="grid grid-cols-2 gap-6 md:grid-cols-4 w-full">
+    <div className="grid grid-cols-2 gap-4 md:grid-cols-4 w-full">
       {Chapters?.map((Chapter: ChapterCardProps) => (
         <ChapterCard key={Chapter.id} ChapterId={Chapter.id} />
       ))}

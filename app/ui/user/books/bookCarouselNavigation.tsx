@@ -5,14 +5,14 @@ type Variant = "lg" | "sm";
 
 const MAP = {
   lg: {
-    className: "xl:h-[300px]  lg:h-[225px] ",
+    className: "xl:h-[300px]  lg:h-[225px]  md:h-[160px] ",
     positionLeft: "left-[-20px]",
-    positionRight: "right-[-15px]",
+    positionRight: "right-[-17px]",
   },
   sm: {
-    className: "xl:h-[207px]   lg:h-[180px] ",
+    className: "xl:h-[207px]   lg:h-[180px] md:h-[160px] ",
     positionLeft: "left-[-20px]",
-    positionRight: "right-[-12px]",
+    positionRight: "right-[-17px]",
   },
 } as const;
 

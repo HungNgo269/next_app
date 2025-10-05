@@ -1,45 +1,41 @@
 "use client";
-// dùng cho screen <lg , brake point theo tailwind sm48,md768
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/swiper-bundle.min.css";
-import "swiper/swiper.min.css";
+import useEmblaCarousel from "embla-carousel-react";
+import Autoplay from "embla-carousel-autoplay";
+import { BookCardProps } from "@/app/interface/book";
+import ViewMoreBookButton from "@/app/ui/user/books/viewMoreBookButton";
+import BookCard from "@/app/ui/user/books/bookCard";
 
-export default function Swipper() {
+interface Props {
+  books: BookCardProps[];
+}
+
+export default function Swipper({ books }: Props) {
+  const [emblaRef] = useEmblaCarousel(
+    {
+      loop: true,
+      align: "start",
+      slidesToScroll: 1,
+    },
+    [Autoplay({ delay: 3000, stopOnInteraction: false })]
+  );
+
   return (
-    <div className="w-full px-4 py-8">
-      <Swiper
-        breakpoints={{
-          0: {
-            slidesPerView: 2,
-            spaceBetween: 10,
-          },
-          768: {
-            slidesPerView: 4,
-            spaceBetween: 10,
-          },
-        }}
-      >
-        <SwiperSlide>
-          <div className="bg-blue-500 text-white p-8 rounded-lg h-48 flex items-center justify-center">
-            Slide 1
+    <div className="flex flex-col gap-4">
+      <div className="flex justify-between items-center">
+        <span className="font-bold text-2xl">New Book</span>
+        <ViewMoreBookButton url="/book" />
+      </div>
+      <div className="relative">
+        <div className="overflow-hidden" ref={emblaRef}>
+          <div className="flex gap-1">
+            {books?.map((book) => (
+              <div key={book.id} className="flex-[0_0_49%] min-w-0 ">
+                <BookCard book={book} variant="sm" />
+              </div>
+            ))}
           </div>
-        </SwiperSlide>
-        <SwiperSlide>
-          <div className="bg-green-500 text-white p-8 rounded-lg h-48 flex items-center justify-center">
-            Slide 2
-          </div>
-        </SwiperSlide>
-        <SwiperSlide>
-          <div className="bg-red-500 text-white p-8 rounded-lg h-48 flex items-center justify-center">
-            Slide 3
-          </div>
-        </SwiperSlide>
-        <SwiperSlide>
-          <div className="bg-yellow-500 text-white p-8 rounded-lg h-48 flex items-center justify-center">
-            Slide 4
-          </div>
-        </SwiperSlide>
-      </Swiper>
+        </div>
+      </div>
     </div>
   );
 }

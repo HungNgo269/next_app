@@ -14,7 +14,7 @@ export default function BookCarouselContent({ slides, variant = "lg" }: props) {
       {slides?.map((page, pageIndex) => (
         <div
           key={`slide-${pageIndex}`}
-          className={`w-full flex-shrink-0 ${cfg.grid} flex flex-row gap-1 md:overflow-hidden overflow-x-scroll`}
+          className={`w-full flex-shrink-0 ${cfg.grid} flex flex-row gap-1 `}
         >
           {page.map((book, bookIndex) => {
             const itemKey = book?.id || `skeleton-${pageIndex}-${bookIndex}`;

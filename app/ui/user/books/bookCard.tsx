@@ -5,16 +5,16 @@ import ImageCard from "@/app/ui/share/image/imageCard";
 type Variant = "lg" | "sm";
 const MAP = {
   lg: {
-    card: "xl:w-[230px]  lg:w-[170px]  w-[130px] h-fit",
+    card: "xl:w-[230px]  lg:w-[170px]  md:w-[130px] w-full h-fit",
     imgWrap:
-      "xl:w-[230px] xl:h-[300px] lg:w-[170px] lg:h-[221px] w-[130px] h-[160px]",
+      "xl:w-[230px] xl:h-[300px] lg:w-[170px] lg:h-[221px] md:w-[130px] h-[207px]  w-full",
     title: "text-sm",
     author: "text-xs",
   },
   sm: {
-    card: "xl:w-[160px]  lg:w-[140px]  w-[120px] h-fit",
+    card: "xl:w-[160px]  lg:w-[130px]  md:w-[130px]  h-fit w-full",
     imgWrap:
-      "xl:w-[160px] xl:h-[207px] lg:w-[140px] lg:h-[182px] w-[120px] h-[160px]",
+      "xl:w-[160px] xl:h-[207px] lg:w-[130px] lg:h-[182px] md:w-[130px] h-[207px] w-full",
     title: "text-sm ",
     author: "text-xs",
   },

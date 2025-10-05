@@ -43,7 +43,7 @@ export default function SlideControls({
 
     const interval = setInterval(() => {
       nextSlide();
-    }, 4000);
+    }, 5000);
 
     return () => clearInterval(interval);
   }, [isPlaying, nextSlide]);
