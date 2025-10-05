@@ -61,12 +61,12 @@ export async function fetchChapterByBookmark(userId: string) {
   try {
     let res = await sql`
     SELECT
-      c.id            AS chapter_id,
-      c.book_id       AS book_id,
-      c.title         AS chapter_title,
+      c.id,
+      c.book_id,  
+      c.title,
       c.chapter_number,
       bm.progress,
-      b.name          AS book_name,
+      b.name,
       b.image_urls,
       b.description,
       b.rating,

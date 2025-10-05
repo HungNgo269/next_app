@@ -6,38 +6,17 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 type BookmarkEntry = {
-  chapter_id: number;
+  id: number; //chapterId
   book_id: number;
-  chapter_title: string;
+  title: string; //chapterTitle
   chapter_number: number;
-  progress: number | string | null;
-  book_name: string | null;
-  image_urls: string[] | string | null;
-  description: string | null;
-  rating: number | string | null;
-  author: string | null;
+  progress: number;
+  name: string;
+  image_urls: string;
+  description: string;
+  rating: number;
+  author: string;
 };
-
-const stripHtml = (value?: string | null) => {
-  if (!value) {
-    return "";
-  }
-  return value
-    .replace(/<[^>]+>/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-};
-
-const getCoverImage = (image: BookmarkEntry["image_urls"]) => {
-  if (Array.isArray(image) && image.length > 0) {
-    return image[0];
-  }
-  if (typeof image === "string" && image.length > 0) {
-    return image;
-  }
-  return "/default-cover.png";
-};
-
 export default async function BookMarkPage() {
   const session = await getSessionCache();
   const user = session?.user;
@@ -50,7 +29,7 @@ export default async function BookMarkPage() {
 
   const bookmarkRows = (await fetchChapterByBookmarkAction(userId)) ?? [];
   const bookmarks = bookmarkRows as BookmarkEntry[];
-
+  console.log(bookmarks);
   return (
     <div className="min-h-screen bg-background">
       <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-10 md:px-8">
@@ -79,86 +58,75 @@ export default async function BookMarkPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-4">
-            {bookmarks.map((item) => {
-              const coverImage = getCoverImage(item.image_urls);
-              const progressValue = Number(item.progress) || 0;
-              const normalizedProgress = Math.min(
-                Math.max(progressValue, 0),
-                100
-              );
-              const ratingValue =
-                item.rating === null || item.rating === undefined
-                  ? null
-                  : Number(item.rating);
-              const hasRating =
-                ratingValue !== null && !Number.isNaN(ratingValue);
-              const bookName = item.book_name || "Unknown book";
-              const description = stripHtml(item.description);
-
-              return (
-                <div
-                  key={`${item.chapter_id}-${item.book_id}`}
-                  className="flex flex-col gap-4 rounded-lg border bg-card/50 p-4 transition hover:border-primary/70 md:flex-row md:items-center"
-                >
-                  <Link
-                    prefetch={true}
-                    href={`book/${item.book_id}`}
-                    className="relative h-48 w-full overflow-hidden rounded-md md:h-32 md:w-24"
+            {bookmarks.length > 0 &&
+              bookmarks.map((item, index) => {
+                return (
+                  <div
+                    key={`${index}`}
+                    className="flex flex-col gap-4 rounded-lg border bg-card/50 p-4 transition hover:border-primary/70 md:flex-row md:items-center"
                   >
-                    <ImageCard bookImage={coverImage} bookName={bookName} />
-                  </Link>
-
-                  <div className="flex-1 space-y-2">
-                    <div className="flex flex-col gap-1">
-                      <Link
-                        prefetch={true}
-                        href={`book/${item.book_id}`}
-                        className="text-lg font-semibold text-secondary-foreground hover:underline"
-                      >
-                        {bookName}
-                      </Link>
-                      {item.author ? (
-                        <p className="text-sm text-muted-foreground">
-                          by {item.author}
-                        </p>
-                      ) : null}
-                    </div>
-
                     <Link
                       prefetch={true}
-                      href={`book/${item.book_id}/chapter/${item.chapter_id}`}
-                      className="font-medium hover:underline"
+                      href={`book/${item.book_id}`}
+                      className="relative h-48 w-full overflow-hidden rounded-md md:h-32 md:w-24"
                     >
-                      Chapter {item.chapter_number}: {item.chapter_title}
+                      <ImageCard
+                        bookImage={item?.image_urls[0]}
+                        bookName={item?.name}
+                      />
                     </Link>
 
-                    {description ? (
-                      <p className="line-clamp-2 text-sm text-muted-foreground">
-                        {description}
-                      </p>
-                    ) : null}
+                    <div className="flex-1 space-y-2">
+                      <div className="flex flex-col gap-1">
+                        <Link
+                          prefetch={true}
+                          href={`book/${item.book_id}`}
+                          className="text-lg font-semibold text-foreground hover:underline"
+                        >
+                          {item?.name}
+                        </Link>
+                        {item.author ? (
+                          <p className="text-sm text-muted-foreground">
+                            by {item.author}
+                          </p>
+                        ) : null}
+                      </div>
 
-                    <div className="flex flex-wrap items-center gap-3 pt-2 text-sm text-muted-foreground">
-                      <span>Progress: {normalizedProgress}%</span>
-                      {hasRating ? (
-                        <span>Rating: {ratingValue!.toFixed(1)}</span>
-                      ) : null}
-                    </div>
-                  </div>
-
-                  <div className="flex w-full justify-end md:w-auto">
-                    <Button asChild className="w-full md:w-auto">
                       <Link
                         prefetch={true}
-                        href={`book/${item.book_id}/chapter/${item.chapter_id}`}
+                        href={`book/${item.book_id}/chapter/${item.id}`}
+                        className="font-medium hover:underline"
                       >
-                        Continue reading
+                        Chapter {item.chapter_number} {item.title}
                       </Link>
-                    </Button>
+
+                      {item ? (
+                        <p className="line-clamp-2 text-sm text-muted-foreground">
+                          {item.description}
+                        </p>
+                      ) : null}
+
+                      <div className="flex flex-wrap items-center gap-3 pt-2 text-sm text-muted-foreground">
+                        <span>Progress: {item.progress}%</span>
+                        {item.rating ? (
+                          <span>Rating: {item.rating}</span>
+                        ) : null}
+                      </div>
+                    </div>
+
+                    <div className="flex w-full justify-end md:w-auto">
+                      <Button asChild className="w-full md:w-auto">
+                        <Link
+                          prefetch={true}
+                          href={`book/${item.book_id}/chapter/${item.id}`}
+                        >
+                          Continue reading
+                        </Link>
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
           </div>
         )}
       </div>

@@ -24,7 +24,7 @@ export default async function Header() {
   return (
     <div className="w-full">
       <div className="max-w-screen mx-auto w-full">
-        <div className="flex items-center justify-between h-16 md:px-4 lg:px-8 xl:px-12">
+        <div className="flex items-center justify-between h-16 md:px-4 lg:px-8 xl:px-12 mx-3">
           <div className="flex flex-row items-center">
             <Link
               prefetch={true}

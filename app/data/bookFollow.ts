@@ -59,16 +59,10 @@ export async function GetFollowedBooks(userId: string) {
         b.rating,
         b.views,
         b.status,
-        b.popularity,
-        MAX(c.id)             AS latest_chapter_id,
-        MAX(c.chapter_number) AS latest_chapter_number,
-        MAX(c.created_at)     AS latest_chapter_date
+        b.popularity
       FROM book_follow bf
-      JOIN books b ON bf.bookid = b.id
-      LEFT JOIN chapters c ON c.book_id = b.id
+       JOIN books b ON bf.bookid = b.id
       WHERE bf.userid = ${userId}
-      GROUP BY b.id, b.name, b.author, b.description, b.image_urls, b.rating, b.views, b.status, b.popularity
-      ORDER BY MAX(c.created_at) DESC NULLS LAST, b.name ASC;
     `;
     return res;
   } catch (error) {

@@ -4,5 +4,5 @@ import Swipper from "@/app/ui/user/swipper/swipper";
 
 export default async function SwipperNewBook() {
   const Books = (await fetchNewBookAction()) as unknown as BookCardProps[];
-  return <Swipper books={Books}></Swipper>;
+  return <Swipper books={Books} context="New Book"></Swipper>;
 }

@@ -45,7 +45,7 @@ export default function FollowButton({ userId, bookId }: props) {
 
   return (
     <Button
-      className="h-full"
+      className="h-full hover:cursor-pointer"
       disabled={isLoading}
       onClick={() => {
         handleClick();
