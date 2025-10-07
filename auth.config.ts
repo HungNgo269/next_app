@@ -63,5 +63,21 @@ export const authConfig = {
         return true;
       }
     },
+    async redirect({ url, baseUrl }) {
+      if (url.includes("callbackUrl=")) {
+        const urlObj = new URL(url);
+        const callbackUrl = urlObj.searchParams.get("callbackUrl");
+        if (callbackUrl) {
+          return `${baseUrl}${callbackUrl}`;
+        }
+      }
+      if (url.startsWith("/")) {
+        return `${baseUrl}${url}`;
+      }
+      if (new URL(url).origin === baseUrl) {
+        return url;
+      }
+      return baseUrl;
+    },
   },
 } satisfies NextAuthConfig;

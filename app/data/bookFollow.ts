@@ -8,7 +8,6 @@ export async function GetBookFollow(userId: string, bookId: number) {
     return res[0] as IBookFollow;
   } catch (error) {
     console.error("Database Error:", error);
-    throw new Error("Failed to add Book Follow.");
   }
 }
 
@@ -31,7 +30,6 @@ export async function AddBookFollow(userId: string, bookId: number) {
     return res[0] as IBookFollow;
   } catch (error) {
     console.error("Database Error:", error);
-    throw new Error("Failed to add Book Follow.");
   }
 }
 

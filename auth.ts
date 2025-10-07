@@ -6,7 +6,6 @@ import { z } from "zod";
 import { authConfig } from "./auth.config";
 import { getUser } from "./app/data/userData";
 import { User } from "./app/interface/user";
-import { NextResponse } from "next/server";
 
 export const { auth, signIn, signOut, handlers } = NextAuth({
   ...authConfig,
@@ -28,7 +27,6 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
           const { email, password } = parsedCredentials.data;
 
           if (!email || !password) {
-            console.log("Email or password is missing");
             return null;
           }
 
@@ -36,7 +34,6 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
           if (!user) return null;
 
           if (!user.password) {
-            console.log("User password is not set in database");
             return null;
           }
 
@@ -46,13 +43,9 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
             const { password: _, ...userWithoutPassword } = user;
             return userWithoutPassword;
           } else {
-            console.log("Password doesn't match");
             return null;
           }
         }
-
-        console.log("Invalid credentials format");
-
         return null;
       },
     }),

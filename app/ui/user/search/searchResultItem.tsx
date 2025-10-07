@@ -63,7 +63,7 @@ export default function SearchResultItem({ query }: Props) {
               <ImageCard bookName={book.name} bookImage={book.image_urls[0]} />
             </div>
             <div className="flex flex-col justify-start ">
-              <div className="font-semibold">{book.name}</div>
+              <div className="font-semibold text-foreground">{book.name}</div>
               {book.author && (
                 <div className="text-foreground text-sm">{book.author}</div>
               )}

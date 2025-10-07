@@ -33,7 +33,7 @@ export default async function BookShelfPage() {
     <div className="min-h-screen bg-background">
       <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-10 md:px-8">
         <div className="space-y-2">
-          <h1 className="text-3xl font-semibold tracking-tight text-secondary-foreground">
+          <h1 className="text-3xl font-semibold tracking-tight text-foreground">
             Your Book Shelf
           </h1>
           <p className="text-muted-foreground">

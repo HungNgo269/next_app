@@ -92,12 +92,12 @@ export default async function ChapterTable({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="font-medium">Title</TableHead>
-              <TableHead className="font-medium text-center">
-                Chapter #
-              </TableHead>
-              <TableHead className="font-medium text-center">Book ID</TableHead>
+              <TableHead className="font-medium text-start">Number</TableHead>
+              <TableHead className="font-medium text-center">Title</TableHead>
+
               <TableHead className="font-medium text-center">Created</TableHead>
+              <TableHead className="font-medium text-center">Updated</TableHead>
+
               <TableHead className="w-[100px]">
                 <span className="sr-only">Actions</span>
               </TableHead>
@@ -106,15 +106,19 @@ export default async function ChapterTable({
           <TableBody>
             {chapters?.map((chapter: ChapterRow) => (
               <TableRow key={chapter.id}>
-                <TableCell className="max-w-[250px] truncate">
-                  {chapter.title}
+                <TableCell className="text-start">
+                  Chapter {chapter.chapter_number}
                 </TableCell>
-                <TableCell className="text-center">
-                  {chapter.chapter_number}
+                <TableCell className="max-w-[250px] truncate text-center">
+                  {chapter.title.length > 0
+                    ? chapter.title
+                    : "This chapter not have a title"}
                 </TableCell>
-                <TableCell className="text-center">{chapter.book_id}</TableCell>
                 <TableCell className="text-center text-sm text-muted-foreground">
                   {formatDateTime(chapter.created_at ?? "")}
+                </TableCell>
+                <TableCell className="text-center text-sm text-muted-foreground">
+                  {formatDateTime(chapter.updated_at ?? "")}
                 </TableCell>
                 <TableCell>
                   <div className="flex gap-4">

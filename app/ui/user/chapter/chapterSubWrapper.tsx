@@ -4,6 +4,7 @@ import { Chapter } from "@/app/interface/chapter";
 import ChapterContent from "@/app/ui/user/chapter/chapterContent";
 import PremiumGate from "@/components/premiumGate";
 import { getServerReaderSettings, ReaderSettings } from "@/lib/readerSetting";
+import { isNewChapter } from "@/lib/utils/chapterUtils";
 import { requireSubscription } from "@/lib/utils/stripe/subcriptionCheck";
 
 interface ChapterSubWrapperProps {
@@ -24,8 +25,7 @@ export default async function ChapterSubWrapper({
   const settings: ReaderSettings = (await getServerReaderSettings()) || 16;
   let hasAccess = true;
   let accessReason = "";
-
-  if (chapter.chapter_number > 1) {
+  if (isNewChapter(chapter.created_at)) {
     const subscriptionCheck = await requireSubscription();
     hasAccess = subscriptionCheck.hasAccess;
     accessReason = subscriptionCheck.reason || "";

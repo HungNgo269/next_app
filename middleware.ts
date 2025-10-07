@@ -28,23 +28,13 @@ export async function middleware(req: NextRequest) {
   const token = await getToken({
     req: req,
     secret: process.env.AUTH_SECRET,
-    // cookieName: "__Secure-authjs.session-token",
+    secureCookie: process.env.NODE_ENV === "production",
+    cookieName:
+      process.env.NODE_ENV === "production"
+        ? "__Secure-authjs.session-token"
+        : "authjs.session-token",
   });
 
-  if (pathname.startsWith("/dashboard")) {
-    if (!token) {
-      return NextResponse.redirect(new URL("/login", req.url));
-    }
-    if (token?.role !== "admin") {
-      return NextResponse.redirect(new URL("/login", req.url));
-    }
-    return response;
-  }
-  if (pathname.startsWith("/")) {
-    if (token?.role === "admin") {
-      return NextResponse.redirect(new URL("/dashboard", req.url));
-    }
-  }
   if (pathname === "/login") {
     if (token?.role === "admin") {
       return NextResponse.redirect(new URL("/dashboard", req.url));
@@ -52,9 +42,26 @@ export async function middleware(req: NextRequest) {
     if (token?.role === "user" || token?.role === "subUser") {
       return NextResponse.redirect(new URL("/", req.url));
     }
-    return response;
+    if (!token) {
+      return response;
+    }
   }
 
+  if (pathname.startsWith("/dashboard")) {
+    if (!token) {
+      return NextResponse.redirect(new URL("/login", req.url));
+    }
+    if (token?.role !== "admin") {
+      return NextResponse.redirect(new URL("/", req.url));
+    }
+    return response;
+  }
+  if (pathname.startsWith("/")) {
+    if (token?.role === "admin") {
+      return NextResponse.redirect(new URL("/dashboard", req.url));
+    }
+    return response;
+  }
   if (pathname.includes("/chapter/") && pathname.includes("/book/")) {
     response.headers.set("x-requires-subscription-check", "true");
   }

@@ -22,7 +22,7 @@ export async function setupQStashCronJob(destinationFromRequest?: string) {
     const schedule = await client.schedules.create({
       destination,
       method: "POST",
-      cron: "0 * * * *",
+      cron: "0 * * * *", //1 tieng
       retries: 3,
       headers: {
         "Content-Type": "application/json",
