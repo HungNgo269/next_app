@@ -169,7 +169,7 @@ export default function ChapterContent({
     await removeBookMarkAction(userId, chapter.id);
     setBookMark(null);
   };
-
+  console.log("chapter", chapter);
   return (
     <div className="min-h-screen bg-background relative">
       <article className={`max-w-4xl mx-auto px-4 py-8`} style={contentStyle}>
