@@ -105,16 +105,16 @@ export async function syncChapterViews(
 export async function updateBooksAggregatedStats(): Promise<void> {
   try {
     await sql`
-      UPDATE books 
-      SET views = (
-        SELECT COALESCE(SUM(c.view_count), 0)
-        FROM chapters c 
-        WHERE c.book_id = books.id
-      ),
-      updated_at = CURRENT_TIMESTAMP
-        ON CONFLICT DO NOTHING;
-      returning *
-    `;
+  UPDATE books
+  SET 
+    views = (
+      SELECT COALESCE(SUM(c.view_count), 0)
+      FROM chapters c
+      WHERE c.book_id = books.id
+    ),
+    updated_at = CURRENT_TIMESTAMP
+  RETURNING *;
+`;
   } catch (error) {
     console.error(
       `Failed to update view count for books: ${

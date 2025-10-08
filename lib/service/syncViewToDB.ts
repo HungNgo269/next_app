@@ -160,6 +160,7 @@ async function processBatch(redis: any, batch: string[]): Promise<void> {
   const pipeline = redis.pipeline();
   for (const key of batch) {
     pipeline.get(key);
+    console.error("key", key);
   }
 
   const results = await pipeline.exec();
@@ -175,7 +176,8 @@ async function processBatch(redis: any, batch: string[]): Promise<void> {
     const key = batch[i];
     const result = results[i];
 
-    if (result[0] !== null) {
+    if (result[0] != null) {
+      console.log("result", result);
       console.error(`Redis error for key ${key}:`, result[0]);
       continue;
     }
@@ -200,11 +202,18 @@ async function processBatch(redis: any, batch: string[]): Promise<void> {
     }
 
     const raw = result[1];
-    const count = raw != null ? parseInt(String(raw), 10) : 0;
+    if (raw == null) {
+      console.error(`Key ${key} not found or has null value - skipping`);
+      keysToDelete.push(key);
+      continue;
+    }
+
+    const count = parseInt(String(raw), 10);
 
     if (Number.isFinite(count) && count > 0) {
       dbUpdates.push({ chapterId, count, key });
     } else {
+      console.error(`Key ${key} has invalid count: ${raw} - deleting`);
       keysToDelete.push(key);
     }
   }

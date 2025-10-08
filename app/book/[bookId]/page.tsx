@@ -23,6 +23,8 @@ import { getURL } from "@/lib/utils/helper";
 import { getSessionCache } from "@/lib/utils/getSession";
 import FollowButton from "@/app/book/[bookId]/followBookButton";
 import { requireSubscription } from "@/lib/utils/stripe/subcriptionCheck";
+import { Suspense } from "react";
+import { BookCardSkeleton } from "@/app/ui/skeletons";
 
 const FALLBACK_BOOK_OG_IMAGE = getURL("hero-desktop.png");
 const toAbsoluteImageUrl = (value?: string) => {

@@ -46,13 +46,11 @@ export async function BookList({
     justify-items-center
   "
     >
-      <Suspense fallback={<BookCardSkeleton></BookCardSkeleton>}>
-        {books?.length
-          ? books.map((book: BookCardProps) => (
-              <BookCard variant="sm" book={book} key={book.id} />
-            ))
-          : null}
-      </Suspense>
+      {books?.length
+        ? books.map((book: BookCardProps) => (
+            <BookCard variant="sm" book={book} key={book.id} />
+          ))
+        : null}
     </div>
   );
 }

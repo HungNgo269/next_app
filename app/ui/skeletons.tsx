@@ -148,3 +148,18 @@ export function ChapterCardGridSkeleton() {
     </div>
   );
 }
+export function BookListSkeleton({
+  variant = "sm",
+  count = 30,
+}: {
+  variant?: Variant;
+  count?: number;
+}) {
+  return (
+    <div className="w-full gap-2 grid grid-cols-2 md:grid-cols-5 md:overflow-visible md:place-items-center md:justify-center justify-items-center">
+      {Array.from({ length: count }).map((_, index) => (
+        <BookCardSkeleton key={index} variant={variant} />
+      ))}
+    </div>
+  );
+}
