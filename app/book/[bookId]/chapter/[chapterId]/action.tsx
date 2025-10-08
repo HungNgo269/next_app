@@ -8,11 +8,8 @@ import {
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { defaultSettings, ReaderSettings } from "@/lib/readerSetting";
-import {
-  getChapterStatsService,
-  getClientIP,
-  incrementViewService,
-} from "@/lib/chapterViewService";
+import { getClientIP } from "@/lib/utils/ipUtils";
+import { incrementViewService } from "@/lib/service/incrementViews";
 
 export async function incrementChapterView(
   chapterId: number,
@@ -50,26 +47,6 @@ export async function incrementChapterView(
   }
 }
 
-export async function getChapterStats(chapterId: number) {
-  try {
-    const stats = await getChapterStatsService(chapterId);
-
-    return (
-      stats || {
-        totalViews: 0,
-        uniqueViews: 0,
-        todayViews: 0,
-      }
-    );
-  } catch (error) {
-    console.error("Error getting chapter stats:", error);
-    return {
-      totalViews: 0,
-      uniqueViews: 0,
-      todayViews: 0,
-    };
-  }
-}
 export async function fetchChapterActions(chapterId: number) {
   try {
     return await fetchChapter(chapterId);

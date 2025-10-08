@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Lock } from "lucide-react";
 
@@ -16,7 +16,7 @@ export default function PremiumGate({
   children,
 }: PremiumGateProps) {
   const router = useRouter();
-
+  const pathName = usePathname();
   if (hasAccess) {
     return <>{children}</>;
   }
@@ -26,19 +26,22 @@ export default function PremiumGate({
       title: "Sign in Required",
       description: "Please sign in to access this content",
       action: "Sign In",
-      onClick: () => router.push("/login"),
+      onClick: () =>
+        router.push(`/login?callbackUrl=${encodeURIComponent(pathName)}`),
     },
     no_subscription: {
       title: "Premium Content",
       description: "This content is available for premium members only",
       action: "View Plans",
-      onClick: () => router.push("/pricing"),
+      onClick: () =>
+        router.push(`/pricing?callbackUrl=${encodeURIComponent(pathName)}`),
     },
     trial_expired: {
       title: "Trial Expired",
       description: "Your free trial has ended. Subscribe to continue reading",
       action: "Subscribe Now",
-      onClick: () => router.push("/pricing"),
+      onClick: () =>
+        router.push(`/pricing?callbackUrl=${encodeURIComponent(pathName)}`),
     },
   };
 

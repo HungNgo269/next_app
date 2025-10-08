@@ -22,6 +22,9 @@ import BookDesc from "@/app/ui/user/books/bookDesc";
 import { getURL } from "@/lib/utils/helper";
 import { getSessionCache } from "@/lib/utils/getSession";
 import FollowButton from "@/app/book/[bookId]/followBookButton";
+import { requireSubscription } from "@/lib/utils/stripe/subcriptionCheck";
+import { Suspense } from "react";
+import { BookCardSkeleton } from "@/app/ui/skeletons";
 
 const FALLBACK_BOOK_OG_IMAGE = getURL("hero-desktop.png");
 const toAbsoluteImageUrl = (value?: string) => {
@@ -139,6 +142,7 @@ export default async function BookPage({ params }: PageProps) {
     fetchChapterOfBookAction(bookId),
   ]);
   const book = bookData[0] as Book;
+  const subscriptionCheck = await requireSubscription();
 
   return (
     <div className="min-h-screen relative ">
@@ -194,10 +198,10 @@ export default async function BookPage({ params }: PageProps) {
               </Badge>
             </Link>
           ))}
-          <span className="font-medium  text-white md:text-secondary-foreground">
+          <span className="font-medium  text-white md:text-foreground">
             Status:
           </span>
-          <span className="sm:ml-2 text-white md:text-secondary-foreground">
+          <span className="sm:ml-2 text-white md:text-foreground">
             {book.is_active ? "Completed" : "Ongoing"}
           </span>
         </div>
@@ -222,6 +226,7 @@ export default async function BookPage({ params }: PageProps) {
             title={book.name}
             chapters={chapters as Chapter[]}
             totalChapters={chapters.length}
+            sub={subscriptionCheck.hasAccess}
           />
         </div>
       </div>

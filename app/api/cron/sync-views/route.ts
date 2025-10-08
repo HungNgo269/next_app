@@ -1,4 +1,4 @@
-import { syncViewsToDatabase } from "@/lib/chapterViewService";
+import { syncViewsToDatabase } from "@/lib/service/syncViewToDB";
 import { Receiver } from "@upstash/qstash";
 import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest) {
@@ -27,8 +27,10 @@ export async function POST(req: NextRequest) {
     console.log(`Synced ${result.processed} views to database`);
     if (result.errors.length > 0) {
       console.error("Sync errors:", result.errors);
+      console.error("results errors:", result);
+    } else {
+      console.log("sync result", result);
     }
-
     return NextResponse.json(result, {
       status: result.success ? 200 : 207,
     });

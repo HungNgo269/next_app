@@ -1,10 +1,9 @@
 "use server";
-import { z } from "zod";
+import { z, ZodError } from "zod";
 import bcrypt from "bcrypt";
 import { sql } from "@/lib/db";
 import registerSchema from "@/app/schema/registerSchema";
 import { signIn } from "@/auth";
-import { ActionResult } from "@/app/interface/actionResult";
 
 async function checkEmailExists(email: string): Promise<boolean> {
   try {
@@ -49,18 +48,6 @@ function validateAge(dateOfBirth: Date): boolean {
   );
 }
 
-function validateUserNameContent(userName: string): boolean {
-  const forbiddenWords = [
-    "admin",
-    "root",
-    "administrator",
-    "moderator",
-    "system",
-  ];
-  const lowerUserName = userName.toLowerCase();
-  return !forbiddenWords.some((word) => lowerUserName.includes(word));
-}
-
 async function validateBusinessRules(data: any): Promise<void> {
   const errors: string[] = [];
 
@@ -76,23 +63,30 @@ async function validateBusinessRules(data: any): Promise<void> {
     errors.push("You must be between 0 and 120 years old");
   }
 
-  if (!validateUserNameContent(data.userName)) {
-    errors.push("Username contains forbidden words");
-  }
-
   if (data.dateOfBirth > new Date()) {
     errors.push("Date of birth cannot be in the future");
   }
 
   if (errors.length > 0) {
-    errors.push("Unknow Error");
+    throw new Error(errors.join(", "));
   }
 }
 
+interface RegisterState {
+  email?: string;
+  name?: string;
+  userName?: string;
+  dateOfBirth?: string | Date | undefined;
+  errors?: Record<string, string[]>;
+  message?: string;
+  redirectTo?: string;
+  success: boolean | null;
+}
+
 export async function registerUserAction(
-  prevState: ActionResult | undefined,
+  prevState: RegisterState | undefined,
   formData: FormData
-): Promise<ActionResult> {
+): Promise<RegisterState> {
   try {
     const redirectUrl = (formData.get("redirectTo") as string) || "/";
 
@@ -108,16 +102,43 @@ export async function registerUserAction(
     let validatedData;
     try {
       validatedData = registerSchema.parse(rawData);
-    } catch (zodError) {
-      console.log("Zod validation failed:", zodError);
-      throw zodError;
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const fieldErrors: Record<string, string[]> = {};
+        for (const issue of error.issues) {
+          const field = issue.path[0] as string;
+          if (!fieldErrors[field]) fieldErrors[field] = [];
+          fieldErrors[field].push(issue.message);
+        }
+        console.log("Zod validation failed:", fieldErrors);
+        return {
+          success: false,
+          errors: fieldErrors,
+          message: "Please fix the validation errors",
+          email: formData.get("email") as string,
+          name: formData.get("name") as string,
+          userName: formData.get("userName") as string,
+          dateOfBirth: formData.get("dateOfBirth") as string,
+        };
+      }
+      throw error;
     }
 
     try {
       await validateBusinessRules(validatedData);
     } catch (businessError) {
       console.log("Business validation failed:", businessError);
-      throw businessError;
+      return {
+        success: false,
+        message:
+          businessError instanceof Error
+            ? businessError.message
+            : "Validation failed",
+        email: formData.get("email") as string,
+        name: formData.get("name") as string,
+        userName: formData.get("userName") as string,
+        dateOfBirth: formData.get("dateOfBirth") as string,
+      };
     }
 
     const cleanedData = {
@@ -155,40 +176,23 @@ export async function registerUserAction(
           "Registration successful but auto-login failed. Please login manually.",
       };
     }
+
     return {
-      success: true,
       message: "Registration successful! Redirecting...",
+      success: true,
       redirectTo: redirectUrl,
     };
   } catch (error) {
     console.error("Registration error:", error);
 
-    if (error instanceof z.ZodError) {
-      const fieldErrors: Record<string, string[]> = {};
-      const errorMessages: string[] = [];
-
-      error.errors.forEach((err) => {
-        const fieldName = err.path.join(".");
-        const message = err.message;
-
-        if (!fieldErrors[fieldName]) {
-          fieldErrors[fieldName] = [];
-        }
-        fieldErrors[fieldName].push(message);
-        errorMessages.push(`${fieldName}: ${message}`);
-      });
-
-      return {
-        success: false,
-        message: `Validation failed: ${errorMessages.join(", ")}`,
-        errors: fieldErrors,
-      };
-    }
-
     if (error instanceof Error && error.message.includes("duplicate key")) {
       if (error.message.includes("email")) {
         return {
           success: false,
+          email: formData.get("email") as string,
+          name: formData.get("name") as string,
+          userName: formData.get("userName") as string,
+          dateOfBirth: formData.get("dateOfBirth") as string,
           message:
             "This email is already registered. Please use a different email.",
         };
@@ -196,6 +200,10 @@ export async function registerUserAction(
       if (error.message.includes("user_name")) {
         return {
           success: false,
+          email: formData.get("email") as string,
+          name: formData.get("name") as string,
+          userName: formData.get("userName") as string,
+          dateOfBirth: formData.get("dateOfBirth") as string,
           message:
             "This username is already taken. Please choose a different username.",
         };
@@ -205,12 +213,20 @@ export async function registerUserAction(
     if (error instanceof Error) {
       return {
         success: false,
+        email: formData.get("email") as string,
+        name: formData.get("name") as string,
+        userName: formData.get("userName") as string,
+        dateOfBirth: formData.get("dateOfBirth") as string,
         message: error.message,
       };
     }
 
     return {
       success: false,
+      email: formData.get("email") as string,
+      name: formData.get("name") as string,
+      userName: formData.get("userName") as string,
+      dateOfBirth: formData.get("dateOfBirth") as string,
       message: "An unexpected error occurred. Please try again later.",
     };
   }

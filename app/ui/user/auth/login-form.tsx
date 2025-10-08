@@ -12,10 +12,11 @@ import GoogleSignIn from "./login-google";
 export default function LoginForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/";
-  const [errorMessage, formAction, isPending] = useActionState(
-    authenticate,
-    undefined
-  );
+  const [state, formAction, isPending] = useActionState(authenticate, {
+    email: "",
+    error: null,
+    success: false,
+  });
   const ref = useRef<HTMLInputElement>(null);
   useEffect(() => {
     const focus = () => {
@@ -24,7 +25,7 @@ export default function LoginForm() {
     focus();
   }, []);
   return (
-    <div className="flex-1 flex items-center justify-center p-8 bg-background">
+    <div className="flex-1 flex items-center justify-center bg-background">
       <div className="w-full max-w-md    p-6">
         <header className="space-y-1 text-center">
           <h2 className="text-2xl font-bold">Login To NextBook</h2>
@@ -43,6 +44,7 @@ export default function LoginForm() {
                 id="email"
                 name="email"
                 type="email"
+                defaultValue={state.email}
                 fieldSize={"lg"}
                 placeholder="Email Address"
                 required
@@ -70,13 +72,18 @@ export default function LoginForm() {
               </Button>
             </div>
 
-            {errorMessage && (
+            {state.error && (
               <div className="flex items-center space-x-2 p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
                 <ExclamationCircleIcon className="h-5 w-5 text-destructive" />
-                <p className="text-sm text-destructive">{errorMessage}</p>
+                <p className="text-sm text-destructive">{state.error}</p>
               </div>
             )}
-
+            {state.success && (
+              <div className="flex items-center space-x-2 p-3 bg-success/10 border border-success/20 rounded-lg">
+                <ExclamationCircleIcon className="h-5 w-5 text-success" />
+                <p className="text-sm text-success">{state.messsage}</p>
+              </div>
+            )}
             <Button className="w-full" size="lg" disabled={isPending}>
               {isPending ? (
                 <div className="flex items-center justify-center">

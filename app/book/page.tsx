@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import CategoryFilter from "../ui/share/genre/categoryFilter";
 import CategoryName from "../ui/user/books/bookCategoryName";
 import SortSelection from "../ui/user/books/bookCategorySortSelection";
-import { BookCardSkeleton } from "../ui/skeletons";
+import { BookListSkeleton } from "../ui/skeletons";
 import Pagination from "../ui/share/pagination/pagination";
 import MostPopularBook from "../ui/user/ranking/popularBook";
 import FooterComponent from "../ui/user/footer/footerComponent";
@@ -81,11 +81,13 @@ export default async function BookPage({ searchParams }: BookPageProps) {
           </div>
 
           <div className="flex flex-col">
-            <BookList
-              tag={tag}
-              sortOptions={sortOptions}
-              currentPage={currentPage}
-            />
+            <Suspense fallback={<BookListSkeleton></BookListSkeleton>}>
+              <BookList
+                tag={tag}
+                sortOptions={sortOptions}
+                currentPage={currentPage}
+              />
+            </Suspense>
 
             <div className="mt-5 flex w-full justify-center">
               <Pagination totalPages={totalPages} />

@@ -1,4 +1,4 @@
-import { syncViewsToDatabase } from "@/lib/chapterViewService";
+import { syncViewsToDatabase } from "@/lib/service/syncViewToDB";
 
 export async function GET() {
   try {

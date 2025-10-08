@@ -26,9 +26,7 @@ export default function UserNavLink({ active, onClick }: props) {
   };
   return (
     <div className="lg:flex-3">
-      <h2 className="font-semibold text-slate-900 dark:text-primary-foreground mb-4">
-        Account Settings
-      </h2>
+      <h2 className="font-semibold text-foreground  mb-4">Account Settings</h2>
       <nav className="space-y-2">
         <>
           {userNavLinks.map((item) => {

@@ -33,7 +33,7 @@ export default async function ChapterCard({ ChapterId }: PageProps) {
       <Link
         prefetch={true}
         className="relative w-full aspect-[2/3] group overflow-hidden rounded-[8px]"
-        href={`book/${book.id}/chapter/${chapter.id}`}
+        href={`book/${book.id}`}
       >
         <ImageCard
           bookImage={book.image_urls[0]}
@@ -64,9 +64,7 @@ export default async function ChapterCard({ ChapterId }: PageProps) {
               <span>{bookInfo.views ?? "0"}</span>
             </div>
           </div>
-          <p className="text-primary-foreground font-bold line-clamp-4">
-            {book.name}
-          </p>
+          <p className="text-white font-bold line-clamp-4">{book.name}</p>
         </div>
       </Link>
 

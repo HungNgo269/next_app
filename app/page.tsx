@@ -43,9 +43,7 @@ export default async function HomePage({ searchParams }: PageProps) {
               <SwipperNewBook />
             </div>
             <div className="hidden md:block">
-              <Suspense>
-                <NewBookList />
-              </Suspense>
+              <NewBookList />
             </div>
             <Suspense>
               <NewChapterList searchParams={page} />

@@ -41,6 +41,8 @@ export default async function Header() {
             <div className="hidden sm:block flex-grow-0 flex-shrink basis-[250px]">
               <SearchComponent />
             </div>
+            <HeaderClientColor></HeaderClientColor>
+
             {user ? (
               <div className="flex flex-row gap-3 items-center">
                 <div className="hidden sm:flex flex-row justify-center">
@@ -74,7 +76,6 @@ export default async function Header() {
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
-                  <HeaderClientColor></HeaderClientColor>
                   <NotificationReceiver userId={user.id}></NotificationReceiver>
                 </div>
                 <UserButton />
@@ -83,7 +84,7 @@ export default async function Header() {
               <div className="flex flex-row gap-4">
                 <Link
                   prefetch={true}
-                  className="hidden md:block"
+                  className={`$ hidden md:block`}
                   href={`/register?callbackUrl=${encodeURIComponent(
                     pathName!
                   )}`} //encodeURI = ensure valid

@@ -22,7 +22,7 @@ export async function setupQStashCronJob(destinationFromRequest?: string) {
     const schedule = await client.schedules.create({
       destination,
       method: "POST",
-      cron: "0 * * * *",
+      cron: "0 * * * *", //1 tieng
       retries: 3,
       headers: {
         "Content-Type": "application/json",
@@ -35,20 +35,5 @@ export async function setupQStashCronJob(destinationFromRequest?: string) {
   } catch (error) {
     console.error("Failed to setup cron job:", error);
     throw error;
-  }
-}
-
-export async function cleanupOldViewData(): Promise<void> {
-  const redisHold = await import("@/lib/redis");
-  const redis = redisHold.redis;
-  const pattern = "chapter:*:*";
-  const keys = await redis.keys(pattern);
-
-  const batchSize = 100;
-  for (let i = 0; i < keys.length; i += batchSize) {
-    const batch = keys.slice(i, i + batchSize);
-    if (batch.length > 0) {
-      await redis.del(...batch);
-    }
   }
 }

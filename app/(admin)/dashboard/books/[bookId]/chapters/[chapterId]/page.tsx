@@ -34,12 +34,6 @@ export default async function UpdateChapterPage({ params }: PageProps) {
   if (!book || !chapter) {
     notFound();
   }
-
-  // const [state, formAction, isPending] = useActionState(
-  //   ChapterAction,
-  //   undefined
-  // );
-
   return (
     <div className="max-w-full mx-auto space-y-6 p-6">
       <Breadcrumb className="mb-6 w-fit rounded-lg bg-primary px-4 py-2 text-primary-foreground shadow-sm">

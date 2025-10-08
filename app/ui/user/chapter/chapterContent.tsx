@@ -1,4 +1,4 @@
-// // cant find the way apply bookmark when render with server yet
+// cant find the way apply bookmark when render with server yet
 "use client";
 import {
   addBookMarkAction,
@@ -40,6 +40,7 @@ export default function ChapterContent({
   const maxProgress = useRef(0);
   const chapterRef = useRef<HTMLDivElement | null>(null);
   const scrollAnchorsRef = useRef<HTMLDivElement[]>([]);
+  const hasScrolledRef = useRef(false);
 
   // Tạo anchor
   const createScrollAnchors = useCallback(() => {
@@ -52,10 +53,8 @@ export default function ChapterContent({
       }
     });
     scrollAnchorsRef.current = [];
-
     const chapter = chapterRef.current;
     const chapterHeight = chapter.scrollHeight;
-
     for (let i = 0; i <= 100; i++) {
       const anchor = document.createElement("div");
       anchor.style.position = "absolute";
@@ -66,11 +65,11 @@ export default function ChapterContent({
       anchor.style.opacity = "0";
       anchor.style.pointerEvents = "none";
       anchor.dataset.progress = i.toString(); //0=>100
-
       chapter.appendChild(anchor);
       scrollAnchorsRef.current.push(anchor);
     }
   }, []);
+
   useEffect(() => {
     if (!userId) {
       return;
@@ -83,6 +82,7 @@ export default function ChapterContent({
     };
     getBookMark();
   }, [userId, chapter.id]);
+
   const scrollToProgress = (targetProgress: number): void => {
     if (!chapterRef.current) return;
     const chapter = chapterRef.current;
@@ -93,25 +93,39 @@ export default function ChapterContent({
       behavior: "smooth",
     });
   };
-  useEffect(() => {
-    createScrollAnchors();
 
+  useEffect(() => {
+    maxProgress.current = 0;
+    setCurrentProgress(0);
+    hasScrolledRef.current = false;
+    createScrollAnchors();
+    // Nếu có bookmark, scroll tới vị trí và set progress
     if (bookMark) {
       scrollToProgress(bookMark.progress);
+      maxProgress.current = bookMark.progress;
+      setCurrentProgress(bookMark.progress);
     }
+
+    // Lắng nghe sự kiện scroll
+    const handleScroll = () => {
+      hasScrolledRef.current = true;
+    };
+    window.addEventListener("scroll", handleScroll);
+
     const observer = new IntersectionObserver(
       (entries: IntersectionObserverEntry[]) => {
+        // Chỉ update progress nếu user đã scroll (hoặc không có bookmark)
+        if (!hasScrolledRef.current && bookMark) return;
+
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             const target = entry.target as HTMLDivElement;
-            const progress = parseInt(target.dataset.progress ?? "0", 10);
-            maxProgress.current = Math.max(maxProgress.current, progress);
+            const progress = parseInt(target.dataset.progress ?? "0", 10); // chuyen sang thap phan
+            maxProgress.current = Math.max(maxProgress.current, progress - 10); // progress mới vào = 10 ?, hardcode fix
           }
         });
 
-        if (maxProgress.current > 0) {
-          setCurrentProgress(maxProgress.current);
-        }
+        setCurrentProgress(maxProgress.current);
       },
       {
         root: null,
@@ -123,7 +137,9 @@ export default function ChapterContent({
     // Observe anchor
     const currentAnchors = scrollAnchorsRef.current;
     currentAnchors.forEach((anchor) => observer.observe(anchor));
+
     return () => {
+      window.removeEventListener("scroll", handleScroll);
       observer.disconnect();
       currentAnchors.forEach((anchor) => {
         if (anchor.parentNode) {
@@ -131,7 +147,7 @@ export default function ChapterContent({
         }
       });
     };
-  }, [createScrollAnchors, bookMark?.progress]);
+  }, [bookMark?.progress, chapter.id, createScrollAnchors]);
 
   const addBookmark = async () => {
     if (!userId) {
@@ -139,6 +155,7 @@ export default function ChapterContent({
         position: "top-center",
         description: "You can't using book mark without an account",
       });
+      return;
     }
     const newBookmark = await addBookMarkAction(
       userId,

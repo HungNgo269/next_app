@@ -1,14 +1,18 @@
 "use client";
 
 import { Chapter } from "@/app/interface/chapter";
+import { isNewChapter } from "@/lib/utils/chapterUtils";
 import { formatDateTimeUTC } from "@/lib/utils/formatDate";
+import { requireSubscription } from "@/lib/utils/stripe/subcriptionCheck";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { Lock } from "lucide-react";
 
 interface ChapterContainerProps {
   title: string;
+  sub: boolean;
   isCompleted?: boolean;
   // coverImage: string;
   chapters: Chapter[];
@@ -19,6 +23,7 @@ interface ChapterContainerProps {
 
 export function ChapterContainer({
   title,
+  sub,
   chapters,
   totalChapters,
   showMoreText = "Show more",
@@ -31,12 +36,15 @@ export function ChapterContainer({
     : chapters.slice(0, initialVisibleChapters);
   const hasMoreChapters = chapters.length > initialVisibleChapters;
   const pathName = usePathname();
+
   return (
     <div className="flex flex-row items-center justify-start space-x-3 mb-3 gap-4 w-full">
       <div className="h-full flex flex-col items-start w-full">
         <div className="rounded-lg p-4 bg-card shadow-sm w-full">
           <div className="mb-4">
-            <h2 className="text-lg font-medium text-gray-900">Chapters List</h2>
+            <h2 className="text-lg font-medium text-foreground">
+              Chapters List
+            </h2>
           </div>
 
           <div className="flex gap-4">
@@ -48,12 +56,7 @@ export function ChapterContainer({
                       key={chapter.id}
                       className="flex items-center justify-between group"
                     >
-                      <div className="flex items-center gap-2 min-w-0 flex-1">
-                        {/* {isNewChapter(chapter.createdAt, 7) && (
-                      <span className="text-destructive text-sm font-medium flex-shrink-0">
-                        Mới
-                      </span>
-                    )} */}
+                      <div className="flex flex-row items-center gap-2 min-w-0 flex-1">
                         <Link
                           prefetch={true}
                           href={`${pathName}/chapter/${chapter.id}`}
@@ -62,6 +65,9 @@ export function ChapterContainer({
                           Chapter {chapter.chapter_number}
                           {chapter.title ? `: ${chapter.title}` : ""}
                         </Link>
+                        {isNewChapter(chapter.created_at) && !sub && (
+                          <Lock className="w-5 h-5 text-yellow-500"></Lock>
+                        )}
                       </div>
                       <span className="text-gray-400 text-sm flex-shrink-0 ml-2">
                         {formatDateTimeUTC(chapter.created_at)}
@@ -71,7 +77,7 @@ export function ChapterContainer({
                 </div>
 
                 {!showAll && hasMoreChapters && (
-                  <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white via-white/80 to-transparent pointer-events-none" />
+                  <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-primary-foreground  to-transparent pointer-events-none" />
                 )}
               </div>
 
@@ -79,7 +85,7 @@ export function ChapterContainer({
                 <div className="mt-4 pt-2 border-t border-gray-100">
                   <button
                     onClick={() => setShowAll(!showAll)}
-                    className="text-primary hover:text-primary/80 hover:underline text-sm font-medium"
+                    className="text-primary hover:text-primary/80 hover:underline text-sm font-medium hover:cursor-pointer"
                   >
                     {showAll
                       ? "Show less"

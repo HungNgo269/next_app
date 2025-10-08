@@ -329,7 +329,7 @@ export const manageSubscriptionStatusChange = async (
     `;
 
     console.log(
-      `✅ Successfully inserted/updated subscription [${subscription.id}] for user [${uuid}]`
+      ` Successfully inserted/updated subscription [${subscription.id}] for user [${uuid}]`
     );
   } catch (dbError) {
     console.error("Database error when inserting subscription:", dbError);
@@ -342,7 +342,7 @@ export const manageSubscriptionStatusChange = async (
         uuid,
         subscription.default_payment_method as Stripe.PaymentMethod
       );
-      console.log(`✅ Billing details copied for user [${uuid}]`);
+      console.log(`Billing details copied for user [${uuid}]`);
     } catch (billingError) {
       console.error("Error copying billing details:", billingError);
     }

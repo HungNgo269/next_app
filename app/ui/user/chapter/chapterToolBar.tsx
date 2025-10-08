@@ -12,6 +12,7 @@ import {
   TypeIcon,
   ALargeSmall,
   Bookmark,
+  Loader2,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import {
@@ -47,11 +48,10 @@ export default function ChapterToolBar({
   const [settings, setSettings] = useState(iniSettings);
   const [isPending, startTransition] = useTransition();
   const { theme, setTheme } = useTheme();
-
+  const [loadingBtn, setLoadingBtn] = useState<"prev" | "next" | null>(null);
   const handleSettingChange = (key: keyof ReaderSettings, value: any) => {
     const newSettings = { ...settings, [key]: value }; //fontsize :16(etc)
     setSettings(newSettings);
-
     startTransition(async () => {
       await updateReaderSettings({ [key]: value });
     });
@@ -303,7 +303,14 @@ export default function ChapterToolBar({
               : `/book/${bookId}`
           }
           aria-disabled={idPrev == null} // Ngăn điều hướng bằng bàn phím
-          onClick={(e) => idPrev == null && e.preventDefault()} // Ngăn click khi không có idNext
+          onClick={(e) => {
+            if (!idPrev) {
+              e.preventDefault();
+              return;
+            }
+            setLoadingBtn("prev");
+          }}
+          // Ngăn click khi không có idNext
         >
           <Button
             disabled={!idPrev}
@@ -315,7 +322,11 @@ export default function ChapterToolBar({
                 : "cursor-pointer "
             }`}
           >
-            <ChevronLeft className="w-5 h-5" />
+            {loadingBtn === "prev" ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : (
+              <ChevronLeft className="w-5 h-5" />
+            )}
           </Button>
         </Link>
         <Link
@@ -326,7 +337,13 @@ export default function ChapterToolBar({
               : `/book/${bookId}`
           }
           aria-disabled={idNext == null}
-          onClick={(e) => idNext == null && e.preventDefault()}
+          onClick={(e) => {
+            if (!idNext) {
+              e.preventDefault();
+              return;
+            }
+            setLoadingBtn("next");
+          }}
         >
           <Button
             disabled={!idNext}
@@ -338,7 +355,11 @@ export default function ChapterToolBar({
                 : "cursor-pointer "
             }`}
           >
-            <ChevronRight className="w-5 h-5" />
+            {loadingBtn === "next" ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : (
+              <ChevronRight className="w-5 h-5" />
+            )}
           </Button>
         </Link>
       </div>

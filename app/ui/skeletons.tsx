@@ -113,24 +113,6 @@ export function PopularBookSkeleton() {
     </div>
   );
 }
-import clsx from "clsx";
-export function PaginationSkeleton() {
-  const skeletonPages = Array.from({ length: 7 });
-  return (
-    <div className="inline-flex items-center gap-2">
-      {skeletonPages.map((_, idx) => (
-        <div
-          key={idx}
-          className={clsx(
-            `h-10 w-10 rounded-lg border border-border/60 ${softBlock}`,
-            idx === 0 && "mr-2 md:mr-4",
-            idx === skeletonPages.length - 1 && "ml-2 md:ml-4"
-          )}
-        />
-      ))}
-    </div>
-  );
-}
 
 export function ChapterCardGridSkeleton() {
   return (
@@ -163,6 +145,21 @@ export function ChapterCardGridSkeleton() {
           </div>
         ))}
       </div>
+    </div>
+  );
+}
+export function BookListSkeleton({
+  variant = "sm",
+  count = 30,
+}: {
+  variant?: Variant;
+  count?: number;
+}) {
+  return (
+    <div className="w-full gap-2 grid grid-cols-2 md:grid-cols-5 md:overflow-visible md:place-items-center md:justify-center justify-items-center">
+      {Array.from({ length: count }).map((_, index) => (
+        <BookCardSkeleton key={index} variant={variant} />
+      ))}
     </div>
   );
 }

@@ -15,10 +15,16 @@ export default function RegisterForm() {
   const router = useRouter();
   const callbackUrl = searchParams.get("callbackUrl") || "/";
 
-  const [state, formAction, isPending] = useActionState(
-    registerUserAction,
-    undefined
-  );
+  const [state, formAction, isPending] = useActionState(registerUserAction, {
+    dateOfBirth: "",
+    email: "",
+    errors: {},
+    message: "",
+    name: "",
+    redirectTo: "",
+    userName: "",
+    success: null,
+  });
 
   useEffect(() => {
     if (state?.success && state.redirectTo) {
@@ -30,13 +36,11 @@ export default function RegisterForm() {
 
   const focusRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
-    const focus = () => {
-      focusRef.current?.focus();
-    };
-    focus();
+    focusRef.current?.focus();
   }, []);
+
   return (
-    <div className="flex-1 flex items-center justify-center p-8 bg-background">
+    <div className="flex-1 flex items-center justify-center bg-background">
       <div className="w-full max-w-md p-6">
         <header className="space-y-1 text-center">
           <h2 className="text-2xl font-bold">Register for NextBook</h2>
@@ -54,12 +58,19 @@ export default function RegisterForm() {
               <Input
                 id="email"
                 name="email"
+                defaultValue={state.email}
                 type="email"
                 fieldSize="lg"
                 placeholder="Enter your email address"
                 required
                 ref={focusRef}
               />
+              {state.errors?.email && (
+                <p className="text-sm text-destructive flex items-center gap-1">
+                  <ExclamationCircleIcon className="h-4 w-4" />
+                  {state.errors.email[0]}
+                </p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -69,12 +80,19 @@ export default function RegisterForm() {
               <Input
                 id="name"
                 name="name"
+                defaultValue={state.name}
                 type="text"
                 fieldSize="lg"
                 placeholder="Enter your full name"
                 required
                 minLength={6}
               />
+              {state.errors?.name && (
+                <p className="text-sm text-destructive flex items-center gap-1">
+                  <ExclamationCircleIcon className="h-4 w-4" />
+                  {state.errors.name[0]}
+                </p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -84,12 +102,19 @@ export default function RegisterForm() {
               <Input
                 id="userName"
                 name="userName"
+                defaultValue={state.userName}
                 type="text"
                 fieldSize="lg"
                 placeholder="Enter your username"
                 required
                 minLength={6}
               />
+              {state.errors?.userName && (
+                <p className="text-sm text-destructive flex items-center gap-1">
+                  <ExclamationCircleIcon className="h-4 w-4" />
+                  {state.errors.userName[0]}
+                </p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -105,6 +130,12 @@ export default function RegisterForm() {
                 required
                 minLength={6}
               />
+              {state.errors?.passWord && (
+                <p className="text-sm text-destructive flex items-center gap-1">
+                  <ExclamationCircleIcon className="h-4 w-4" />
+                  {state.errors.passWord[0]}
+                </p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -114,32 +145,39 @@ export default function RegisterForm() {
               <Input
                 id="dateOfBirth"
                 name="dateOfBirth"
+                defaultValue={(state.dateOfBirth as string) ?? undefined}
                 type="date"
                 fieldSize="lg"
+                className="[&::-webkit-calendar-picker-indicator]:ml-[230px]"
                 required
               />
+              {state.errors?.dateOfBirth && (
+                <p className="text-sm text-destructive flex items-center gap-1">
+                  <ExclamationCircleIcon className="h-4 w-4" />
+                  {state.errors.dateOfBirth[0]}
+                </p>
+              )}
             </div>
 
             <input type="hidden" name="redirectTo" value={callbackUrl} />
 
-            {state?.success && (
+            {state.success && (
               <div className="flex items-center space-x-2 p-3 bg-success/10 border border-success/20 rounded-lg">
                 <div className="h-5 w-5 text-success">✓</div>
                 <p className="text-sm text-success">{state.message}</p>
               </div>
             )}
 
-            {state && !state.success && (
+            {state.success === false && state.message && (
               <div className="flex items-center space-x-2 p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
                 <ExclamationCircleIcon className="h-5 w-5 text-destructive" />
                 <p className="text-sm text-destructive">{state.message}</p>
               </div>
             )}
-
             <Button
               className="w-full"
               size="lg"
-              disabled={isPending || state?.success}
+              disabled={isPending || state.success === true}
             >
               {isPending ? (
                 <div className="flex items-center justify-center">

@@ -1,8 +1,8 @@
 import { formatDistanceToNow } from "date-fns";
 
-type DateInput = string | number | Date;
+type DateInput = string | number | Date | undefined;
 
-function safeParseDate(dateInput: DateInput): Date | null {
+export function safeParseDate(dateInput: DateInput): Date | null {
   if (!dateInput) return null;
   const date = new Date(dateInput);
   if (isNaN(date.getTime())) {

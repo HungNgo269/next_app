@@ -15,6 +15,7 @@ import { signOut } from "@/auth";
 import { getSessionCache } from "@/lib/utils/getSession";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import LogOutButton from "@/app/ui/user/account/LogOutButton";
 
 export async function UserButton() {
   const session = await getSessionCache();
@@ -91,18 +92,9 @@ export async function UserButton() {
         <DropdownMenuSeparator />
 
         <DropdownMenuItem className="cursor-pointer p-0">
-          <form
-            action={async () => {
-              "use server";
-              await signOut();
-            }}
-            className="w-full"
-          >
-            <button className="w-full flex items-center px-2 py-1.5 text-sm cursor-pointer text-destructive hover:bg-accent rounded-sm">
-              <LogOut className="mr-2 h-4 w-4" />
-              <span>Log Out</span>
-            </button>
-          </form>
+          <div className="w-full hover:bg-destructive/10">
+            <LogOutButton />
+          </div>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

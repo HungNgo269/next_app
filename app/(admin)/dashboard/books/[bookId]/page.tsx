@@ -141,7 +141,7 @@ export default async function BookDetailsPage({ params }: PageProps) {
                     {bookCategories.map((cate) => (
                       <span
                         key={cate.name}
-                        className="px-2.5 py-1 text-xs font-medium rounded-full bg-secondary text-secondary-foreground"
+                        className="px-2.5 py-1 text-xs font-medium rounded-full bg-secondary text-foreground"
                       >
                         {cate.name}
                       </span>
