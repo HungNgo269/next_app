@@ -6,10 +6,9 @@ import {
 import { ViewMetadata } from "@/app/interface/view";
 import { sql } from "@/lib/db";
 const VIEW_BATCH_KEY = "views:batch:pending";
+import { redis } from "@/lib/redis";
 
 async function updateChapterAggregatedStats(): Promise<void> {
-  const redisHold = await import("@/lib/redis");
-  const redis = redisHold.redis;
   try {
     const pattern = "chapter:*:views";
     const keys: string[] = []; //mảng chứa pattern [chapter:*:views,chapter:*:views,...]
@@ -54,8 +53,6 @@ export async function syncViewsToDatabase(): Promise<{
   processed: number;
   errors: string[];
 }> {
-  const redisHold = await import("@/lib/redis");
-  const redis = redisHold.redis;
   let processed = 0;
   let errors = [""];
   try {

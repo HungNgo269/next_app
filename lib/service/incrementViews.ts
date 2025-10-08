@@ -1,5 +1,6 @@
 import { ViewResult } from "@/app/interface/chapter";
 import { ViewMetadata } from "@/app/interface/view";
+import { redis } from "@/lib/redis";
 import { hashIP } from "@/lib/utils/ipUtils";
 
 export async function incrementViewService(
@@ -9,8 +10,6 @@ export async function incrementViewService(
   ipAddress?: string
 ): Promise<ViewResult> {
   try {
-    const redisHold = await import("@/lib/redis");
-    const redis = redisHold.redis;
     const pipeline = redis.pipeline();
     const timestamp = new Date().toISOString();
     const viewKey = `chapter:${chapterId}:views`;

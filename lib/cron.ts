@@ -37,18 +37,3 @@ export async function setupQStashCronJob(destinationFromRequest?: string) {
     throw error;
   }
 }
-
-export async function cleanupOldViewData(): Promise<void> {
-  const redisHold = await import("@/lib/redis");
-  const redis = redisHold.redis;
-  const pattern = "chapter:*:*";
-  const keys = await redis.keys(pattern);
-
-  const batchSize = 100;
-  for (let i = 0; i < keys.length; i += batchSize) {
-    const batch = keys.slice(i, i + batchSize);
-    if (batch.length > 0) {
-      await redis.del(...batch);
-    }
-  }
-}

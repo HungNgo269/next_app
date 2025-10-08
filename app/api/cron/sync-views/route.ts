@@ -27,6 +27,7 @@ export async function POST(req: NextRequest) {
     console.log(`Synced ${result.processed} views to database`);
     if (result.errors.length > 0) {
       console.error("Sync errors:", result.errors);
+      console.error("results errors:", result);
     } else {
       console.log("sync result", result);
     }
