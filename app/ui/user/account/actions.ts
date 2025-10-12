@@ -3,21 +3,17 @@
 import { auth } from "@/auth";
 import { revalidatePath } from "next/cache";
 import { updateUserProfile } from "@/app/data/userData";
-import type { UserProfile } from "@/app/interface/user";
 import { ProfileSchema, profileSchema } from "@/app/schema/profileSchema";
 
-export type UpdateAccountPayload = {
-  name: string;
-  phone?: string | null;
-  address?: string | null;
+export type UpdateAccountResult = {
+  success?: boolean | undefined;
+  error?: string;
+  message?: string;
 };
 
-export type UpdateAccountResult =
-  | { success: true; data: UserProfile; message?: string }
-  | { success: false; error: string };
-
 export async function updateAccountInfo(
-  payload: UpdateAccountPayload
+  prevState: UpdateAccountResult | undefined,
+  formData: FormData
 ): Promise<UpdateAccountResult> {
   try {
     const session = await auth();
@@ -29,9 +25,9 @@ export async function updateAccountInfo(
     }
 
     const parsed = profileSchema.safeParse({
-      name: payload.name ?? "",
-      phone: payload.phone?.trim() ? payload.phone.trim() : undefined,
-      address: payload.address?.trim() ? payload.address.trim() : undefined,
+      name: formData.get("name"),
+      phone: formData.get("phone"),
+      address: formData.get("address"),
     });
 
     if (!parsed.success) {
@@ -61,7 +57,6 @@ export async function updateAccountInfo(
 
     return {
       success: true,
-      data: updatedProfile,
       message: "Profile updated successfully.",
     };
   } catch (error) {

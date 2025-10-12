@@ -1,6 +1,5 @@
 "use client";
 import { Category } from "@/app/interface/category";
-import { Separator } from "@/components/ui/separator";
 import { memo } from "react";
 
 interface CategorySelectorProps {
@@ -9,7 +8,7 @@ interface CategorySelectorProps {
   onCategoryChange: (categoryId: number) => void;
 }
 
-function CategorySelector({
+export default function CategorySelector({
   categories,
   selectedCategory,
   onCategoryChange,
@@ -40,5 +39,3 @@ function CategorySelector({
     </div>
   );
 }
-
-export default memo(CategorySelector);

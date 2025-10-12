@@ -10,7 +10,7 @@ export default async function LogOutButton() {
       <Button
         type="submit"
         variant="ghost"
-        className="hidden md:flex w-full justify-start gap-3 text-left text-destructive hover:text-destructive/90 hover:bg-destructive/10 dark:text-destructive/80 dark:hover:bg-destructive/20"
+        className="hidden md:flex w-full justify-start gap-3 text-left text-destructive hover:text-destructive/90 hover:bg-destructive/10 "
       >
         <LogOut className="h-4 w-4" />
         Log Out

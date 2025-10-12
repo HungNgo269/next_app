@@ -25,6 +25,7 @@ export async function checkoutWithStripe(
     const user = sessionApp?.user;
     let customer;
     try {
+      //customeridtripe
       customer = await createOrRetrieveCustomer({
         uuid: user?.id || "",
         email: user?.email || "",
@@ -33,6 +34,7 @@ export async function checkoutWithStripe(
       console.error(err);
       throw new Error("Unable to access customer record.");
     }
+    // const hasHadSubscription = customer..length > 0;
 
     let params: Stripe.Checkout.SessionCreateParams = {
       allow_promotion_codes: true,
@@ -40,6 +42,9 @@ export async function checkoutWithStripe(
       customer,
       customer_update: {
         address: "auto",
+      },
+      subscription_data: {
+        trial_period_days: 3,
       },
       line_items: [
         {
@@ -51,10 +56,6 @@ export async function checkoutWithStripe(
       success_url: getURL(redirectPath),
     };
 
-    console.log(
-      "Trial end:",
-      calculateTrialEndUnixTimestamp(price.trial_period_days)
-    );
     if (price.type === "recurring") {
       params = {
         ...params,
@@ -67,6 +68,9 @@ export async function checkoutWithStripe(
       params = {
         ...params,
         mode: "payment",
+        subscription_data: {
+          trial_end: calculateTrialEndUnixTimestamp(price.trial_period_days),
+        },
       };
     }
     let session;

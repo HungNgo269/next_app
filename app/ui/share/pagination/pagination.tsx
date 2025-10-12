@@ -1,10 +1,17 @@
 "use client";
 
+import { Input } from "@/components/ui/input";
 import { generatePagination } from "@/lib/utils/generatePagination";
 import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import {
+  ReadonlyURLSearchParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 interface props {
   totalPages: number;
   hashUrl?: string;
@@ -21,7 +28,6 @@ export default function Pagination({ totalPages, hashUrl }: props) {
   };
 
   const allPages = generatePagination(currentPage, totalPages);
-
   return (
     <div className="inline-flex">
       <PaginationArrow
@@ -30,7 +36,7 @@ export default function Pagination({ totalPages, hashUrl }: props) {
         isDisabled={currentPage <= 1}
       />
 
-      <div className="flex -space-x-px">
+      <div className="flex  gap-1">
         {allPages.map((page, index) => {
           let position: "first" | "last" | "single" | "middle" | undefined;
 
@@ -43,9 +49,13 @@ export default function Pagination({ totalPages, hashUrl }: props) {
             <PaginationNumber
               key={`${page}-${index}`}
               href={createPageURL(page)}
+              totalPages={totalPages}
               page={page}
+              pathname={pathname}
+              searchParams={searchParams}
               position={position}
               isActive={currentPage === page}
+              hashUrl={hashUrl}
             />
           );
         })}
@@ -65,30 +75,99 @@ function PaginationNumber({
   href,
   isActive,
   position,
+  totalPages,
+  searchParams,
+  pathname,
+  hashUrl,
 }: {
   page: number | string;
   href: string;
   position?: "first" | "last" | "middle" | "single";
   isActive: boolean;
+  totalPages: number;
+  searchParams: ReadonlyURLSearchParams;
+  pathname: string;
+  hashUrl?: string;
 }) {
+  const [openInput, setOpenInput] = useState(false);
+  const ref = useRef<HTMLInputElement>(null);
+  const router = useRouter();
+
+  const handleNavigate = () => {
+    const pageNum = parseInt(ref.current?.value || "");
+    if (pageNum >= 1 && pageNum <= totalPages) {
+      const params = new URLSearchParams(searchParams);
+      params.set("page", pageNum.toString());
+      router.push(
+        `${pathname}?${params.toString()}${hashUrl ? `#${hashUrl}` : ""}`
+      );
+    }
+    setOpenInput(false);
+  };
+  const handleBlur = () => {
+    handleNavigate();
+  };
+  useEffect(() => {
+    const focus = () => {
+      ref?.current?.focus();
+    };
+    if (openInput) {
+      focus();
+    }
+  }, [openInput]);
   const className = clsx(
-    "flex h-10 w-10 items-center justify-center text-sm border",
+    "flex h-10 w-10 items-center justify-center font-semibold text-sm rounded",
     {
-      "rounded-l-md": position === "first" || position === "single",
-      "rounded-r-md": position === "last" || position === "single",
-      "z-10 bg-primary border-primary text-primary-foreground": isActive,
-      "hover:bg-gray-100": !isActive && position !== "middle",
-      "text-gray-300": position === "middle",
+      "z-10 bg-primary border-primary text-primary-foreground hover:brightness-90":
+        isActive,
+      "hover:bg-gray-200 bg-background hover:cursor-pointer ": !isActive,
     }
   );
-
-  return isActive || position === "middle" ? (
-    <div className={className}>{page}</div>
-  ) : (
-    <Link prefetch={true} href={href} className={className}>
-      {page}
-    </Link>
-  );
+  if (position === "middle" && !isActive) {
+    return (
+      <>
+        {openInput === true ? (
+          <div className="h-10 w-20">
+            <Input
+              className="w-full h-full bg-none border-none"
+              id="pageNumber"
+              name="pageNumber"
+              ref={ref}
+              onBlur={handleBlur}
+              type="number"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleNavigate();
+                }
+                if (e.key === "Escape") {
+                  setOpenInput(false);
+                }
+              }}
+            ></Input>
+          </div>
+        ) : (
+          <div
+            onClick={() => {
+              setOpenInput(true);
+            }}
+            className={className}
+          >
+            {page}{" "}
+          </div>
+        )}
+      </>
+    );
+  }
+  if (isActive || position === "middle") {
+    return <div className={className}>{page}</div>;
+  }
+  if (!isActive) {
+    return (
+      <Link prefetch={true} href={href} className={className}>
+        {page}
+      </Link>
+    );
+  }
 }
 
 function PaginationArrow({
@@ -101,7 +180,7 @@ function PaginationArrow({
   isDisabled?: boolean;
 }) {
   const className = clsx(
-    "flex h-10 w-10 items-center justify-center rounded-md border",
+    "flex h-10 w-10 items-center justify-center rounded-md ",
     {
       "pointer-events-none text-gray-300": isDisabled,
       "hover:bg-gray-100": !isDisabled,
@@ -112,7 +191,7 @@ function PaginationArrow({
 
   const icon =
     direction === "left" ? (
-      <ArrowLeftIcon className="w-4" />
+      <ArrowLeftIcon className="w-4 " />
     ) : (
       <ArrowRightIcon className="w-4" />
     );

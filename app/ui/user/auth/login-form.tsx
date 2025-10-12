@@ -45,7 +45,6 @@ export default function LoginForm() {
                 name="email"
                 type="email"
                 defaultValue={state.email}
-                fieldSize={"lg"}
                 placeholder="Email Address"
                 required
                 ref={ref}
@@ -57,7 +56,6 @@ export default function LoginForm() {
                 id="password"
                 name="password"
                 type="password"
-                fieldSize={"lg"}
                 placeholder="Password"
                 required
                 minLength={6}

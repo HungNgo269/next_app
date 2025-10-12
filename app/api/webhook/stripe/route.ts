@@ -5,6 +5,7 @@ import {
   upsertSubscriptionPrice,
   upsertSubscriptionProduct,
 } from "@/app/data/subscriptions";
+import { revalidatePath } from "next/cache";
 import Stripe from "stripe";
 
 const relevantEvents = new Set([
@@ -74,6 +75,7 @@ export async function POST(req: Request) {
         case "customer.subscription.updated":
         case "customer.subscription.deleted":
           const subscription = event.data.object as Stripe.Subscription;
+          console.log("sub", subscription);
           await manageSubscriptionStatusChange(
             subscription.id,
             subscription.customer as string,

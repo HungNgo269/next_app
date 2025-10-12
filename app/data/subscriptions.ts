@@ -232,10 +232,6 @@ export const manageSubscriptionStatusChange = async (
     },
   });
 
-  console.log(
-    `Processing subscription [${subscriptionId}] for customer [${customerId}]`
-  );
-
   // Get customer's UUID from mapping table
   const customerData = await getUserStripeByCustomerId(customerId);
   const uuid = customerData?.id;
@@ -249,7 +245,6 @@ export const manageSubscriptionStatusChange = async (
   const subscription = await stripe.subscriptions.retrieve(subscriptionId, {
     expand: ["default_payment_method"],
   });
-
   // Get subscription item details
   const subscriptionItem = subscription.items.data[0];
   if (!subscriptionItem) {
@@ -283,13 +278,6 @@ export const manageSubscriptionStatusChange = async (
       : null,
   };
 
-  console.log("Subscription data to insert:", {
-    id: subscriptionData.id,
-    user_id: subscriptionData.user_id,
-    status: subscriptionData.status,
-    price_id: subscriptionData.price_id,
-    quantity: subscriptionData.quantity,
-  });
   try {
     await sql`
       INSERT INTO subscriptions (

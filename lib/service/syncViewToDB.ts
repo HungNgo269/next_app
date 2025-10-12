@@ -14,7 +14,7 @@ async function updateChapterAggregatedStats(): Promise<void> {
     const pattern = "chapter:*:views";
     const keys: string[] = [];
     let cursor = "0";
-    // Scan for keys
+    // Duyệt với scan, 50 mỗi lần
     do {
       const result = await redis.scan(cursor, {
         match: pattern,
@@ -36,7 +36,7 @@ async function updateChapterAggregatedStats(): Promise<void> {
     for (let i = 0; i < keys.length; i += batchSize) {
       const batch = keys.slice(i, i + batchSize);
       try {
-        // Sử dụng approach không dùng pipeline để tránh format issues(claude)
+        // Sử dụng approach không dùng pipeline để tránh format issues(claude )
         await processBatchDirect(redis, batch);
       } catch (error) {
         console.error(`Failed to process batch starting at index ${i}:`, error);
@@ -169,7 +169,7 @@ export async function syncViewsToDatabase(): Promise<{
     }
 
     const batchSize = 50;
-    let viewsData = await redis.lrange(VIEW_BATCH_KEY, 0, batchSize - 1);
+    let viewsData = await redis.lrange(VIEW_BATCH_KEY, 0, batchSize - 1); // lấy 50 batch đầu
 
     while (viewsData.length > 0) {
       const views: ViewMetadata[] = [];
@@ -203,6 +203,7 @@ export async function syncViewsToDatabase(): Promise<{
       }
 
       if (views.length === 0) {
+        // Bỏ 50 batch cũ, => đặt lại 50 batch mới
         await redis.ltrim(VIEW_BATCH_KEY, batchSize, -1);
         viewsData = await redis.lrange(VIEW_BATCH_KEY, 0, batchSize - 1);
         continue;
@@ -231,12 +232,10 @@ export async function syncViewsToDatabase(): Promise<{
         }
       }
 
-      // Bỏ 50 batch cũ, => đặt lại 50 batch mới
       await redis.ltrim(VIEW_BATCH_KEY, batchSize, -1);
       viewsData = await redis.lrange(VIEW_BATCH_KEY, 0, batchSize - 1);
     }
 
-    // Update aggregated stats if we processed any views
     if (processed > 0) {
       try {
         await updateChapterAggregatedStats();

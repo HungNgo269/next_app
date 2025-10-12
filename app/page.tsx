@@ -52,7 +52,7 @@ export default async function HomePage({ searchParams }: PageProps) {
               <BookRecommend></BookRecommend>
             </Suspense>
           </div>
-          <div className=" flex flex-col gap-5 w-[200px] md:w-[250px] xl:w-[300px]">
+          <div className="flex flex-col gap-5 w-[200px] md:w-[250px] xl:w-[300px]">
             <MostPopularBook />
           </div>
         </div>
@@ -62,7 +62,7 @@ export default async function HomePage({ searchParams }: PageProps) {
           </Suspense>
         </div>
       </div>
-      <div className="w-full">
+      <div className="w-full ">
         <Suspense>
           <FooterComponent></FooterComponent>
         </Suspense>
