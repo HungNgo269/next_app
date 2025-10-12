@@ -1,126 +1,71 @@
 "use client";
-
-import { useEffect, useMemo, useState, useTransition } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { updateAccountInfo } from "./actions";
 import type { UserProfile } from "@/app/interface/user";
-import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
 import { PhoneInput } from "./phoneInput";
+import { useActionState } from "react";
+import { updateAccountInfo } from "@/app/ui/user/account/actions";
+import { Button } from "@/components/ui/button";
+import { useState, useEffect } from "react";
+import { toast } from "sonner";
+import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 
 interface AccountInfoProps {
   user: UserProfile | null;
 }
 
-type FormState = {
-  name: string;
-  email: string;
-  phone: string;
-  address: string;
-};
-
-const mapProfileToFormState = (profile: UserProfile | null): FormState => ({
-  name: profile?.name ?? "",
-  email: profile?.email ?? "",
-  phone: profile?.phone ?? "",
-  address: profile?.address ?? "",
-});
-
-const editableKeys: Array<keyof FormState> = ["name", "phone", "address"];
-
 export default function AccountInfo({ user }: AccountInfoProps) {
-  const [formState, setFormState] = useState<FormState>(() =>
-    mapProfileToFormState(user)
-  );
-  const [baselineState, setBaselineState] = useState<FormState>(() =>
-    mapProfileToFormState(user)
-  );
-  const [showActions, setShowActions] = useState(false);
-  const [feedback, setFeedback] = useState<{
-    type: "success" | "error";
-    message: string;
-  } | null>(null);
-  const [isPending, startTransition] = useTransition();
+  const [state, formAction, isPending] = useActionState(updateAccountInfo, {
+    success: undefined,
+    error: "",
+    message: "",
+  });
+
+  const initialValues = {
+    name: user?.name || "",
+    phone: user?.phone || "",
+    address: user?.address || "",
+  };
+
+  const [formValues, setFormValues] = useState(initialValues);
+
+  const hasChanged =
+    formValues.name !== initialValues.name ||
+    formValues.phone !== initialValues.phone ||
+    formValues.address !== initialValues.address;
 
   useEffect(() => {
-    const nextState = mapProfileToFormState(user);
-    setFormState(nextState);
-    setBaselineState(nextState);
-    setShowActions(false);
-  }, [user]);
-
-  const hasChanges = useMemo(() => {
-    return editableKeys.some((key) => formState[key] !== baselineState[key]);
-  }, [formState, baselineState]);
-
-  const handleFieldChange = (field: keyof FormState, value: string) => {
-    setFormState((prev) => ({ ...prev, [field]: value }));
-    setShowActions(true);
-    setFeedback(null);
-  };
-
-  const handleCancel = () => {
-    setFormState({ ...baselineState });
-    setShowActions(false);
-    setFeedback(null);
-  };
-
-  const handleSave = () => {
-    if (!hasChanges || isPending) {
-      return;
+    if (state.success === true) {
+      setFormValues({
+        name: formValues.name,
+        phone: formValues.phone,
+        address: formValues.address,
+      });
+      toast.success("Change profile success");
     }
-
-    setFeedback(null);
-
-    startTransition(() => {
-      updateAccountInfo({
-        name: formState.name,
-        phone: formState.phone,
-        address: formState.address,
-      })
-        .then((result) => {
-          if (result.success) {
-            const updatedState = mapProfileToFormState(result.data);
-            setBaselineState(updatedState);
-            setFormState(updatedState);
-            setShowActions(false);
-            setFeedback({
-              type: "success",
-              message: result.message ?? "Profile updated successfully.",
-            });
-          } else {
-            setFeedback({ type: "error", message: result.error });
-          }
-        })
-        .catch(() => {
-          setFeedback({
-            type: "error",
-            message: "Unable to update profile. Please try again.",
-          });
-        });
-    });
-  };
-
-  if (!user) {
-    return (
-      <div className="rounded-xl border border-dashed border-slate-300 bg-white/60 p-8 text-center text-slate-600 dark:border-slate-700 dark:bg-slate-900/40 dark:text-slate-300">
-        Sign in to view and manage your profile information.
-      </div>
-    );
-  }
-
+    if (state.success === false) {
+      setFormValues({
+        name: formValues.name,
+        phone: formValues.phone,
+        address: formValues.address,
+      });
+      toast.error("Change profile fail");
+    }
+  }, [state.success]);
+  console.log("state", state);
   return (
     <div className="space-y-8">
-      <div className="grid gap-6 max-w-2xl">
+      <form action={formAction} className="grid gap-6 max-w-2xl">
         <div className="space-y-2">
           <Label htmlFor="name">Full name</Label>
           <Input
             id="name"
-            value={formState.name}
-            onChange={(event) => handleFieldChange("name", event.target.value)}
-            onFocus={() => setShowActions(true)}
+            name="name"
             placeholder="Enter your full name"
+            defaultValue={user?.name! ?? ""}
+            onChange={(e) =>
+              setFormValues({ ...formValues, name: e.target.value })
+            }
           />
         </div>
 
@@ -128,12 +73,12 @@ export default function AccountInfo({ user }: AccountInfoProps) {
           <Label htmlFor="email">Email address</Label>
           <Input
             id="email"
-            value={formState.email}
+            name="email"
             readOnly
             disabled
-            className="bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400"
+            defaultValue={user?.email!}
           />
-          <p className="text-xs text-slate-500 dark:text-slate-400">
+          <p className="text-xs text-muted-foreground">
             Email updates are handled separately for security reasons.
           </p>
         </div>
@@ -142,69 +87,43 @@ export default function AccountInfo({ user }: AccountInfoProps) {
           <Label htmlFor="phone">Phone number</Label>
           <PhoneInput
             id="phone"
-            value={formState.phone}
-            onChange={(value) => handleFieldChange("phone", value)}
-            onFocus={() => setShowActions(true)}
+            name="phone"
             placeholder="Add a phone number"
-            international={true} // Hiển thị format local (không có +84)
-          ></PhoneInput>
+            international={true}
+            defaultValue={user?.phone! ?? ""}
+            onChange={(value) =>
+              setFormValues({ ...formValues, phone: value || "" })
+            }
+          />
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="address">Address</Label>
           <Input
             id="address"
-            value={formState.address}
-            onChange={(event) =>
-              handleFieldChange("address", event.target.value)
-            }
-            onFocus={() => setShowActions(true)}
+            name="address"
             placeholder="Add an address"
+            defaultValue={user?.address ?? ""}
+            onChange={(e) =>
+              setFormValues({ ...formValues, address: e.target.value })
+            }
           />
         </div>
-      </div>
 
-      {showActions && (
-        <div className="flex flex-wrap items-center gap-3">
-          <Button
-            onClick={handleSave}
-            disabled={!hasChanges || isPending}
-            className="gap-2"
-          >
-            {isPending ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <CheckCircle2 className="h-4 w-4" />
-            )}
-            Save changes
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={handleCancel}
-            disabled={isPending}
-          >
-            Cancel
-          </Button>
-        </div>
-      )}
-
-      {feedback && (
-        <div
-          className={`flex items-start gap-3 rounded-lg border p-4 text-sm ${
-            feedback.type === "success"
-              ? "border-success/25 bg-success/10 text-success dark:border-success/40 dark:bg-success/20 dark:text-success/80"
-              : "border-destructive/20 bg-destructive/10 text-destructive dark:border-destructive/35 dark:bg-destructive/20 dark:text-destructive/80"
-          }`}
-        >
-          {feedback.type === "success" ? (
-            <CheckCircle2 className="h-5 w-5 flex-shrink-0" />
-          ) : (
-            <AlertCircle className="h-5 w-5 flex-shrink-0" />
-          )}
-          <span>{feedback.message}</span>
-        </div>
-      )}
+        {hasChanged && (
+          <div className="space-y-2">
+            <Button disabled={isPending} id="submit">
+              Save your change
+            </Button>
+          </div>
+        )}
+        {state.error && (
+          <div className="flex items-center space-x-2 p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
+            <ExclamationCircleIcon className="h-5 w-5 text-destructive" />
+            <p className="text-sm text-destructive">{state.error}</p>
+          </div>
+        )}
+      </form>
     </div>
   );
 }

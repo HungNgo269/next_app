@@ -11,6 +11,8 @@ const inputVariants = cva(
         md: "h-9 px-3 py-1 text-base md:text-sm file:text-sm",
         lg: "h-11 px-3 py-2 text-md file:text-base",
         xl: "h-12 px-4 py-3 text-xl file:text-lg",
+        responsive:
+          "h-8 px-2 py-1 text-sm file:text-xs md:h-9 md:px-3 md:py-1 md:text-base xl:h-11 xl:px-3 xl:py-2 xl:text-md",
       },
       variant: {
         default: "border-input",
@@ -27,7 +29,7 @@ const inputVariants = cva(
       },
     },
     defaultVariants: {
-      fieldSize: "md",
+      fieldSize: "responsive",
       variant: "default",
       radius: "md",
     },

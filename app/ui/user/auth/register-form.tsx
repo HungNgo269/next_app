@@ -60,7 +60,6 @@ export default function RegisterForm() {
                 name="email"
                 defaultValue={state.email}
                 type="email"
-                fieldSize="lg"
                 placeholder="Enter your email address"
                 required
                 ref={focusRef}
@@ -82,7 +81,6 @@ export default function RegisterForm() {
                 name="name"
                 defaultValue={state.name}
                 type="text"
-                fieldSize="lg"
                 placeholder="Enter your full name"
                 required
                 minLength={6}
@@ -104,7 +102,6 @@ export default function RegisterForm() {
                 name="userName"
                 defaultValue={state.userName}
                 type="text"
-                fieldSize="lg"
                 placeholder="Enter your username"
                 required
                 minLength={6}
@@ -125,7 +122,6 @@ export default function RegisterForm() {
                 id="passWord"
                 name="passWord"
                 type="password"
-                fieldSize="lg"
                 placeholder="Enter your password"
                 required
                 minLength={6}
@@ -147,7 +143,6 @@ export default function RegisterForm() {
                 name="dateOfBirth"
                 defaultValue={(state.dateOfBirth as string) ?? undefined}
                 type="date"
-                fieldSize="lg"
                 className="[&::-webkit-calendar-picker-indicator]:ml-[230px]"
                 required
               />

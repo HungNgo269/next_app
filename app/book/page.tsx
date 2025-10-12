@@ -61,7 +61,7 @@ interface BookPageProps {
 export default async function BookPage({ searchParams }: BookPageProps) {
   let { tag, sort, page } = await searchParams;
   const currentPage = Number(page) | 1;
-  const sortOptions: string = sort ?? "newest";
+  const sortOptions: string = sort ?? "popularity";
   const categoryId = getcategoryIdBySlug(tag ?? "");
 
   let totalPages;
