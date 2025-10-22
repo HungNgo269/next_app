@@ -147,11 +147,3 @@ export default function ManageSubscription() {
     </div>
   );
 }
-
-function setLoading(arg0: boolean) {
-  throw new Error("Function not implemented.");
-}
-
-function getSub() {
-  throw new Error("Function not implemented.");
-}

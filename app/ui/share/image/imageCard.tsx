@@ -11,6 +11,9 @@ export default function ImageCard({ bookImage, bookName }: ImageCardProps) {
       src={bookImage || "/default-cover.png"}
       alt={bookName || "Lỗi rồi người ơi"}
       fill
+      sizes="100%"
+          priority
+quality={100}
       className="object-cover duration-500 group-hover:scale-[102%] transition-transform"
     />
   );

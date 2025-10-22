@@ -66,5 +66,12 @@ export interface ChapterCardProps {
   id: number;
   title: string;
   chapter_number: number;
-  name: string;
+  name?: string;
+  created_at?:Date
+  book_id?:number
+}
+export interface BookNewChapterCard{
+  book_id:number,
+  book_name:string,
+  chapters:ChapterCardProps[]
 }

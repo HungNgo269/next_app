@@ -9,9 +9,7 @@ import { IBookmark } from "@/app/interface/bookMark";
 import { Chapter } from "@/app/interface/chapter";
 import ChapterToolBar from "@/app/ui/user/chapter/chapterToolBar";
 import { ReaderSettings } from "@/lib/readerSetting";
-import { Dialog } from "@radix-ui/react-dialog";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { toast } from "sonner";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 interface ChapterContentProps {
   userId: string;
@@ -22,7 +20,7 @@ interface ChapterContentProps {
   idPrevChapter: number;
 }
 
-export default function ChapterContent({
+function ChapterContent({
   userId,
   chapter,
   settings,
@@ -35,40 +33,47 @@ export default function ChapterContent({
     fontSize: `${settings.fontSize}px`,
     lineHeight: settings.lineHeight,
   };
-  const [currentProgress, setCurrentProgress] = useState<number>(0);
   const [bookMark, setBookMark] = useState<IBookmark | null>();
-  const maxProgress = useRef(0);
   const chapterRef = useRef<HTMLDivElement | null>(null);
-  const scrollAnchorsRef = useRef<HTMLDivElement[]>([]);
-  const hasScrolledRef = useRef(false);
 
-  // Tạo anchor
-  const createScrollAnchors = useCallback(() => {
-    if (!chapterRef.current) return;
+const progressRef = useRef<number>(0); // Lưu progress mà không rerender
+const updateProgress = useCallback(() => {
+  if (!chapterRef.current) return 0;
+  const { scrollHeight ,offsetTop} = chapterRef.current;//
+  const scrollY = window.scrollY;//vùng đã scroll
+  const viewportHeight = window.innerHeight;//vùng chiều cao người dùng có thể quan sát (viewport)
+  const contentHeight = scrollHeight - viewportHeight;
+  if (contentHeight <= 0) return 100;
+  const progress = Math.min(100, Math.max(0, (scrollY-offsetTop) / contentHeight * 100));
+  progressRef.current = Math.floor(progress)
+  console.log("progres",progressRef.current);
+  return progressRef.current;
+}, []);
 
-    // Xóa
-    scrollAnchorsRef.current.forEach((anchor) => {
-      if (anchor.parentNode) {
-        anchor.parentNode.removeChild(anchor);
+ useEffect(() => {
+  const loadAndSetup = async () => {
+    if (userId) {
+      const res = await getBookMarkAction(userId, chapter.id);
+      setBookMark(res || null);
+      if (res) {
+        scrollToProgress(res.progress);
+        progressRef.current = res.progress; 
       }
-    });
-    scrollAnchorsRef.current = [];
-    const chapter = chapterRef.current;
-    const chapterHeight = chapter.scrollHeight;
-    for (let i = 0; i <= 100; i++) {
-      const anchor = document.createElement("div");
-      anchor.style.position = "absolute";
-      anchor.style.height = "1px";
-      anchor.style.width = "100%";
-      anchor.style.top = `${(i / 100) * chapterHeight}px`;
-      anchor.style.left = "0";
-      anchor.style.opacity = "0";
-      anchor.style.pointerEvents = "none";
-      anchor.dataset.progress = i.toString(); //0=>100
-      chapter.appendChild(anchor);
-      scrollAnchorsRef.current.push(anchor);
     }
-  }, []);
+    const handleScroll = () => {
+      updateProgress(); 
+    };
+    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("resize", updateProgress);
+    updateProgress(); 
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", updateProgress);
+    };
+  };
+  loadAndSetup();
+}, [userId, chapter.id]);
 
   useEffect(() => {
     if (!userId) {
@@ -94,87 +99,23 @@ export default function ChapterContent({
     });
   };
 
-  useEffect(() => {
-    maxProgress.current = 0;
-    setCurrentProgress(0);
-    hasScrolledRef.current = false;
-    createScrollAnchors();
-    // Nếu có bookmark, scroll tới vị trí và set progress
-    if (bookMark) {
-      scrollToProgress(bookMark.progress);
-      maxProgress.current = bookMark.progress;
-      setCurrentProgress(bookMark.progress);
-    }
-
-    // Lắng nghe sự kiện scroll
-    const handleScroll = () => {
-      hasScrolledRef.current = true;
-    };
-    window.addEventListener("scroll", handleScroll);
-
-    const observer = new IntersectionObserver(
-      (entries: IntersectionObserverEntry[]) => {
-        // Chỉ update progress nếu user đã scroll (hoặc không có bookmark)
-        if (!hasScrolledRef.current && bookMark) return;
-
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const target = entry.target as HTMLDivElement;
-            const progress = parseInt(target.dataset.progress ?? "0", 10); // chuyen sang thap phan
-            maxProgress.current = Math.max(maxProgress.current, progress - 10); // progress mới vào = 10 ?, hardcode fix
-          }
-        });
-
-        setCurrentProgress(maxProgress.current);
-      },
-      {
-        root: null,
-        rootMargin: "0px",
-        threshold: 0,
-      }
-    );
-
-    // Observe anchor
-    const currentAnchors = scrollAnchorsRef.current;
-    currentAnchors.forEach((anchor) => observer.observe(anchor));
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      observer.disconnect();
-      currentAnchors.forEach((anchor) => {
-        if (anchor.parentNode) {
-          anchor.parentNode.removeChild(anchor);
-        }
-      });
-    };
-  }, [bookMark?.progress, chapter.id, createScrollAnchors]);
-
-  const addBookmark = async () => {
-    if (!userId) {
-      toast.warning("You have to login first", {
-        position: "top-center",
-        description: "You can't using book mark without an account",
-      });
-      return;
-    }
-    const newBookmark = await addBookMarkAction(
-      userId,
-      chapter.id,
-      currentProgress
-    );
-    setBookMark(newBookmark);
-  };
-
+const addBookmark = async () => {
+  if (!userId) { return; }
+  updateProgress();
+  const newBookmark = await addBookMarkAction(userId, chapter.id, progressRef.current);
+  setBookMark(newBookmark);
+};
   const removeBookmark = async () => {
     await removeBookMarkAction(userId, chapter.id);
     setBookMark(null);
   };
-  console.log("chapter", chapter);
   return (
-    <div className="min-h-screen bg-background relative">
-      <article className={`max-w-4xl mx-auto px-4 py-8`} style={contentStyle}>
+    <div className="min-h-screen bg-background relative mt-8">
+      <article className={`max-w-4xl mx-auto px-4`} 
+      
+       ref={chapterRef}
+      style={contentStyle}>
         <div
-          ref={chapterRef}
           className="prose prose-lg max-w-none leading-relaxed text-justify relative flex flex-col gap-7"
           style={{ position: "relative" }}
         >
@@ -201,3 +142,4 @@ export default function ChapterContent({
     </div>
   );
 }
+export default React.memo(ChapterContent);

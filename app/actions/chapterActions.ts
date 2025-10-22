@@ -4,6 +4,7 @@ import {
   fetchChapterByBookmark,
   fetchChapterDataCard,
   fetchChapterOfBook,
+  fetchMultipleChapterDataCard,
   fetchNewestChapter,
   fetchTotalChapterPage,
 } from "@/app/data/chapterData";
@@ -11,6 +12,14 @@ import {
 export async function fetchChapterCardAction(chapterId: number) {
   try {
     return await fetchChapterDataCard(chapterId);
+  } catch (error) {
+    console.error("Server Action Error:", error);
+    throw new Error("Failed to fetch chapter");
+  }
+}
+export async function fetchMultipleChapterCardAction(chapterIds: number[]) {
+  try {
+    return await fetchMultipleChapterDataCard(chapterIds);
   } catch (error) {
     console.error("Server Action Error:", error);
     throw new Error("Failed to fetch chapter");

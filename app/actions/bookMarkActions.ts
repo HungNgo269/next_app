@@ -16,7 +16,6 @@ export async function addBookMarkAction(
     return await addBookMark(userId, chapterId, progress);
   } catch (error) {
     console.error("Server Action Error:", error);
-    // throw new Error("Failed to add Book Mark"); có lỗi
   }
 }
 export async function removeBookMarkAction(userId: string, chapterId: number) {
