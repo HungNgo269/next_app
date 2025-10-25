@@ -6,151 +6,10 @@ import {
 import { ViewMetadata } from "@/app/interface/view";
 import { sql } from "@/lib/db";
 import { redis } from "@/lib/redis";
+import pLimit from "p-limit";
 
+const limit = pLimit(10);
 const VIEW_BATCH_KEY = "views:batch:pending";
-import { redis } from "@/lib/redis";
-
-async function updateChapterAggregatedStats(): Promise<void> {
-  try {
-    const pattern = "chapter:*:views";
-    const keys: string[] = [];
-    let cursor = "0";
-    // Duyệt với scan, 50 mỗi lần
-    do {
-      const result = await redis.scan(cursor, {
-        match: pattern,
-        count: 50,
-      });
-      cursor = result[0];
-      keys.push(...(result[1] as string[]));
-    } while (cursor !== "0");
-
-    console.log(`Found ${keys.length} chapter view keys to process`);
-
-    if (keys.length === 0) {
-      console.log("No chapter view keys found");
-      return;
-    }
-
-    // Process in batches
-    const batchSize = 50;
-    for (let i = 0; i < keys.length; i += batchSize) {
-      const batch = keys.slice(i, i + batchSize);
-      try {
-        // Sử dụng approach không dùng pipeline để tránh format issues(claude )
-        await processBatchDirect(redis, batch);
-      } catch (error) {
-        console.error(`Failed to process batch starting at index ${i}:`, error);
-      }
-    }
-  } catch (error) {
-    console.error(
-      `Failed to update view count for books: ${
-        error instanceof Error ? error.message : "Unknown error"
-      }`
-    );
-  }
-}
-
-async function processBatchDirect(redis: any, batch: string[]): Promise<void> {
-  const dbUpdates: Array<{ chapterId: number; count: number; key: string }> =
-    [];
-  const keysToDelete: string[] = [];
-
-  const valuePromises = batch.map(async (key) => {
-    try {
-      const value = await redis.get(key);
-      return { key, value };
-    } catch (error) {
-      console.error(`Failed to get value for ${key}:`, error);
-      return { key, value: null };
-    }
-  });
-
-  const results = await Promise.all(valuePromises);
-
-  for (const { key, value } of results) {
-    // Parse chapterId from key
-    const keyParts = key.split(":");
-    if (
-      keyParts.length !== 3 ||
-      keyParts[0] !== "chapter" ||
-      keyParts[2] !== "views"
-    ) {
-      console.warn(`Invalid key format: ${key}`);
-      keysToDelete.push(key);
-      continue;
-    }
-
-    const chapterId = parseInt(keyParts[1], 10);
-    if (!Number.isFinite(chapterId) || chapterId <= 0) {
-      console.warn(`Invalid chapter ID in key: ${key}`);
-      keysToDelete.push(key);
-      continue;
-    }
-
-    // Check value
-    if (value === null || value === undefined || value === "") {
-      console.log(`Key ${key} has no value - will delete`);
-      keysToDelete.push(key);
-      continue;
-    }
-
-    const count = parseInt(String(value), 10);
-    if (Number.isFinite(count) && count > 0) {
-      console.log(`Found ${key} with count ${count}`);
-      dbUpdates.push({ chapterId, count, key });
-    } else {
-      console.warn(`Key ${key} has invalid count: ${value} - will delete`);
-      keysToDelete.push(key);
-    }
-  }
-
-  // Update database
-  if (dbUpdates.length > 0) {
-    const successfulKeys: string[] = [];
-
-    // Use Promise.all for parallel updates
-    const updatePromises = dbUpdates.map(async ({ chapterId, count, key }) => {
-      try {
-        await sql`
-          UPDATE chapters
-          SET view_count = COALESCE(view_count, 0) + ${count},
-              updated_at = CURRENT_TIMESTAMP
-          WHERE id = ${chapterId};
-        `;
-        console.log(`Updated chapter ${chapterId} with ${count} views`);
-        return { success: true, key };
-      } catch (error) {
-        console.error(`Database error for chapter ${chapterId}:`, error);
-        return { success: false, key };
-      }
-    });
-
-    const updateResults = await Promise.all(updatePromises);
-
-    // Only delete keys that were successfully updated
-    for (const result of updateResults) {
-      if (result.success) {
-        successfulKeys.push(result.key);
-      }
-    }
-
-    keysToDelete.push(...successfulKeys);
-  }
-
-  // Delete processed/invalid keys
-  if (keysToDelete.length > 0) {
-    try {
-      // Use Promise.all for parallel deletes
-      const deletePromises = keysToDelete.map((key) => redis.del(key));
-      await Promise.all(deletePromises);
-      console.log(`Deleted ${keysToDelete.length} Redis keys`);
-    } catch (error) {
-      console.error("Error deleting Redis keys:", error);
-    }
-  }
-}
 
 export async function syncViewsToDatabase(): Promise<{
   success: boolean;
@@ -210,7 +69,7 @@ export async function syncViewsToDatabase(): Promise<{
         continue;
       }
 
-      // chapterID, [batch]
+      // chapterID, ViewMetadata
       const chapterGroups = new Map<number, ViewMetadata[]>();
       for (const view of views) {
         if (!chapterGroups.has(view.chapterId)) {
@@ -218,20 +77,35 @@ export async function syncViewsToDatabase(): Promise<{
         }
         chapterGroups.get(view.chapterId)!.push(view);
       }
-
-      // Process each chapter group
-      for (const [chapterId, chapterViews] of Array.from(
-        chapterGroups.entries()
-      )) {
-        try {
-          await syncChapterViews(chapterId, chapterViews);
+      //view là data ko qtrong lắm, để promise.all, còn cái nào quan trọng theo acid thì cte
+      if (chapterGroups.size > 0) {
+        const promises = Array.from(chapterGroups.entries()).map(
+          ([chapterId, chapterViews]) =>
+            limit(async () => {
+              try {
+                await syncChapterViews(chapterId, chapterViews);
           processed += chapterViews.length;
-        } catch (error) {
-          const errorMsg = `Chapter ${chapterId}: ${error}`;
+              } catch (error) {
+                        const errorMsg = `Chapter ${chapterId}: ${error}`;
           console.error(errorMsg);
           errors.push(errorMsg);
-        }
+              }
+            })
+        );
+
+        await Promise.all(promises);
       }
+      // Process each chapter group
+      // for (const [chapterId, chapterViews] of chapterGroups) {
+      //   try {
+      //     await syncChapterViews(chapterId, chapterViews);
+      //     processed += chapterViews.length;
+      //   } catch (error) {
+      //     const errorMsg = `Chapter ${chapterId}: ${error}`;
+      //     console.error(errorMsg);
+      //     errors.push(errorMsg);
+      //   }
+      // }
 
       await redis.ltrim(VIEW_BATCH_KEY, batchSize, -1);
       viewsData = await redis.lrange(VIEW_BATCH_KEY, 0, batchSize - 1);
@@ -268,5 +142,145 @@ export async function syncViewsToDatabase(): Promise<{
       processed,
       errors,
     };
+  }
+}
+
+async function updateChapterAggregatedStats(): Promise<void> {
+  try {
+    const pattern = "chapter:*:views";
+    const keys: string[] = [];
+    let cursor = "0";
+    // Duyệt với scan, 50 mỗi lần
+    do {
+      const result = await redis.scan(cursor, {
+        match: pattern,
+        count: 50,
+      });
+      cursor = result[0];
+      keys.push(...(result[1] as string[]));
+    } while (cursor !== "0");
+
+    console.log(`Found ${keys.length} chapter view keys to process`);
+
+    if (keys.length === 0) {
+      console.log("No chapter view keys found");
+      return;
+    }
+
+    // Process in batches
+    const batchSize = 50; //=> 1 mảng 50 VIEW_BATCH_KEY lấy từ mảng keys
+
+    for (let i = 0; i < keys.length; i += batchSize) {
+      const batch = keys.slice(i, i + batchSize);
+      try {
+        await processBatchDirect(redis, batch);
+      } catch (error) {
+        console.error(`Failed to process batch starting at index ${i}:`, error);
+      }
+    }
+  } catch (error) {
+    console.error(
+      `Failed to update view count for books: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }`
+    );
+  }
+}
+async function processBatchDirect(redis: any, batch: string[]): Promise<void> {
+  const dbUpdates: Array<{ chapterId: number; count: number; key: string }> =
+    [];
+  const keysToDelete: string[] = [];
+
+  const valuePromises = batch.map(async (key) => {
+    try {
+      const value = await redis.get(key);
+      return { key, value };
+    } catch (error) {
+      console.error(`Failed to get value for ${key}:`, error);
+      return { key, value: null };
+    }
+  });
+
+  const results = await Promise.all(valuePromises);
+
+  for (const { key, value } of results) {
+    // Parse chapterId from key
+    const keyParts = key.split(":");
+    if (
+      keyParts.length !== 3 ||
+      keyParts[0] !== "chapter" ||
+      keyParts[2] !== "views"
+    ) {
+      console.warn(`Invalid key format: ${key}`);
+      keysToDelete.push(key);
+      continue;
+    }
+
+    const chapterId = parseInt(keyParts[1], 10);
+    if (!Number.isFinite(chapterId) || chapterId <= 0) {
+      console.warn(`Invalid chapter ID in key: ${key}`);
+      keysToDelete.push(key);
+      continue;
+    }
+
+    // Check value
+    if (value === null || value === undefined || value === "") {
+      console.log(`Key ${key} has no value - will delete`);
+      keysToDelete.push(key);
+      continue;
+    }
+
+    const count = parseInt(String(value), 10);
+    if (Number.isFinite(count) && count > 0) {
+      console.log(`Found ${key} with count ${count}`);
+      dbUpdates.push({ chapterId, count, key });
+    } else {
+      console.warn(`Key ${key} has invalid count: ${value} - will delete`);
+      keysToDelete.push(key);
+    }
+  }
+
+  // Update database
+  if (dbUpdates.length > 0) {
+    const successfulKeys: string[] = [];
+
+    const updatePromises = dbUpdates.map( ({ chapterId, count, key }) => limit( async()=>{
+      try {
+        await sql`
+          UPDATE chapters
+          SET view_count = COALESCE(view_count, 0) + ${count},
+              updated_at = CURRENT_TIMESTAMP
+          WHERE id = ${chapterId};
+        `;
+        console.log(`Updated chapter ${chapterId} with ${count} views`);
+        return { success: true, key };
+      } catch (error) {
+        console.error(`Database error for chapter ${chapterId}:`, error);
+        return { success: false, key };
+      }}
+      )
+    );
+
+    const updateResults = await Promise.all(updatePromises);
+
+    for (const result of updateResults) {
+      if (result.success) {
+        successfulKeys.push(result.key);
+      }
+    }
+
+    keysToDelete.push(...successfulKeys);
+  }
+
+  // Delete processed/invalid keys
+  if (keysToDelete.length > 0) {
+    try {
+      // Use Promise.all for parallel deletes
+      const deletePromises = keysToDelete.map((key) => redis.del(key));
+      await Promise.all(deletePromises);
+      console.log(`Deleted ${keysToDelete.length} Redis keys`);
+    } catch (error) {
+      console.error("Error deleting Redis keys:", error);
+    }
   }
 }

@@ -32,15 +32,44 @@ export async function fetchChapterOfBook(bookId: number) {
   }
 }
 
+export async function fetchChapterOfBookForUser(
+  bookId: number,
+  userId: string
+) {
+  try {
+    let res = await sql`
+    SELECT 
+      c.id, 
+      c.title,
+      c.chapter_number,
+      c.view_count,
+      c.created_at,
+      c.updated_at,
+      EXISTS(
+        SELECT 1 
+        FROM chapter_views cv 
+        WHERE cv.chapter_id = c.id 
+          AND cv.user_id = ${userId}
+      ) as is_viewed
+    FROM chapters c  
+    WHERE c.book_id = ${bookId} 
+    ORDER BY c.chapter_number DESC`;
+
+    return res as ChapterInfo[];
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch chapters.");
+  }
+}
 export async function fetchNewestChapter(currentPage: number) {
   const offset = (currentPage - 1) * 12;
   try {
-   //PARTITION BY c.book_id  = chia kết quả theo bookId.
-   //RoW_NUmber = đánh số thứ tự => 1 2 3 giảm dần theo order
-   //qualify= > lọc rownumber (fill)
-   //group by => gom theo id. name.
-   //=json_agg => gộp theo mảng json {id,title,chapternumber}
-   //=> gửi {id,name,chapters={id,title,chapternumber}}
+    //PARTITION BY c.book_id  = chia kết quả theo bookId.
+    //RoW_NUmber = đánh số thứ tự => 1 2 3 giảm dần theo order
+    //qualify= > lọc rownumber (fill)
+    //group by => gom theo id. name.
+    //=json_agg => gộp theo mảng json {id,title,chapternumber}
+    //=> gửi {id,name,chapters={id,title,chapternumber}}
     let res = await sql`
       WITH ranked_chapters AS (
         SELECT 
@@ -84,7 +113,7 @@ export async function fetchMultipleChapterDataCard(ids: number[]) {
     FROM chapters 
     WHERE id = ANY(${ids})
     ORDER BY created_at DESC`;
-    return res as ChapterCardProps[]
+    return res as ChapterCardProps[];
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch chapters data.");

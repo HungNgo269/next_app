@@ -1,28 +1,23 @@
 "use client";
 
-import { Chapter } from "@/app/interface/chapter";
+import { Chapter, ChapterInfo } from "@/app/interface/chapter";
 import { isNewChapter } from "@/lib/utils/chapterUtils";
 import { formatDateTimeUTC } from "@/lib/utils/formatDate";
-import { requireSubscription } from "@/lib/utils/stripe/subcriptionCheck";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Lock } from "lucide-react";
 
 interface ChapterContainerProps {
-  title: string;
   sub: boolean;
   isCompleted?: boolean;
-  // coverImage: string;
-  chapters: Chapter[];
+  chapters: ChapterInfo[];
   totalChapters?: number;
   showMoreText?: string;
   initialVisibleChapters?: number;
 }
 
 export function ChapterContainer({
-  title,
   sub,
   chapters,
   totalChapters,
@@ -30,20 +25,19 @@ export function ChapterContainer({
   initialVisibleChapters = 5,
 }: ChapterContainerProps) {
   const [showAll, setShowAll] = useState(false);
-  console.log(chapters);
   const visibleChapters = showAll
     ? chapters
     : chapters.slice(0, initialVisibleChapters);
   const hasMoreChapters = chapters.length > initialVisibleChapters;
   const pathName = usePathname();
-
+  
   return (
     <div className="flex flex-row items-center justify-start space-x-3 mb-3 gap-4 w-full">
       <div className="h-full flex flex-col items-start w-full">
         <div className="rounded-lg p-4 bg-card shadow-sm w-full">
           <div className="mb-4">
             <h2 className="text-lg font-medium text-foreground">
-              Chapters List
+              Chapter List
             </h2>
           </div>
 
@@ -56,16 +50,18 @@ export function ChapterContainer({
                       key={chapter.id}
                       className="flex items-center justify-between group"
                     >
+                      
                       <div className="flex flex-row items-center gap-2 min-w-0 flex-1">
                         <Link
                           prefetch={true}
                           href={`${pathName}/chapter/${chapter.id}`}
-                          className="text-primary hover:text-primary/80 hover:underline text-sm truncate"
+                          className={`${chapter.is_viewed===true?
+                            "text-foreground/80":"text-primary"}  hover:text-primary/80 hover:underline text-sm truncate`}
                         >
                           Chapter {chapter.chapter_number}
                           {chapter.title ? `: ${chapter.title}` : ""}
                         </Link>
-                        {isNewChapter(chapter.created_at) && !sub && (
+                        {isNewChapter(chapter.created_at!) && !sub && (
                           <Lock className="w-5 h-5 text-yellow-500"></Lock>
                         )}
                       </div>

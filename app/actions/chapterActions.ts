@@ -4,6 +4,7 @@ import {
   fetchChapterByBookmark,
   fetchChapterDataCard,
   fetchChapterOfBook,
+  fetchChapterOfBookForUser,
   fetchMultipleChapterDataCard,
   fetchNewestChapter,
   fetchTotalChapterPage,
@@ -28,6 +29,14 @@ export async function fetchMultipleChapterCardAction(chapterIds: number[]) {
 export async function fetchChapterOfBookAction(bookId: number) {
   try {
     return await fetchChapterOfBook(bookId);
+  } catch (error) {
+    console.error("Server Action Error:", error);
+    throw new Error("Failed to fetch chapter");
+  }
+}
+export async function fetchChapterOfBookUserAction(bookId: number,userId:string) {
+  try {
+    return await fetchChapterOfBookForUser(bookId,userId);
   } catch (error) {
     console.error("Server Action Error:", error);
     throw new Error("Failed to fetch chapter");

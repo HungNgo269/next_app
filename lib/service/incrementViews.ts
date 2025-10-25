@@ -13,7 +13,7 @@ export async function incrementViewService(
     const pipeline = redis.pipeline();
     const timestamp = new Date().toISOString();
     const viewKey = `chapter:${chapterId}:views`;
-    const metadataKey = `chapter:${chapterId}:metadata`;
+    // const metadataKey = `chapter:${chapterId}:metadata`;
     const batchKey = "views:batch:pending";
     const UNIQUE_VIEW_TTL = 24 * 60 * 60;
     let isNewUniqueView = false; //key check view trùng lặp
@@ -40,20 +40,20 @@ export async function incrementViewService(
 
     if (isNewUniqueView) {
       pipeline.incr(viewKey);
-      pipeline.hset(metadataKey, {
-        bookId: bookId.toString(),
-        lastViewedAt: timestamp,
-      });
+      // pipeline.hset(metadataKey, {
+      //   bookId: bookId.toString(),
+      //   lastViewedAt: timestamp,
+      // });
 
-      if (userId) {
-        pipeline.sadd(`${metadataKey}:users`, userId);
-        pipeline.hincrby(`${metadataKey}:user_stats`, userId, 1);
-      }
+      // if (userId) {
+      //   pipeline.sadd(`${metadataKey}:users`, userId);//sadd = thêm key mới, nếu có rồi bỏ qua
+      //   pipeline.hincrby(`${metadataKey}:user_stats`, userId, 1);//tăng key lên 2
+      // }
 
-      if (hashedIP) {
-        pipeline.sadd(`${metadataKey}:ips`, hashedIP);
-        pipeline.hincrby(`${metadataKey}:ip_stats`, hashedIP, 1);
-      }
+      // if (hashedIP) {
+      //   pipeline.sadd(`${metadataKey}:ips`, hashedIP);
+      //   pipeline.hincrby(`${metadataKey}:ip_stats`, hashedIP, 1);
+      // }
 
       const viewData: ViewMetadata = {
         chapterId,
@@ -65,7 +65,7 @@ export async function incrementViewService(
 
       //  Đảm bảo stringify object thành JSON string
       const viewDataString = JSON.stringify(viewData);
-      pipeline.lpush(batchKey, viewDataString); // push vô views:batch:pending viewData đoạn này ok
+      pipeline.lpush(batchKey, viewDataString); // push vô views:batch:pending viewData
 
       const results = await pipeline.exec();
 

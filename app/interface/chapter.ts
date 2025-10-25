@@ -13,7 +13,8 @@ export interface ChapterInfo {
   title: string;
   chapter_number: number;
   view_count?: number;
-  created_at?: string;
+  is_viewed?:boolean
+  created_at?: string|Date;
   updated_at?: string;
 }
 export interface ChapterBase {

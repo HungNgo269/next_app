@@ -9,11 +9,7 @@ import {
   checkPrevChapterAction,
   fetchChapterActions,
 } from "@/app/book/[bookId]/chapter/[chapterId]/action";
-import ChapterToolBar from "@/app/ui/user/chapter/chapterToolBar";
-import { getServerReaderSettings, ReaderSettings } from "@/lib/readerSetting";
-import ChapterContent from "@/app/ui/user/chapter/chapterContent";
 import { getSessionCache } from "@/lib/utils/getSession";
-import { requireSubscription } from "@/lib/utils/stripe/subcriptionCheck";
 import Link from "next/link";
 import { getURL } from "@/lib/utils/helper";
 import ChapterSubWrapper from "@/app/ui/user/chapter/chapterSubWrapper";
@@ -140,6 +136,7 @@ export default async function ChapterPage({ params }: PageProps) {
     checkPrevChapterAction(chapter.chapter_number, bookId),
     checkNextChapterAction(chapter.chapter_number, bookId),
   ]);
+
   return (
     <div className="min-h-screen bg-background relative">
       <ViewIncrementer

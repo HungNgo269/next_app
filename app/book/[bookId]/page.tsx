@@ -1,30 +1,24 @@
 import type { Metadata } from "next";
-import {
-  Star,
-  BookOpen,
-  MessageCircle,
-  Bookmark,
-  MessageSquare,
-  Eye,
-} from "lucide-react";
+import { Star, Bookmark, Eye } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import { fetchBookByIdActions } from "@/app/actions/bookActions";
 import { fetchCategoryOfBookAction } from "@/app/actions/categoryActions";
 import Link from "next/link";
 import { ChapterContainer } from "@/app/ui/share/chapter/chapterContainer";
-import { fetchChapterOfBookAction } from "@/app/actions/chapterActions";
+import {
+  fetchChapterOfBookAction,
+  fetchChapterOfBookUserAction,
+} from "@/app/actions/chapterActions";
 import type { Book } from "@/app/interface/book";
 import FooterComponent from "@/app/ui/user/footer/footerComponent";
 import ImageCard from "@/app/ui/share/image/imageCard";
-import type { Chapter } from "@/app/interface/chapter";
+import type { Chapter, ChapterInfo } from "@/app/interface/chapter";
 import BookDesc from "@/app/ui/user/books/bookDesc";
 import { getURL } from "@/lib/utils/helper";
 import { getSessionCache } from "@/lib/utils/getSession";
 import FollowButton from "@/app/book/[bookId]/followBookButton";
 import { requireSubscription } from "@/lib/utils/stripe/subcriptionCheck";
-import { Suspense } from "react";
-import { BookCardSkeleton } from "@/app/ui/skeletons";
 
 const FALLBACK_BOOK_OG_IMAGE = getURL("hero-desktop.png");
 const toAbsoluteImageUrl = (value?: string) => {
@@ -139,8 +133,11 @@ export default async function BookPage({ params }: PageProps) {
   const [bookData, bookCategories, chapters] = await Promise.all([
     fetchBookByIdActions(bookId),
     fetchCategoryOfBookAction(bookId),
-    fetchChapterOfBookAction(bookId),
+    user?.id
+      ? fetchChapterOfBookUserAction(bookId, user?.id)
+      : fetchChapterOfBookAction(bookId),
   ]);
+  console.log("chapter", chapters);
   const book = bookData[0] as Book;
   const subscriptionCheck = await requireSubscription();
 
@@ -223,8 +220,7 @@ export default async function BookPage({ params }: PageProps) {
           <BookDesc content={book?.description}></BookDesc>
 
           <ChapterContainer
-            title={book.name}
-            chapters={chapters as Chapter[]}
+            chapters={chapters as ChapterInfo[]}
             totalChapters={chapters.length}
             sub={subscriptionCheck.hasAccess}
           />

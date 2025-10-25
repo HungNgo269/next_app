@@ -22,7 +22,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import React, { useEffect, useState, useTransition } from "react";
+import React, { useEffect, useRef, useState, useTransition } from "react";
 import { ReaderSettings } from "@/lib/readerSetting";
 import Link from "next/link";
 import { updateReaderSettings } from "@/app/book/[bookId]/chapter/[chapterId]/action";
@@ -48,6 +48,25 @@ export default function ChapterToolBar({
   const [settings, setSettings] = useState(iniSettings);
   const [isPending, startTransition] = useTransition();
   const { theme, setTheme } = useTheme();
+  const [scrollDown,setScrollDown] = useState(false);
+  useEffect(()=>{
+    let lastY = window.scrollY;
+    const handleScroll =()=>{
+      const currentScrollY = window.scrollY
+      if(currentScrollY>lastY){
+          setScrollDown(true)
+      }
+      else{
+        setScrollDown(false)
+      }
+       lastY = currentScrollY;
+    }
+  window.addEventListener('scroll', handleScroll);
+
+    return () => {
+    window.removeEventListener('scroll', handleScroll);
+  };
+}, []);
   const [loadingBtn, setLoadingBtn] = useState<"prev" | "next" | null>(null);
   const handleSettingChange = (key: keyof ReaderSettings, value: any) => {
     const newSettings = { ...settings, [key]: value }; //fontsize :16(etc)
@@ -57,8 +76,14 @@ export default function ChapterToolBar({
     });
   };
   return (
-    <div className="block fixed lg:right-4 bottom-0 left-0 lg:bottom-auto lg:left-auto lg:top-1/2 lg:-translate-y-1/2 z-50 lg:w-fit w-full">
-      <div className="flex flex-row lg:flex-col lg:gap-2 bg-card border rounded-lg shadow-lg items-center justify-between ">
+    <div className={`
+      ${scrollDown? "hidden lg:block" :"block"}
+       fixed lg:right-4 bottom-0 left-0 lg:bottom-auto lg:left-auto
+     lg:top-1/2 lg:-translate-y-1/2 z-50 lg:w-fit w-full transition delay-150 duration-300 ease-in-out`}>
+      <div  className={` flex
+      flex-row 
+      lg:flex-col lg:gap-2 bg-card border rounded-lg
+       shadow-lg items-center justify-between `}>
         <Link
           className="lg:hidden block"
           prefetch={true}
@@ -67,8 +92,7 @@ export default function ChapterToolBar({
               ? `/book/${bookId}/chapter/${idPrev}`
               : `/book/${bookId}`
           }
-          aria-disabled={idPrev == null} // Ngăn điều hướng bằng bàn phím
-          onClick={(e) => idPrev == null && e.preventDefault()} // Ngăn click khi không có idNext
+          onClick={(e) => idPrev == null && e.preventDefault()} // Ngăn click khi không có prev
         >
           <Button
             disabled={!idPrev}
@@ -302,7 +326,7 @@ export default function ChapterToolBar({
               ? `/book/${bookId}/chapter/${idPrev}`
               : `/book/${bookId}`
           }
-          aria-disabled={idPrev == null} // Ngăn điều hướng bằng bàn phím
+          aria-disabled={idPrev == null}
           onClick={(e) => {
             if (!idPrev) {
               e.preventDefault();
@@ -310,7 +334,6 @@ export default function ChapterToolBar({
             }
             setLoadingBtn("prev");
           }}
-          // Ngăn click khi không có idNext
         >
           <Button
             disabled={!idPrev}
