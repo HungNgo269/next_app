@@ -68,7 +68,7 @@ export async function fetchNewestChapter(currentPage: number) {
           c.book_id,
           b.name as book_name,
           c.created_at,
-          ROW_NUMBER() OVER (PARTITION BY c.book_id ORDER BY c.created_at DESC) as rowNumber
+          ROW_NUMBER() OVER (PARTITION BY c.book_id ORDER BY c.chapter_number DESC) as rowNumber
         FROM chapters c 
         JOIN books b ON c.book_id = b.id
       )
@@ -115,7 +115,7 @@ export async function fetchNewestChapterForLoggedUser(
         WHEN c.id = cr.chapter_id AND cr.user_id = ${userId} THEN true
         ELSE false
         END AS is_viewed,
-          ROW_NUMBER() OVER (PARTITION BY c.book_id ORDER BY c.created_at DESC) as rowNumber
+          ROW_NUMBER() OVER (PARTITION BY c.book_id ORDER BY c.chapter_number DESC) as rowNumber
         FROM chapters c 
             JOIN books b ON c.book_id = b.id
 
@@ -134,7 +134,7 @@ export async function fetchNewestChapterForLoggedUser(
             'created_at',created_at
           ) ORDER BY created_at DESC
         ) as chapters,
-        MAX(created_at) as latest_update
+        MAX(chapter_number) as latest_update
       FROM newest_chapter
       WHERE rowNumber <= 3
       GROUP BY book_id, book_name

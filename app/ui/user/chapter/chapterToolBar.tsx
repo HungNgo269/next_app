@@ -42,7 +42,6 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@/components/ui/sheet";
 import { fetchChapterOfBookAction } from "@/app/actions/chapterActions";
 import { ChapterCardProps } from "@/app/interface/chapter";
@@ -70,7 +69,9 @@ export default function ChapterToolBar({
   const { theme, setTheme } = useTheme();
   const [scrollDown, setScrollDown] = useState(false);
   const [chapters, setChapters] = useState<ChapterCardProps[] | []>([]);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
   const router = useRouter();
+
   const fetchListChapter = useCallback(async (bookId: number) => {
     if (!bookId) {
       return;
@@ -84,9 +85,10 @@ export default function ChapterToolBar({
       setChapters(chapters);
     });
   }, []);
+
   useEffect(() => {
     fetchListChapter(bookId);
-  }, [bookId]);
+  }, [bookId, fetchListChapter]);
 
   useEffect(() => {
     let lastY = window.scrollY;
@@ -105,368 +107,399 @@ export default function ChapterToolBar({
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
   const [loadingBtn, setLoadingBtn] = useState<"prev" | "next" | null>(null);
+
   const handleSettingChange = (key: keyof ReaderSettings, value: any) => {
-    const newSettings = { ...settings, [key]: value }; //fontsize :16(etc)
+    const newSettings = { ...settings, [key]: value };
     setSettings(newSettings);
     startTransition(async () => {
       await updateReaderSettings({ [key]: value });
     });
   };
+
   return (
-    <div
-      className={`
-      ${scrollDown ? "hidden lg:block" : "block"}
-       fixed lg:right-4 bottom-0 left-0 lg:bottom-auto lg:left-auto
-     lg:top-1/2 lg:-translate-y-1/2 z-50 lg:w-fit w-full transition delay-150 duration-300 ease-in-out`}
-    >
+    <>
       <div
-        className={` flex
-      flex-row 
-      lg:flex-col lg:gap-2 bg-card border rounded-lg
-       shadow-lg items-center justify-between `}
+        className={`
+        ${scrollDown ? "hidden lg:block" : "block"}
+         fixed lg:right-4 bottom-0 left-0 lg:bottom-auto lg:left-auto
+       lg:top-1/2 lg:-translate-y-1/2 z-50 lg:w-fit w-full transition delay-150 duration-300 ease-in-out`}
       >
-        <Link
-          className="lg:hidden block"
-          prefetch={true}
-          href={
-            idPrev != null
-              ? `/book/${bookId}/chapter/${idPrev}`
-              : `/book/${bookId}`
-          }
-          onClick={(e) => idPrev == null && e.preventDefault()} // Ngăn click khi không có prev
+        <div
+          className={` flex
+        flex-row 
+        lg:flex-col lg:gap-2 bg-card border rounded-lg
+         shadow-lg items-center justify-between `}
         >
-          <Button
-            disabled={!idPrev}
-            variant="ghost"
-            size="icon"
-            className={`w-10 h-10 ${
-              idPrev === null
-                ? "opacity-50 cursor-not-allowed"
-                : "cursor-pointer "
-            }`}
+          <Link
+            className="lg:hidden block"
+            prefetch={true}
+            href={
+              idPrev != null
+                ? `/book/${bookId}/chapter/${idPrev}`
+                : `/book/${bookId}`
+            }
+            onClick={(e) => idPrev == null && e.preventDefault()}
           >
-            <ChevronLeft className="w-5 h-5" />
-          </Button>
-        </Link>
-        <Link prefetch={true} href={`/book/${bookId}`}>
+            <Button
+              disabled={!idPrev}
+              variant="ghost"
+              size="icon"
+              className={`w-10 h-10 ${
+                idPrev === null
+                  ? "opacity-50 cursor-not-allowed"
+                  : "cursor-pointer "
+              }`}
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </Button>
+          </Link>
+
+          <Link prefetch={true} href={`/book/${bookId}`}>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="w-10 h-10"
+              title="Home Page"
+            >
+              <Home className="w-5 h-5 " />
+            </Button>
+          </Link>
+
+          {/* font */}
+          <DropdownMenu modal={false}>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                title="Font"
+                className="w-10 h-10 "
+              >
+                <TypeIcon className="w-5 h-5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              side="left"
+              className="w-56 "
+              sideOffset={5}
+              alignOffset={0}
+              avoidCollisions={true}
+              collisionPadding={8}
+            >
+              <Select
+                disabled={isPending}
+                onValueChange={(value) =>
+                  handleSettingChange("fontFamily", value)
+                }
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select a Font" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup className="w-full rounded border px-3 py-2 text-sm bg-background">
+                    <SelectLabel>Font</SelectLabel>
+                    <SelectItem value="system">System Default</SelectItem>
+                    <SelectItem value="serif">Serif</SelectItem>
+                    <SelectItem value="lusitana">Lusitana</SelectItem>
+                    <SelectItem value="georgia">Georgia</SelectItem>
+                    <SelectItem value="inter">Inter</SelectItem>
+                    <SelectItem value="jetbrains">JetBrains Mono</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* font size */}
+          <DropdownMenu modal={false}>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                title="FontSize"
+                className="w-10 h-10"
+              >
+                <ALargeSmall className="w-5 h-5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              side="left"
+              className="w-48"
+              sideOffset={5}
+              alignOffset={0}
+              avoidCollisions={true}
+              collisionPadding={8}
+            >
+              <div className="p-3">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-sm font-medium">Font size</span>
+                  <span className="text-sm text-muted-foreground font-mono">
+                    {settings.fontSize}px
+                  </span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="w-8 h-8"
+                    onClick={() =>
+                      handleSettingChange(
+                        "fontSize",
+                        Math.max(12, settings.fontSize - 1)
+                      )
+                    }
+                    disabled={settings.fontSize <= 12 || isPending}
+                    title="Decrease FontSize"
+                  >
+                    <Minus className="w-3 h-3" />
+                  </Button>
+
+                  <div className="flex-1 text-center">
+                    <span
+                      className="text-lg font-medium select-none"
+                      style={{
+                        fontSize: `${Math.min(20, settings.fontSize)}px`,
+                      }}
+                    >
+                      Aa
+                    </span>
+                  </div>
+
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="w-8 h-8"
+                    onClick={() =>
+                      handleSettingChange(
+                        "fontSize",
+                        Math.min(24, settings.fontSize + 1)
+                      )
+                    }
+                    title="Increase FontSize"
+                    disabled={settings.fontSize >= 24 || isPending}
+                  >
+                    <Plus className="w-3 h-3" />
+                  </Button>
+                </div>
+
+                <div className="mt-3">
+                  <input
+                    type="range"
+                    min="12"
+                    max="24"
+                    value={settings.fontSize}
+                    onChange={(e) =>
+                      handleSettingChange("fontSize", parseInt(e.target.value))
+                    }
+                    disabled={isPending}
+                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+                  />
+                </div>
+              </div>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* theme */}
+          <DropdownMenu modal={false}>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                title="Theme"
+                className="w-10 h-10"
+              >
+                {theme === "dark" ? (
+                  <Moon className="w-5 h-5" />
+                ) : (
+                  <Sun className="w-5 h-5" />
+                )}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              side="left"
+              sideOffset={5}
+              alignOffset={0}
+              avoidCollisions={true}
+              collisionPadding={8}
+            >
+              <DropdownMenuItem
+                onClick={() => setTheme("light")}
+                className="cursor-pointer"
+                title="Light"
+              >
+                <Sun className="w-4 h-4 mr-2" />
+                Light
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setTheme("dark")}
+                title="Dark"
+                className="cursor-pointer"
+              >
+                <Moon className="w-4 h-4 mr-2" />
+                Dark
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                title="System"
+                onClick={() => setTheme("system")}
+                className="cursor-pointer"
+              >
+                <Info className="w-4 h-4 mr-2" />
+                System
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* chapter navigate */}
+          <DropdownMenu modal={false}>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                title="Chapters"
+                className="w-10 h-10"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setIsSheetOpen(true);
+                }}
+              >
+                <List className="w-5 h-5" />
+              </Button>
+            </DropdownMenuTrigger>
+          </DropdownMenu>
+
+          {/* bookmark */}
           <Button
             variant="ghost"
             size="icon"
             className="w-10 h-10"
-            title="Home Page"
+            title="Book Mark"
+            onClick={bookMarkOnClick}
           >
-            <Home className="w-5 h-5 " />
+            {bookMark ? (
+              <BookmarkCheck className="w-5 h-5 fill-current text-primary" />
+            ) : (
+              <Bookmark className="w-5 h-5" />
+            )}
           </Button>
-        </Link>
-        {/* font */}
-        <DropdownMenu modal={false}>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              title="Font"
-              className="w-10 h-10 "
-            >
-              <TypeIcon className="w-5 h-5" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            side="left"
-            className="w-56 "
-            sideOffset={5}
-            alignOffset={0}
-            avoidCollisions={true}
-            collisionPadding={8}
-          >
-            <Select
-              disabled={isPending}
-              onValueChange={(value) =>
-                handleSettingChange("fontFamily", value)
+
+          <div className="w-full h-px bg-border lg:block hidden " />
+
+          {/* chuyển trang */}
+          <Link
+            className="hidden lg:block"
+            prefetch={true}
+            href={
+              idPrev != null
+                ? `/book/${bookId}/chapter/${idPrev}`
+                : `/book/${bookId}`
+            }
+            aria-disabled={idPrev == null}
+            onClick={(e) => {
+              if (!idPrev) {
+                e.preventDefault();
+                return;
               }
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select a Font" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup className="w-full rounded border px-3 py-2 text-sm bg-background">
-                  <SelectLabel>Font</SelectLabel>
-                  <SelectItem value="system">System Default</SelectItem>
-                  <SelectItem value="serif">Serif</SelectItem>
-                  <SelectItem value="lusitana">Lusitana</SelectItem>
-                  <SelectItem value="georgia">Georgia</SelectItem>
-                  <SelectItem value="inter">Inter</SelectItem>
-                  <SelectItem value="jetbrains">JetBrains Mono</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </DropdownMenuContent>
-        </DropdownMenu>
-        {/* font size */}
-        <DropdownMenu modal={false}>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              title="FontSize"
-              className="w-10 h-10"
-            >
-              <ALargeSmall className="w-5 h-5" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            side="left"
-            className="w-48"
-            sideOffset={5}
-            alignOffset={0}
-            avoidCollisions={true}
-            collisionPadding={8}
+              setLoadingBtn("prev");
+            }}
           >
-            <div className="p-3">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-sm font-medium">Font size</span>
-                <span className="text-sm text-muted-foreground font-mono">
-                  {settings.fontSize}px
-                </span>
-              </div>
-              <div className="flex items-center gap-3">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="w-8 h-8"
-                  onClick={() =>
-                    handleSettingChange(
-                      "fontSize",
-                      Math.max(12, settings.fontSize - 1)
-                    )
-                  }
-                  disabled={settings.fontSize <= 12 || isPending}
-                  title="Decrease FontSize"
-                >
-                  <Minus className="w-3 h-3" />
-                </Button>
-
-                <div className="flex-1 text-center">
-                  <span
-                    className="text-lg font-medium select-none"
-                    style={{ fontSize: `${Math.min(20, settings.fontSize)}px` }}
-                  >
-                    Aa
-                  </span>
-                </div>
-
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="w-8 h-8"
-                  onClick={() =>
-                    handleSettingChange(
-                      "fontSize",
-                      Math.min(24, settings.fontSize + 1)
-                    )
-                  }
-                  title="Increase FontSize"
-                  disabled={settings.fontSize >= 24 || isPending}
-                >
-                  <Plus className="w-3 h-3" />
-                </Button>
-              </div>
-
-              <div className="mt-3">
-                <input
-                  type="range"
-                  min="12"
-                  max="24"
-                  value={settings.fontSize}
-                  onChange={(e) =>
-                    handleSettingChange("fontSize", parseInt(e.target.value))
-                  }
-                  disabled={isPending}
-                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
-                />
-              </div>
-            </div>
-          </DropdownMenuContent>
-        </DropdownMenu>
-        {/* theme */}
-        <DropdownMenu modal={false}>
-          <DropdownMenuTrigger asChild>
             <Button
+              disabled={!idPrev}
               variant="ghost"
               size="icon"
-              title="Theme"
-              className="w-10 h-10"
+              className={`w-10 h-10 ${
+                idPrev === null
+                  ? "opacity-50 cursor-not-allowed"
+                  : "cursor-pointer "
+              }`}
             >
-              {theme === "dark" ? (
-                <Moon className="w-5 h-5" />
+              {loadingBtn === "prev" ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
               ) : (
-                <Sun className="w-5 h-5" />
+                <ChevronLeft className="w-5 h-5" />
               )}
             </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            side="left"
-            sideOffset={5}
-            alignOffset={0}
-            avoidCollisions={true}
-            collisionPadding={8}
-          >
-            <DropdownMenuItem
-              onClick={() => setTheme("light")}
-              className="cursor-pointer"
-              title="Light"
-            >
-              <Sun className="w-4 h-4 mr-2" />
-              Light
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => setTheme("dark")}
-              title="Dark"
-              className="cursor-pointer"
-            >
-              <Moon className="w-4 h-4 mr-2" />
-              Dark
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              title="System"
-              onClick={() => setTheme("system")}
-              className="cursor-pointe"
-            >
-              <Info className="w-4 h-4 mr-2" />
-              System
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+          </Link>
 
-        {/* chapter navigate */}
-        <DropdownMenu modal={false}>
-          <DropdownMenuTrigger asChild>
+          <Link
+            prefetch={true}
+            href={
+              idNext != null
+                ? `/book/${bookId}/chapter/${idNext}`
+                : `/book/${bookId}`
+            }
+            aria-disabled={idNext == null}
+            onClick={(e) => {
+              if (!idNext) {
+                e.preventDefault();
+                return;
+              }
+              setLoadingBtn("next");
+            }}
+          >
             <Button
+              disabled={!idNext}
               variant="ghost"
               size="icon"
-              title="Chapters"
-              className="w-10 h-10"
+              className={`w-10 h-10 ${
+                idNext === null
+                  ? "opacity-50 cursor-not-allowed"
+                  : "cursor-pointer "
+              }`}
             >
-              <List className="w-5 h-5" />
+              {loadingBtn === "next" ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <ChevronRight className="w-5 h-5" />
+              )}
             </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            side="left"
-            className="w-48"
-            sideOffset={5}
-            alignOffset={0}
-            avoidCollisions={true}
-            collisionPadding={8}
-          >
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button>Danh sách chapter</Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-[400px] overflow-y-auto">
-                <SheetHeader>
-                  <SheetTitle>Chọn Chapter</SheetTitle>
-                </SheetHeader>
-                <div className="mt-4 space-y-2">
-                  {chapters.map((chapter) => (
-                    <Button
-                      key={chapter.id}
-                      variant="ghost"
-                      className="w-full justify-start"
-                      onClick={() => router.push(chapter.id.toString())}
-                    >
-                      Chapter {chapter.chapter_number}: {chapter.title}
-                    </Button>
-                  ))}
-                </div>
-              </SheetContent>
-            </Sheet>
-          </DropdownMenuContent>
-        </DropdownMenu>
-
-        {/* bookmark */}
-        <Button
-          variant="ghost"
-          size="icon"
-          className="w-10 h-10"
-          title="Book Mark"
-          onClick={bookMarkOnClick}
-        >
-          {bookMark ? (
-            <BookmarkCheck className="w-5 h-5 fill-current text-primary" />
-          ) : (
-            <Bookmark className="w-5 h-5" />
-          )}
-        </Button>
-        <div className="w-full h-px bg-border lg:block hidden " />
-        {/* chuyển trang */}
-        <Link
-          className="hidden lg:block"
-          prefetch={true}
-          href={
-            idPrev != null
-              ? `/book/${bookId}/chapter/${idPrev}`
-              : `/book/${bookId}`
-          }
-          aria-disabled={idPrev == null}
-          onClick={(e) => {
-            if (!idPrev) {
-              e.preventDefault();
-              return;
-            }
-            setLoadingBtn("prev");
-          }}
-        >
-          <Button
-            disabled={!idPrev}
-            variant="ghost"
-            size="icon"
-            className={`w-10 h-10 ${
-              idPrev === null
-                ? "opacity-50 cursor-not-allowed"
-                : "cursor-pointer "
-            }`}
-          >
-            {loadingBtn === "prev" ? (
-              <Loader2 className="w-5 h-5 animate-spin" />
-            ) : (
-              <ChevronLeft className="w-5 h-5" />
-            )}
-          </Button>
-        </Link>
-        <Link
-          prefetch={true}
-          href={
-            idNext != null
-              ? `/book/${bookId}/chapter/${idNext}`
-              : `/book/${bookId}`
-          }
-          aria-disabled={idNext == null}
-          onClick={(e) => {
-            if (!idNext) {
-              e.preventDefault();
-              return;
-            }
-            setLoadingBtn("next");
-          }}
-        >
-          <Button
-            disabled={!idNext}
-            variant="ghost"
-            size="icon"
-            className={`w-10 h-10 ${
-              idNext === null
-                ? "opacity-50 cursor-not-allowed"
-                : "cursor-pointer "
-            }`}
-          >
-            {loadingBtn === "next" ? (
-              <Loader2 className="w-5 h-5 animate-spin" />
-            ) : (
-              <ChevronRight className="w-5 h-5" />
-            )}
-          </Button>
-        </Link>
+          </Link>
+        </div>
       </div>
-    </div>
+
+      {/* Sheet  */}
+      <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+        <SheetContent side="right" className="w-full sm:w-[400px] lg:w-[500px]">
+          <SheetHeader>
+            <SheetTitle>Table of Contents</SheetTitle>
+          </SheetHeader>
+
+          <div className="mt-6 flex flex-col h-[calc(100vh-120px)] border-t-1 border-border ">
+            {isPending ? (
+              <div className="flex justify-center items-center py-12">
+                <Loader2 className="w-8 h-8 animate-spin text-primary" />
+              </div>
+            ) : chapters.length > 0 ? (
+              <div className="overflow-y-auto space-y-2 pr-2">
+                {chapters.map((chapter) => (
+                  <Button
+                    key={chapter.id}
+                    variant="ghost"
+                    className="w-full justify-start h-auto py-3 px-4 hover:bg-accent"
+                    onClick={() => {
+                      router.push(`/book/${bookId}/chapter/${chapter.id}`);
+                      setIsSheetOpen(false);
+                    }}
+                  >
+                    <div className="flex flex-col items-start text-left w-full">
+                      <span className="font-semibold">
+                        Chapter {chapter.chapter_number}
+                      </span>
+                      {chapter.title && (
+                        <span className="text-sm text-muted-foreground line-clamp-1">
+                          {chapter.title}
+                        </span>
+                      )}
+                    </div>
+                  </Button>
+                ))}
+              </div>
+            ) : (
+              ""
+            )}
+          </div>
+        </SheetContent>
+      </Sheet>
+    </>
   );
 }
