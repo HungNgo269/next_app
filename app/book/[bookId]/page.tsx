@@ -8,12 +8,12 @@ import Link from "next/link";
 import { ChapterContainer } from "@/app/ui/share/chapter/chapterContainer";
 import {
   fetchChapterOfBookAction,
-  fetchChapterOfBookUserAction,
+  fetchReadedChapterAction,
 } from "@/app/actions/chapterActions";
 import type { Book } from "@/app/interface/book";
 import FooterComponent from "@/app/ui/user/footer/footerComponent";
 import ImageCard from "@/app/ui/share/image/imageCard";
-import type { Chapter, ChapterInfo } from "@/app/interface/chapter";
+import type { Chapter, ChapterCardProps } from "@/app/interface/chapter";
 import BookDesc from "@/app/ui/user/books/bookDesc";
 import { getURL } from "@/lib/utils/helper";
 import { getSessionCache } from "@/lib/utils/getSession";
@@ -134,7 +134,7 @@ export default async function BookPage({ params }: PageProps) {
     fetchBookByIdActions(bookId),
     fetchCategoryOfBookAction(bookId),
     user?.id
-      ? fetchChapterOfBookUserAction(bookId, user?.id)
+      ? fetchReadedChapterAction(bookId, user?.id)
       : fetchChapterOfBookAction(bookId),
   ]);
   console.log("chapter", chapters);
@@ -220,7 +220,7 @@ export default async function BookPage({ params }: PageProps) {
           <BookDesc content={book?.description}></BookDesc>
 
           <ChapterContainer
-            chapters={chapters as ChapterInfo[]}
+            chapters={chapters as ChapterCardProps[]}
             totalChapters={chapters.length}
             sub={subscriptionCheck.hasAccess}
           />

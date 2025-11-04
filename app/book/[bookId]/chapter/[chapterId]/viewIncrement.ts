@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { incrementChapterView } from "@/app/book/[bookId]/chapter/[chapterId]/action";
+import { addReadedChapterAction } from "@/app/actions/chapterActions";
 
 interface ViewIncrementerProps {
   userId?: string;
@@ -19,6 +20,9 @@ export default function ViewIncrementer({
     const incrementView = async () => {
       try {
         const result = await incrementChapterView(chapterId, bookId, userId);
+        if (userId) {
+          await addReadedChapterAction(userId, bookId, chapterId);
+        }
         if (result.success) {
         } else {
           console.error("Failed to increment view:", result.error);

@@ -1,5 +1,5 @@
 import { fetchNewestChapterAction } from "../actions/chapterActions";
-import { ChapterCardProps } from "../interface/chapter";
+import { BookNewChapterCard, ChapterCardProps } from "../interface/chapter";
 import ChapterCard from "../ui/user/chapter/chapterCard";
 
 export default async function ChapterList({
@@ -7,14 +7,14 @@ export default async function ChapterList({
 }: {
   currentPage: number;
 }) {
-  const chapters = await fetchNewestChapterAction(currentPage);
+  const books = await fetchNewestChapterAction(currentPage);
   return (
     <>
-      {chapters && chapters.length > 0
-        ? (chapters as ChapterCardProps[]).map((chapter: ChapterCardProps) => (
-            <ChapterCard ChapterId={chapter.id} key={chapter.id} />
-          ))
-        : ""}
+      {books && books.length > 0
+        ? ""
+        : books.map((book: BookNewChapterCard) => (
+            <ChapterCard Books={book} key={book.book_id} />
+          ))}
     </>
   );
 }

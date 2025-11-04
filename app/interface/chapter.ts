@@ -8,15 +8,7 @@ export interface Chapter {
   updated_at: string;
   view_count?: number;
 }
-export interface ChapterInfo {
-  id: number;
-  title: string;
-  chapter_number: number;
-  view_count?: number;
-  is_viewed?:boolean
-  created_at?: string|Date;
-  updated_at?: string;
-}
+
 export interface ChapterBase {
   id: number;
   book_id: number;
@@ -68,11 +60,15 @@ export interface ChapterCardProps {
   title: string;
   chapter_number: number;
   name?: string;
-  created_at?:Date
-  book_id?:number
+  is_viewed?: boolean;
+  book_id?: number;
+  view_count?: number;
+  created_at?: string | Date;
+  updated_at?: string;
 }
-export interface BookNewChapterCard{
-  book_id:number,
-  book_name:string,
-  chapters:ChapterCardProps[]
+
+export interface BookNewChapterCard {
+  book_id: number;
+  book_name: string;
+  chapters: ChapterCardProps[];
 }

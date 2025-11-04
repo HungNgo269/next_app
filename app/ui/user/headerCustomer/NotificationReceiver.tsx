@@ -19,6 +19,13 @@ interface props {
 }
 export default function NotificationReceiver({ userId }: props) {
   const esRef = useRef<EventSource | null>(null);
+  const [hasMore, setHasMore] = useState(true);
+  const [open, setOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [notifications, setNotifications] = useState<Notification[] | []>([]);
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+  const notiContainerRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     const es = new EventSource(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/sse?userId=${userId}`
@@ -42,14 +49,6 @@ export default function NotificationReceiver({ userId }: props) {
     };
     getDb();
   }, []);
-  const [hasMore, setHasMore] = useState(true);
-  const [open, setOpen] = useState(false);
-  const [page, setPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
-  const [notifications, setNotifications] = useState<Notification[] | []>([]);
-  const sentinelRef = useRef<HTMLDivElement | null>(null);
-  const notiContainerRef = useRef<HTMLDivElement | null>(null);
-
   const loadMoreNotifications = async () => {
     if (isLoading || !hasMore) return;
     setIsLoading(true);

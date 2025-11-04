@@ -49,7 +49,7 @@ export default function PremiumGate({
     messages[reason as keyof typeof messages] || messages.no_subscription;
 
   return (
-    <div className="min-h-[400px] flex items-center justify-center p-8">
+    <div className="h-full w-full flex items-center justify-center my-auto mx-auto">
       <div className="max-w-md text-center space-y-6">
         <div className="mx-auto w-20 h-20 bg-muted rounded-full flex items-center justify-center">
           <Lock className="w-10 h-10 text-muted-foreground" />

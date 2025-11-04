@@ -1,33 +1,25 @@
 import { BookNewChapterCard, ChapterCardProps } from "@/app/interface/chapter";
-import {  fetchMultipleChapterCardAction } from "@/app/actions/chapterActions";
 import Link from "next/link";
 import ImageCard from "@/app/ui/share/image/imageCard";
 import {
   fetchBookImageAction,
   fetchBookSideInfoAction,
 } from "@/app/actions/bookActions";
-import {  formatRelativeTime } from "@/lib/utils/formatDate";
-import {
-  GetBookFollowerCountAction,
-} from "@/app/actions/bookFollowActions";
-import { Bookmark,  LucideEye, Star } from "lucide-react";
+import { formatRelativeTime } from "@/lib/utils/formatDate";
+import { GetBookFollowerCountAction } from "@/app/actions/bookFollowActions";
+import { Bookmark, LucideEye, Star } from "lucide-react";
 
-interface props{
-   Books: BookNewChapterCard
+interface props {
+  Books: BookNewChapterCard;
 }
 
 export default async function ChapterCard({ Books }: props) {
-   const chaptersId: number[] =[]
-  Books.chapters.map((chapter)=>{
-    chaptersId.push(chapter.id)
-  })
-  const chapters =await fetchMultipleChapterCardAction(chaptersId)
   const [book, bookInfo, bookFollow] = await Promise.all([
-    fetchBookImageAction(chapters[0].book_id!),
-    fetchBookSideInfoAction(chapters[0].book_id!),
-    GetBookFollowerCountAction(chapters[0].book_id!),
+    fetchBookImageAction(Books.book_id),
+    fetchBookSideInfoAction(Books.book_id),
+    GetBookFollowerCountAction(Books.book_id),
   ]);
-
+  console.log("book", Books);
   return (
     <div className="flex flex-col w-full group">
       <Link
@@ -69,21 +61,25 @@ export default async function ChapterCard({ Books }: props) {
       </Link>
 
       <div className="flex flex-col mt-2 ">
-          {chapters.map((chapter:ChapterCardProps)=>(
-        <div className="flex flex-row justify-between items-center" key={chapter.id}>
-       <Link
-            prefetch={true}
-            href={`book/${book.id}/chapter/${chapter.id}`}
-            className="line-clamp-1 font-medium text-sm text-primary hover:underline truncate"
+        {Books.chapters.map((chapter: ChapterCardProps) => (
+          <div
+            className="flex flex-row justify-between items-center"
+            key={chapter.id}
           >
-            Chapter {chapter.chapter_number}
-          </Link>
-          <span className="text-gray-500 text-xs">
-            {formatRelativeTime(chapter.created_at)}
-          </span>
-        </div>
-          ))}
-   
+            <Link
+              prefetch={true}
+              href={`book/${book.id}/chapter/${chapter.id}`}
+              className={`${
+                chapter.is_viewed ? "text-gray-500 " : "text-primary "
+              }line-clamp-1 font-medium text-sm  hover:underline truncate`}
+            >
+              Chapter {chapter.chapter_number}
+            </Link>
+            <span className="text-gray-500 text-xs">
+              {formatRelativeTime(chapter.created_at)}
+            </span>
+          </div>
+        ))}
       </div>
     </div>
   );

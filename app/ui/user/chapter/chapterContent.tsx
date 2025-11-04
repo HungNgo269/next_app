@@ -9,6 +9,8 @@ import { IBookmark } from "@/app/interface/bookMark";
 import { Chapter } from "@/app/interface/chapter";
 import ChapterToolBar from "@/app/ui/user/chapter/chapterToolBar";
 import { ReaderSettings } from "@/lib/readerSetting";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useRef, useState } from "react";
@@ -37,8 +39,8 @@ function ChapterContent({
   };
   const [bookMark, setBookMark] = useState<IBookmark | null>();
   const chapterRef = useRef<HTMLDivElement | null>(null);
-  const router= useRouter()
-  const pathName = usePathname()
+  const router = useRouter();
+  const pathName = usePathname();
   const progressRef = useRef<number>(0); // Lưu progress mà không rerender
   const updateProgress = useCallback(() => {
     if (!chapterRef.current) return 0;
@@ -52,7 +54,6 @@ function ChapterContent({
       Math.max(0, ((scrollY - offsetTop) / contentHeight) * 100)
     );
     progressRef.current = Math.floor(progress);
-    console.log("progres", progressRef.current);
     return progressRef.current;
   }, []);
 
@@ -96,11 +97,19 @@ function ChapterContent({
 
   const scrollToProgress = (targetProgress: number): void => {
     if (!chapterRef.current) return;
-    const chapter = chapterRef.current;
-    const chapterContentHeight = chapter.scrollHeight;
-    const positionScroll = (targetProgress / 100) * chapterContentHeight;
+
+    const { scrollHeight, offsetTop } = chapterRef.current;
+    const viewportHeight = window.innerHeight;
+    const contentHeight = scrollHeight - viewportHeight;
+
+    if (contentHeight <= 0) {
+      window.scrollTo({ top: offsetTop, behavior: "smooth" });
+      return;
+    }
+    const scrollPosition = offsetTop + (targetProgress / 100) * contentHeight;
+
     window.scrollTo({
-      top: positionScroll,
+      top: scrollPosition,
       behavior: "smooth",
     });
   };
@@ -122,51 +131,86 @@ function ChapterContent({
     setBookMark(null);
   };
   useEffect(() => {
-  const handleKeyDown = (event: KeyboardEvent) => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "ArrowLeft" && idPrevChapter) {
+        const baseUrl = pathName.split("/").slice(0, -1).join("/");
+        router.push(`${baseUrl}/${idPrevChapter}`);
+      }
+      if (event.key === "ArrowRight" && idNextChapter) {
+        const baseUrl = pathName.split("/").slice(0, -1).join("/");
+        router.push(`${baseUrl}/${idNextChapter}`);
+      }
+    };
 
-    if (event.key === "ArrowLeft" && idPrevChapter) {
-      const baseUrl = pathName.split("/").slice(0, -1).join("/");
-      router.push(`${baseUrl}/${idPrevChapter}`);
-    }
-    if (event.key === "ArrowRight" && idNextChapter) {
-      const baseUrl = pathName.split("/").slice(0, -1).join("/");
-      router.push(`${baseUrl}/${idNextChapter}`);
-    }
-  };
+    window.addEventListener("keydown", handleKeyDown);
 
-  window.addEventListener("keydown", handleKeyDown);
-  
-  return () => {
-    window.removeEventListener("keydown", handleKeyDown);
-  };
-}, []);
- 
-return (
-    <div
-      className="min-h-screen bg-background relative mt-8"
-      
-    >
-      <article
-        className={`max-w-4xl mx-auto px-4`}
-        ref={chapterRef}
-        style={contentStyle}
-      >
-        <div
-          className="prose prose-lg max-w-none leading-relaxed text-justify relative flex flex-col gap-7"
-          style={{ position: "relative" }}
-        >
-          <div className="flex flex-row items-center justify-center text-2xl ">
-            <span>
-              Chapter {`${chapter.chapter_number}`}{" "}
-              {chapter.title.length > 0 ? `: ${chapter.title}` : ""}
-            </span>
-          </div>
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
+  return (
+    <div className="h-screen bg-background relative pt-8" ref={chapterRef}>
+      <div className="flex flex-col gap-3 w-full">
+        <article className={`max-w-4xl mx-auto px-4`} style={contentStyle}>
           <div
-            className="prose prose-lg max-w-none leading-relaxed text-justify"
-            dangerouslySetInnerHTML={{ __html: chapter.content }}
-          />
+            className="prose prose-lg max-w-none leading-relaxed text-justify relative flex flex-col gap-7"
+            style={{ position: "relative" }}
+          >
+            <div className="flex flex-row items-center justify-center text-2xl ">
+              <span>
+                Chapter {`${chapter.chapter_number}`}{" "}
+                {chapter.title.length > 0 ? `: ${chapter.title}` : ""}
+              </span>
+            </div>
+            <div
+              className="prose prose-lg max-w-none leading-relaxed text-justify"
+              dangerouslySetInnerHTML={{ __html: chapter.content }}
+            />
+          </div>
+        </article>
+        <div className="max-w-4xl w-full mx-auto px-4 hidden lg:block">
+          <div className="flex justify-between items-center mb-12 pt-8 border-t">
+            {idPrevChapter ? (
+              <Link
+                className="flex flex-row items-center gap-2"
+                href={`/book/${bookId}/chapter/${idPrevChapter}`}
+                aria-disabled={idPrevChapter === null}
+              >
+                <ChevronLeft className="w-4 h-4" />
+                Previous Chapter
+              </Link>
+            ) : (
+              <Link
+                className="flex flex-row items-center gap-2"
+                href={`/book/${bookId}`}
+              >
+                <ChevronLeft className="w-4 h-4" />
+                Home
+              </Link>
+            )}
+            {idNextChapter ? (
+              <Link
+                className="flex flex-row items-center gap-2"
+                href={`/book/${bookId}/chapter/${idNextChapter}`}
+                aria-disabled={idNextChapter == null}
+              >
+                Next Chapter
+                <ChevronRight className="w-4 h-4" />
+              </Link>
+            ) : (
+              <Link
+                className="flex flex-row items-center gap-2"
+                href={`/book/${bookId}`}
+              >
+                Home
+                <ChevronRight className="w-4 h-4" />
+              </Link>
+            )}
+          </div>
         </div>
-      </article>
+      </div>
+
       <ChapterToolBar
         iniSettings={settings}
         bookId={bookId}

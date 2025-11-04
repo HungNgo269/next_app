@@ -13,6 +13,7 @@ import {
   ALargeSmall,
   Bookmark,
   Loader2,
+  List,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import {
@@ -22,11 +23,30 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import React, { useEffect, useRef, useState, useTransition } from "react";
+import React, { useCallback, useEffect, useState, useTransition } from "react";
 import { ReaderSettings } from "@/lib/readerSetting";
 import Link from "next/link";
 import { updateReaderSettings } from "@/app/book/[bookId]/chapter/[chapterId]/action";
 import { IBookmark } from "@/app/interface/bookMark";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { fetchChapterOfBookAction } from "@/app/actions/chapterActions";
+import { ChapterCardProps } from "@/app/interface/chapter";
+import { useRouter } from "next/navigation";
 
 interface Props {
   iniSettings: ReaderSettings;
@@ -48,25 +68,43 @@ export default function ChapterToolBar({
   const [settings, setSettings] = useState(iniSettings);
   const [isPending, startTransition] = useTransition();
   const { theme, setTheme } = useTheme();
-  const [scrollDown,setScrollDown] = useState(false);
-  useEffect(()=>{
-    let lastY = window.scrollY;
-    const handleScroll =()=>{
-      const currentScrollY = window.scrollY
-      if(currentScrollY>lastY){
-          setScrollDown(true)
-      }
-      else{
-        setScrollDown(false)
-      }
-       lastY = currentScrollY;
+  const [scrollDown, setScrollDown] = useState(false);
+  const [chapters, setChapters] = useState<ChapterCardProps[] | []>([]);
+  const router = useRouter();
+  const fetchListChapter = useCallback(async (bookId: number) => {
+    if (!bookId) {
+      return;
     }
-  window.addEventListener('scroll', handleScroll);
+    startTransition(async () => {
+      const chapters = await fetchChapterOfBookAction(bookId);
+      console.log("chapter", chapters);
+      if (!chapters) {
+        return;
+      }
+      setChapters(chapters);
+    });
+  }, []);
+  useEffect(() => {
+    fetchListChapter(bookId);
+  }, [bookId]);
+
+  useEffect(() => {
+    let lastY = window.scrollY;
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      if (currentScrollY > lastY) {
+        setScrollDown(true);
+      } else {
+        setScrollDown(false);
+      }
+      lastY = currentScrollY;
+    };
+    window.addEventListener("scroll", handleScroll);
 
     return () => {
-    window.removeEventListener('scroll', handleScroll);
-  };
-}, []);
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
   const [loadingBtn, setLoadingBtn] = useState<"prev" | "next" | null>(null);
   const handleSettingChange = (key: keyof ReaderSettings, value: any) => {
     const newSettings = { ...settings, [key]: value }; //fontsize :16(etc)
@@ -76,14 +114,18 @@ export default function ChapterToolBar({
     });
   };
   return (
-    <div className={`
-      ${scrollDown? "hidden lg:block" :"block"}
+    <div
+      className={`
+      ${scrollDown ? "hidden lg:block" : "block"}
        fixed lg:right-4 bottom-0 left-0 lg:bottom-auto lg:left-auto
-     lg:top-1/2 lg:-translate-y-1/2 z-50 lg:w-fit w-full transition delay-150 duration-300 ease-in-out`}>
-      <div  className={` flex
+     lg:top-1/2 lg:-translate-y-1/2 z-50 lg:w-fit w-full transition delay-150 duration-300 ease-in-out`}
+    >
+      <div
+        className={` flex
       flex-row 
       lg:flex-col lg:gap-2 bg-card border rounded-lg
-       shadow-lg items-center justify-between `}>
+       shadow-lg items-center justify-between `}
+      >
         <Link
           className="lg:hidden block"
           prefetch={true}
@@ -117,7 +159,7 @@ export default function ChapterToolBar({
             <Home className="w-5 h-5 " />
           </Button>
         </Link>
-
+        {/* font */}
         <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
             <Button
@@ -137,29 +179,30 @@ export default function ChapterToolBar({
             avoidCollisions={true}
             collisionPadding={8}
           >
-            <div className="p-3">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-sm font-medium">Font Family</span>
-              </div>
-              <select
-                className="w-full rounded border px-3 py-2 text-sm bg-background"
-                value={settings.fontFamily}
-                onChange={(e) =>
-                  handleSettingChange("fontFamily", e.target.value)
-                }
-                disabled={isPending}
-              >
-                <option value="system">System Default</option>
-                <option value="serif">Serif</option>
-                <option value="lusitana">Lusitana</option>
-                <option value="georgia">Georgia</option>
-                <option value="inter">Inter</option>
-                <option value="jetbrains">JetBrains Mono</option>
-              </select>
-            </div>
+            <Select
+              disabled={isPending}
+              onValueChange={(value) =>
+                handleSettingChange("fontFamily", value)
+              }
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select a Font" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup className="w-full rounded border px-3 py-2 text-sm bg-background">
+                  <SelectLabel>Font</SelectLabel>
+                  <SelectItem value="system">System Default</SelectItem>
+                  <SelectItem value="serif">Serif</SelectItem>
+                  <SelectItem value="lusitana">Lusitana</SelectItem>
+                  <SelectItem value="georgia">Georgia</SelectItem>
+                  <SelectItem value="inter">Inter</SelectItem>
+                  <SelectItem value="jetbrains">JetBrains Mono</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </DropdownMenuContent>
         </DropdownMenu>
-
+        {/* font size */}
         <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
             <Button
@@ -245,6 +288,7 @@ export default function ChapterToolBar({
             </div>
           </DropdownMenuContent>
         </DropdownMenu>
+        {/* theme */}
         <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
             <Button
@@ -294,15 +338,52 @@ export default function ChapterToolBar({
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <Button
-          variant="ghost"
-          size="icon"
-          className="w-10 h-10 hidden lg:flex"
-          title="Report"
-        >
-          <Info className="w-5 h-5" />
-        </Button>
+        {/* chapter navigate */}
+        <DropdownMenu modal={false}>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              title="Chapters"
+              className="w-10 h-10"
+            >
+              <List className="w-5 h-5" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            side="left"
+            className="w-48"
+            sideOffset={5}
+            alignOffset={0}
+            avoidCollisions={true}
+            collisionPadding={8}
+          >
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button>Danh sách chapter</Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[400px] overflow-y-auto">
+                <SheetHeader>
+                  <SheetTitle>Chọn Chapter</SheetTitle>
+                </SheetHeader>
+                <div className="mt-4 space-y-2">
+                  {chapters.map((chapter) => (
+                    <Button
+                      key={chapter.id}
+                      variant="ghost"
+                      className="w-full justify-start"
+                      onClick={() => router.push(chapter.id.toString())}
+                    >
+                      Chapter {chapter.chapter_number}: {chapter.title}
+                    </Button>
+                  ))}
+                </div>
+              </SheetContent>
+            </Sheet>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
+        {/* bookmark */}
         <Button
           variant="ghost"
           size="icon"
@@ -316,8 +397,8 @@ export default function ChapterToolBar({
             <Bookmark className="w-5 h-5" />
           )}
         </Button>
-        <div className="w-full h-px bg-border my-1 lg:block hidden " />
-
+        <div className="w-full h-px bg-border lg:block hidden " />
+        {/* chuyển trang */}
         <Link
           className="hidden lg:block"
           prefetch={true}

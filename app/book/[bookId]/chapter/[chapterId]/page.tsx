@@ -138,13 +138,13 @@ export default async function ChapterPage({ params }: PageProps) {
   ]);
 
   return (
-    <div className="min-h-screen bg-background relative">
+    <div className="h-screen bg-background relative">
       <ViewIncrementer
         userId={user?.id}
         chapterId={chapterId}
         bookId={bookId}
       />
-      <div className="max-w-full">
+      <div className="max-w-full h-screen">
         <ChapterSubWrapper
           userId={user?.id ?? ""}
           bookId={bookId}
@@ -152,46 +152,6 @@ export default async function ChapterPage({ params }: PageProps) {
           idPrevChapter={idPrevChapter}
           idNextChapter={idNextChapter}
         ></ChapterSubWrapper>
-        <div className="max-w-4xl mx-auto px-4 hidden lg:block">
-          <div className="flex justify-between items-center mb-12 pt-8 border-t">
-            {idPrevChapter ? (
-              <Link
-                className="flex flex-row items-center gap-2"
-                href={`/book/${bookId}/chapter/${idPrevChapter}`}
-                aria-disabled={idPrevChapter === null}
-              >
-                <ChevronLeft className="w-4 h-4" />
-                Previous Chapter
-              </Link>
-            ) : (
-              <Link
-                className="flex flex-row items-center gap-2"
-                href={`/book/${bookId}`}
-              >
-                <ChevronLeft className="w-4 h-4" />
-                Home
-              </Link>
-            )}
-            {idNextChapter ? (
-              <Link
-                className="flex flex-row items-center gap-2"
-                href={`/book/${bookId}/chapter/${idNextChapter}`}
-                aria-disabled={idNextChapter == null}
-              >
-                Next Chapter
-                <ChevronRight className="w-4 h-4" />
-              </Link>
-            ) : (
-              <Link
-                className="flex flex-row items-center gap-2"
-                href={`/book/${bookId}`}
-              >
-                Home
-                <ChevronRight className="w-4 h-4" />
-              </Link>
-            )}
-          </div>
-        </div>
       </div>
     </div>
   );

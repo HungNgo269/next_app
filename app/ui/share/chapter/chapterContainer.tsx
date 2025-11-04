@@ -1,6 +1,6 @@
 "use client";
 
-import { Chapter, ChapterInfo } from "@/app/interface/chapter";
+import { Chapter, ChapterCardProps } from "@/app/interface/chapter";
 import { isNewChapter } from "@/lib/utils/chapterUtils";
 import { formatDateTimeUTC } from "@/lib/utils/formatDate";
 import Link from "next/link";
@@ -11,7 +11,7 @@ import { Lock } from "lucide-react";
 interface ChapterContainerProps {
   sub: boolean;
   isCompleted?: boolean;
-  chapters: ChapterInfo[];
+  chapters: ChapterCardProps[];
   totalChapters?: number;
   showMoreText?: string;
   initialVisibleChapters?: number;
@@ -30,7 +30,7 @@ export function ChapterContainer({
     : chapters.slice(0, initialVisibleChapters);
   const hasMoreChapters = chapters.length > initialVisibleChapters;
   const pathName = usePathname();
-  
+
   return (
     <div className="flex flex-row items-center justify-start space-x-3 mb-3 gap-4 w-full">
       <div className="h-full flex flex-col items-start w-full">
@@ -50,13 +50,15 @@ export function ChapterContainer({
                       key={chapter.id}
                       className="flex items-center justify-between group"
                     >
-                      
                       <div className="flex flex-row items-center gap-2 min-w-0 flex-1">
                         <Link
                           prefetch={true}
                           href={`${pathName}/chapter/${chapter.id}`}
-                          className={`${chapter.is_viewed===true?
-                            "text-foreground/80":"text-primary"}  hover:text-primary/80 hover:underline text-sm truncate`}
+                          className={`${
+                            chapter.is_viewed === true
+                              ? "text-foreground/80"
+                              : "text-primary"
+                          }  hover:text-primary/80 hover:underline text-sm truncate`}
                         >
                           Chapter {chapter.chapter_number}
                           {chapter.title ? `: ${chapter.title}` : ""}

@@ -1,12 +1,13 @@
 "use server";
 
 import {
+  addReadedChapter,
   fetchChapterByBookmark,
   fetchChapterDataCard,
   fetchChapterOfBook,
-  fetchChapterOfBookForUser,
-  fetchMultipleChapterDataCard,
+  fetchNewestChapterForLoggedUser,
   fetchNewestChapter,
+  fetchReadedChapter,
   fetchTotalChapterPage,
 } from "@/app/data/chapterData";
 
@@ -18,9 +19,12 @@ export async function fetchChapterCardAction(chapterId: number) {
     throw new Error("Failed to fetch chapter");
   }
 }
-export async function fetchMultipleChapterCardAction(chapterIds: number[]) {
+export async function fetchNewestChapterForLoggedUserAction(
+  currentPage: number,
+  userId: string
+) {
   try {
-    return await fetchMultipleChapterDataCard(chapterIds);
+    return await fetchNewestChapterForLoggedUser(currentPage, userId);
   } catch (error) {
     console.error("Server Action Error:", error);
     throw new Error("Failed to fetch chapter");
@@ -34,9 +38,9 @@ export async function fetchChapterOfBookAction(bookId: number) {
     throw new Error("Failed to fetch chapter");
   }
 }
-export async function fetchChapterOfBookUserAction(bookId: number,userId:string) {
+export async function fetchReadedChapterAction(bookId: number, userId: string) {
   try {
-    return await fetchChapterOfBookForUser(bookId,userId);
+    return await fetchReadedChapter(bookId, userId);
   } catch (error) {
     console.error("Server Action Error:", error);
     throw new Error("Failed to fetch chapter");
@@ -64,5 +68,16 @@ export async function fetchChapterByBookmarkAction(userId: string) {
   } catch (error) {
     console.error("Server Action Error:", error);
     throw new Error("Failed to fetch chapter");
+  }
+}
+export async function addReadedChapterAction(
+  userId: string,
+  bookId: number,
+  chapter_id: number
+) {
+  try {
+    return await addReadedChapter(userId, bookId, chapter_id);
+  } catch (error) {
+    console.error("Server Action Error:", error);
   }
 }
